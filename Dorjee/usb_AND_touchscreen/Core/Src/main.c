@@ -88,6 +88,8 @@
 #define BUTTON_HEIGHT 40
 #define NUM_BUTTONS 3
 #define Y_OFFSET 20
+#define SCREEN_DELAY 50
+#define MAX_QUEUE_SIZE 10
 
 /* USER CODE END PD */
 
@@ -121,16 +123,8 @@ static uint8_t checkTouchFlag = 0;  //interrupt flag for main loop
 
 typedef enum {
 	PAGE_MAIN,
-	PAGE_TWO,
-	PAGE_THREE,
-	PAGE_FOUR,
-	PAGE_FIVE,
-	PAGE_SIX,
-	PAGE_SEVEN,
-	PAGE_EIGHT,
-	PAGE_NINE,
-	PAGE_TEN,
 	PAGE_SELECT,
+	PAGE_QUEUE,
 	PAGE_FINISH
 } PageState;
 PageState currentPage = PAGE_MAIN;
@@ -152,9 +146,12 @@ Button buttons[NUM_BUTTONS] = { { 40, 50, BUTTON_WIDTH, BUTTON_HEIGHT,
 		"Protocol 1", EMPTY }, { 40, 110, BUTTON_WIDTH, BUTTON_HEIGHT, "Protocol 2", EMPTY },
 		{ 40, 170, BUTTON_WIDTH, BUTTON_HEIGHT, "Protocol 3", EMPTY } };
 
+Button queueButton = { 10, 270, 80, 30, "Queue" }; //x, y, w, h, label
+Button queueSelectButton = { 70, 100, 100, 40, "Queue" }; //x, y, w, h, label
 Button backButton = { 10, 270, 80, 30, "Back" }; //x, y, w, h, label
 Button nextButton = { 150, 270, 80, 30, "Next" };
-Button selectButton = { 70, 140, 100, 40, "Select" };
+Button selectButton = { 70, 160, 100, 40, "Select" };
+Button runButton = { 150, 270, 80, 30, "Run" };
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -185,8 +182,11 @@ uint8_t get_num_protocols_in_sector(uint32_t sector);
 uint8_t get_num_lines_in_protocol(char protocol[MAX_LINES][MAX_LINE_LENGTH]);
 uint8_t getFreeSector(void);
 void transmitProtocol(uint32_t sector, uint32_t offset);
+void queueProtocol(uint32_t sector, uint32_t offset);
+void transmitQueuedProtocols(uint8_t queueSize);
 uint32_t get_sector_address(uint32_t sector);
 void write_number_to_flash(uint32_t flash_address, uint32_t number);
+void DrawQueuePage(uint8_t queueSize);
 void Touch_Init(void);
 uint8_t HandleTouch(void);
 void DrawMainPage(uint8_t page_num);
@@ -199,6 +199,8 @@ void DrawInfoPage(char protocolTitle[MAX_LINE_LENGTH]);
 /********** QR SCANNER HANDLED THROUGH USB CALL BACK FUNCTION *********/
 int i = 0;
 int j = 0;
+static char queueBuffer[MAX_QUEUE_SIZE][MAX_LINES][MAX_LINE_LENGTH];
+static uint8_t queueSize = 0;
 static uint8_t pageNum = 1;
 static uint8_t USB_BUSY = 0;
 char qr_code_data[MAX_LINES][MAX_LINE_LENGTH] = {{'\0'}};  //static initializes strings with all null characters
@@ -230,14 +232,6 @@ void USBH_HID_EventCallback(USBH_HandleTypeDef *phost) { //2.6s for 54 lines
 		//output_protocol(qr_code_data, i + 1);
 		//check if the title is (10 chars + newline char) or less
 		if (strlen(qr_code_data[0]) < (MAX_TITLE_SIZE + 1)) {
-//			printf("%s", qr_code_data[0]);
-//			printf("%s", qr_code_data[1]);
-//			printf("%s", qr_code_data[2]);
-//			printf("%s", qr_code_data[3]);
-//			printf("%s", qr_code_data[4]);
-//			printf("%s", qr_code_data[5]);
-
-
 			uint8_t freeSectorNumber = getFreeSector();
 			//printf("free sector is %d\n", freeSectorNumber);
 			//only store the protocol if all memory isnt full
@@ -306,11 +300,7 @@ int main(void) {
 	/* USER CODE BEGIN 2 */
 	printf("USB and Touchscreen Test\n");
 
-	/****** begin testing storing and transmitting protocols ****/
-//	storeProtocol(gcode_file, 1); //stores protocol in flash memory
-//	storeProtocol(gcode_file2, 2);
-//	storeProtocol(gcode_file, 3);
-//	storeProtocol(gcode_file2, 3);
+	/****** manually erase sectors ****/
 //	erase_sector(1);
 //	erase_sector(2);
 //	erase_sector(3);
@@ -321,16 +311,9 @@ int main(void) {
 //	erase_sector(8);
 //	erase_sector(9);
 //	erase_sector(10);
-	printf("Flash memory storage done\n");
-	char title[10] = "";
-//	read_from_flash(title, get_sector_address(1));
-//	strcpy(buttons[0].label, title);
-//	read_from_flash(title, get_sector_address(2));
-//	strcpy(buttons[1].label, title);
-//	read_from_flash(title, get_sector_address(3));
-//	strcpy(buttons[2].label, title);
+	printf("Sectors may have been erased\n");
 
-	/******* TOUCHSCREEN **********/
+	/******* TOUCHSCREEN INIT**********/
 	BSP_LCD_Init();
 	BSP_LCD_LayerDefaultInit(0, LCD_FRAME_BUFFER);
 	BSP_LCD_Clear(LCD_COLOR_WHITE);
@@ -865,11 +848,11 @@ void erase_sector(uint32_t Sector) {
 
 
 /**
- * @brief: Function to write a string to flash memory with newline and null terminator
- * @param data: a string to be stored in flash memory
+ * @brief: Write a string to flash memory
+ * @param data: string to be stored in flash memory
  * @param flash_address: address of string in flash memory that will be stored
  * @retval: none
- * Note: PLEASE UNLOCK AND LOCK FLASH BEFORE AND AFTER USING THIS FUNCTION
+ * Note: PLEASE UNLOCK AND LOCK FLASH BEFORE AND AFTER USING THIS FUNCTION,
  * IT DOES NOT DO IT ITSELF
  */
 void write_to_flash(const char *data, uint32_t flash_address) {
@@ -884,7 +867,7 @@ void write_to_flash(const char *data, uint32_t flash_address) {
 }
 
 /**
- * @brief: Function to read a string from flash memory. If failure, don't read
+ * @brief: Read a string from flash memory. If failure, don't read
  * @param output: store the string in an output to be used
  * @param flash_address: address of string in flash memory that will be read
  * @retval: failure if its reading trash from flash memory.
@@ -895,16 +878,13 @@ uint8_t read_from_flash(char *output, uint32_t flash_address) {
 	// Read byte by byte from flash memory, get a whole string in output variable
 	for (uint8_t i = 0; i < MAX_LINE_LENGTH; i++) {
 		char key = *(char*) (flash_address + i);
-		//if the first character in string is 0xFF, return a failure
+		//check if reading trash (0xFF) from flash memory
 		if (key == 0xFF) {
 			if (i == 0) {
 				return 0;
 			}
 		} else {
-//			if (key != TAB) {
-//				output[i] = key; //flash address gets type casted and then dereferenced
-//			}
-			output[i] = key; //flash address gets type casted and then dereferenced
+			output[i] = key;
 		}
 	}
 	output[strlen(output)] = '\0'; //add null to the end of string for printing
@@ -929,20 +909,20 @@ uint8_t read_from_flash(char *output, uint32_t flash_address) {
 uint8_t storeProtocol(char new_protocol[MAX_LINES][MAX_LINE_LENGTH],
 		uint32_t sector) {
 
-	int i = 0;  //protocol in the sector index
-	int j = 0;  //line in the protocol index
+	//initialize variables
+	int i = 0;  //protocol index
+	int j = 0;  //line index
 	char protocolStorage[MAX_PROTOCOLS_IN_SECTOR][MAX_LINES][MAX_LINE_LENGTH] = {{{'\0'}}};
-	//initBuffer(protocolStorage); //init this with 0xFF
 	uint32_t flash_address = get_sector_address(sector);
 
-	//check if sector is full
+	//check if all sectors are full before storing a protocol
 	uint8_t num_protocols = get_num_protocols_in_sector(sector);
 	if (num_protocols == MAX_PROTOCOLS_IN_SECTOR) {
 		return 0;
 	}
 
 	//read existing protocols in sector and put into the temp protocol storage
-	for (i = 0; i < num_protocols; i++) { //read below. do that for each protocol
+	for (i = 0; i < num_protocols; i++) {
 		for (j = 0; j < MAX_LINES; j++) {
 			//get the address for the current line in the current protocol
 			uint32_t temp_address = flash_address + i * PROTOCOL_SIZE + j * MAX_LINE_LENGTH;
@@ -960,18 +940,6 @@ uint8_t storeProtocol(char new_protocol[MAX_LINES][MAX_LINE_LENGTH],
 			strcpy(protocolStorage[i][j], new_protocol[j]);
 		}
 	}
-//	printf("%s", protocolStorage[i-1][0]);
-//	printf("%s", protocolStorage[i-1][1]);
-//	printf("%s", protocolStorage[i-1][2]);
-//	printf("%s", protocolStorage[i-1][3]);
-//	printf("%s", protocolStorage[i-1][4]);
-//	printf("%s", protocolStorage[i][0]);
-//	printf("%s", protocolStorage[i][1]);
-//	printf("%s", protocolStorage[i][2]);
-//	printf("%s", protocolStorage[i][3]);
-//	printf("%s", protocolStorage[i][4]);
-
-
 	//we now have the new protocol in the buffer.
 	//it only has the first number of lines in. the rest of lines are null
 
@@ -998,7 +966,7 @@ uint8_t storeProtocol(char new_protocol[MAX_LINES][MAX_LINE_LENGTH],
 	return 1;
 }
 
-//return number of protocols in the sector lol
+//return number of protocols in the sector
 uint8_t get_num_protocols_in_sector(uint32_t sector) {
 	uint32_t flash_address = get_sector_address(sector);
 
@@ -1013,28 +981,28 @@ uint8_t get_num_protocols_in_sector(uint32_t sector) {
 	return i;
 }
 
-//return number of lines in protocol
-uint8_t get_num_lines_in_protocol(char protocol[MAX_LINES][MAX_LINE_LENGTH]) {
-	uint8_t i = 0;
-	for (i = 0; i < MAX_LINES; i++) {
-		uint8_t len = strlen(protocol[i]);
-		//protocols end with tab character
-		if (protocol[i][len - 1] == TAB) {
-			return i + 1;
-		}
-	}
-	return i;
-}
-
-void initBuffer(char protocolStorage[MAX_PROTOCOLS_IN_SECTOR][MAX_LINES][MAX_LINE_LENGTH]) {
-	for (int i=0; i<MAX_PROTOCOLS_IN_SECTOR; i++) {
-		for (int j=0; j<MAX_LINES; j++) {
-			for (int k =0; k<MAX_LINE_LENGTH; k++) {
-				protocolStorage[i][j][k] = 0xFF;
-			}
-		}
-	}
-}
+////return number of lines in protocol
+//uint8_t get_num_lines_in_protocol(char protocol[MAX_LINES][MAX_LINE_LENGTH]) {
+//	uint8_t i = 0;
+//	for (i = 0; i < MAX_LINES; i++) {
+//		uint8_t len = strlen(protocol[i]);
+//		//protocols end with tab character
+//		if (protocol[i][len - 1] == TAB) {
+//			return i + 1;
+//		}
+//	}
+//	return i;
+//}
+//
+//void initBuffer(char protocolStorage[MAX_PROTOCOLS_IN_SECTOR][MAX_LINES][MAX_LINE_LENGTH]) {
+//	for (int i=0; i<MAX_PROTOCOLS_IN_SECTOR; i++) {
+//		for (int j=0; j<MAX_LINES; j++) {
+//			for (int k =0; k<MAX_LINE_LENGTH; k++) {
+//				protocolStorage[i][j][k] = 0xFF;
+//			}
+//		}
+//	}
+//}
 
 //check each sector sequentially for any space.
 //return the first sector number you find that has space
@@ -1071,13 +1039,44 @@ void transmitProtocol(uint32_t sector, uint32_t offset) {
 	//but if we run into an invalid string, gcode file is over
 	for (uint8_t i = 0; i < MAX_LINES; i++) {
 		//an alternative to resetting the temp buffer is to only read up to newline
-		 memset(output, 0, MAX_LINE_LENGTH); // Sets all elements of buffer to 0
+		memset(output, 0, MAX_LINE_LENGTH); // Sets all elements of buffer to 0
 		if (read_from_flash(output, flash_address + i * MAX_LINE_LENGTH)) {
 			//printf("%s", output);
 			HAL_UART_Transmit(&huart1, (uint8_t*) output, strlen(output), HAL_MAX_DELAY);
 		}
 	}
 }
+
+/**
+ * @brief: Queue protocol from flash memory to RAM buffer
+ * @param sector: which sector the protocol is stored in
+ */
+void queueProtocol(uint32_t sector, uint32_t offset) {
+	char output[MAX_LINE_LENGTH] = {'\0'};
+	uint32_t flash_address = get_sector_address(sector) + offset*PROTOCOL_SIZE;
+
+	for (uint8_t i = 0; i < MAX_LINES; i++) {
+		memset(output, 0, MAX_LINE_LENGTH); // Sets all elements of buffer to 0
+		if (read_from_flash(output, flash_address + i * MAX_LINE_LENGTH)) {
+			strcpy(queueBuffer[queueSize][i], output);
+		}
+	}
+}
+
+/**
+ * @brief: Transmit queued protocols from RAM buffer to ESP32 via UART string-by-string
+ * @param queueSize:
+ */
+void transmitQueuedProtocols(uint8_t queueSize) {
+	char output[MAX_LINE_LENGTH] = {'\0'};
+
+	for(uint8_t i=0; i<queueSize; i++) {
+		for(uint8_t j=0; j<MAX_LINES; j++) {
+			HAL_UART_Transmit(&huart1, (uint8_t*) queueBuffer[i][j], strlen(queueBuffer[i][j]), HAL_MAX_DELAY);
+		}
+	}
+}
+
 
 
 // Function to write a uint32_t number to flash memory
@@ -1098,8 +1097,8 @@ void Touch_Init(void) {
 }
 /**
  * @brief: Draw main page and handle button label and status updates
- * @param page_num: determines which page should be drawn from 1-10
- *
+ * @param: page_num: determines which page should be drawn from 1-10
+ * @retval: none
  */
 void DrawMainPage(uint8_t page_num) {
 	//Draw "Protocol Title" box
@@ -1146,8 +1145,6 @@ void DrawMainPage(uint8_t page_num) {
 				buttons[i].h);
 		BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
 		BSP_LCD_SetBackColor(LCD_COLOR_BLUE);
-		//printf("button %d len is %d\n", i, strlen(buttons[i].label));
-		//printf("%s", buttons[i].label);
 		if (buttons[i].label[10] == NEWLINE_CHAR) {
 		}
 		buttons[i].label[strlen(buttons[i].label) - 1] = ' '; //dont display null terminator
@@ -1177,6 +1174,17 @@ void DrawMainPage(uint8_t page_num) {
 		BSP_LCD_DisplayStringAt(backButton.x + 10, backButton.y + 10,
 				(uint8_t*) backButton.label, LEFT_MODE);
 	}
+
+	//draw "Queue" button
+	if (page_num == 1) {
+		BSP_LCD_SetTextColor(LCD_COLOR_YELLOW);
+		BSP_LCD_FillRect(queueButton.x, queueButton.y, queueButton.w,
+				queueButton.h);
+		BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+		BSP_LCD_SetBackColor(LCD_COLOR_YELLOW);
+		BSP_LCD_DisplayStringAt(queueButton.x + 10, queueButton.y + 10,
+				(uint8_t*) queueButton.label, LEFT_MODE);
+	}
 }
 
 void DrawInfoPage(char protocolTitle[MAX_LINE_LENGTH]) {
@@ -1186,6 +1194,15 @@ void DrawInfoPage(char protocolTitle[MAX_LINE_LENGTH]) {
 	BSP_LCD_SetBackColor(LCD_COLOR_RED);
 	BSP_LCD_DisplayStringAt(10, 10, (uint8_t*) protocolTitle, CENTER_MODE);
 
+	//Draw "QueueSelect" button on select page
+	BSP_LCD_SetTextColor(LCD_COLOR_BLUE);
+	BSP_LCD_FillRect(queueSelectButton.x, queueSelectButton.y, queueSelectButton.w,
+			queueSelectButton.h);
+	BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+	BSP_LCD_SetBackColor(LCD_COLOR_BLUE);
+	BSP_LCD_DisplayStringAt(queueSelectButton.x + 10, queueSelectButton.y + 10,
+			(uint8_t*) queueSelectButton.label, LEFT_MODE);
+
 	//Draw "Select" button
 	BSP_LCD_SetTextColor(LCD_COLOR_BLUE);
 	BSP_LCD_FillRect(selectButton.x, selectButton.y, selectButton.w,
@@ -1194,6 +1211,46 @@ void DrawInfoPage(char protocolTitle[MAX_LINE_LENGTH]) {
 	BSP_LCD_SetBackColor(LCD_COLOR_BLUE);
 	BSP_LCD_DisplayStringAt(selectButton.x + 10, selectButton.y + 10,
 			(uint8_t*) selectButton.label, LEFT_MODE);
+
+	// Draw "Back" button
+	BSP_LCD_SetTextColor(LCD_COLOR_RED);
+	BSP_LCD_FillRect(backButton.x, backButton.y, backButton.w, backButton.h);
+	BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+	BSP_LCD_SetBackColor(LCD_COLOR_RED);
+	BSP_LCD_DisplayStringAt(backButton.x + 10, backButton.y + 10,
+			(uint8_t*) backButton.label, LEFT_MODE);
+}
+
+void DrawQueuePage(uint8_t queueSize) {
+	BSP_LCD_Clear(LCD_COLOR_WHITE);
+	char pageTitle[20] = "";
+	sprintf(pageTitle, "Queue Size: %d", queueSize);
+	//Display Queue at top of the screen
+	BSP_LCD_SetFont(&Font20);
+	BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+	BSP_LCD_SetBackColor(LCD_COLOR_RED);
+	BSP_LCD_DisplayStringAt(10, 10, (uint8_t*) pageTitle, CENTER_MODE);
+
+	//display protocols in queue here
+	BSP_LCD_SetFont(&Font16);
+	BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+	BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
+	char format[20] = "";
+	for(uint8_t i=0; i<queueSize; i++) {
+		sprintf(format, "%d.) ", i+1);
+		BSP_LCD_DisplayStringAt(10, 50 + i*20, (uint8_t*) format, LEFT_MODE);
+		BSP_LCD_DisplayStringAt(60, 50 + i*20, (uint8_t*) queueBuffer[i][0], LEFT_MODE);
+	}
+	BSP_LCD_SetFont(&Font20);
+
+	//Draw "Run" button
+	BSP_LCD_SetTextColor(LCD_COLOR_RED);
+	BSP_LCD_FillRect(runButton.x, runButton.y, runButton.w,
+			runButton.h);
+	BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+	BSP_LCD_SetBackColor(LCD_COLOR_RED);
+	BSP_LCD_DisplayStringAt(runButton.x + 10, runButton.y + 10,
+			(uint8_t*) runButton.label, LEFT_MODE);
 
 	// Draw "Back" button
 	BSP_LCD_SetTextColor(LCD_COLOR_RED);
@@ -1249,7 +1306,16 @@ uint8_t HandleTouch(void) {
 				&& (pageNum != 1)) {
 			pageNum--;
 			DrawMainPage(pageNum);
-			HAL_Delay(20);
+			if (pageNum == 1) {
+				//next page wont register touch until you let go
+					while (TS_State.TouchDetected) {
+						BSP_TS_GetState(&TS_State);
+						if (!TS_State.TouchDetected) {
+						}
+						HAL_Delay(20); //WOOOO CANT TOUCH UNLESS YOU RELASE. the clk speed is super fast, need delay. ok if you slide the pen it breaks, but that dont count
+					}
+			}
+			HAL_Delay(SCREEN_DELAY);
 		}
 		//next button
 		if (TS_State.X >= nextButton.x
@@ -1259,7 +1325,24 @@ uint8_t HandleTouch(void) {
 				&& (pageNum != 10)) {
 			pageNum++;
 			DrawMainPage(pageNum);
-			HAL_Delay(20);
+			HAL_Delay(SCREEN_DELAY);
+		}
+		//queue button
+		if (TS_State.X >= queueButton.x
+				&& TS_State.X <= (queueButton.x + queueButton.w)
+				&& TS_State.Y >= queueButton.y
+				&& TS_State.Y <= (queueButton.y + queueButton.h)
+				&& (pageNum == 1)) {
+			DrawQueuePage(queueSize);
+			currentPage = PAGE_QUEUE;
+			//next page wont register touch until you let go
+				while (TS_State.TouchDetected) {
+					BSP_TS_GetState(&TS_State);
+					if (!TS_State.TouchDetected) {
+					}
+					HAL_Delay(20); //WOOOO CANT TOUCH UNLESS YOU RELASE. the clk speed is super fast, need delay. ok if you slide the pen it breaks, but that dont count
+				}
+			HAL_Delay(SCREEN_DELAY);
 		}
 		//3 protocol buttons
 		for (int i = 0; i < NUM_BUTTONS; i++) {
@@ -1283,6 +1366,7 @@ uint8_t HandleTouch(void) {
 					currentPage = PAGE_SELECT;
 					DrawInfoPage(buttons[i].label);
 				}
+				//next page wont register touch until you let go
 				while (TS_State.TouchDetected) {
 					BSP_TS_GetState(&TS_State);
 					if (!TS_State.TouchDetected) {
@@ -1302,6 +1386,22 @@ uint8_t HandleTouch(void) {
 			currentPage = PAGE_MAIN;
 			DrawMainPage(pageNum);
 		}
+		//queueSelect button
+		if (TS_State.X >= queueSelectButton.x
+				&& TS_State.X <= (queueSelectButton.x + queueSelectButton.w)
+				&& TS_State.Y >= queueSelectButton.y
+				&& TS_State.Y <= (queueSelectButton.y + queueSelectButton.h)) {
+			HAL_Delay(20);
+			//store the protocol in queueBuffer
+			if (queueSize < MAX_QUEUE_SIZE) {
+				queueProtocol(pageNum, protocol_offset);
+				queueSize++;
+				currentPage = PAGE_QUEUE;
+				DrawQueuePage(queueSize);
+			} else {
+				//handle queue buffer being full
+			}
+		}
 		//select button
 		if (TS_State.X >= selectButton.x
 				&& TS_State.X <= (selectButton.x + selectButton.w)
@@ -1312,7 +1412,43 @@ uint8_t HandleTouch(void) {
 			currentPage = PAGE_FINISH;
 			DrawPageFinish();
 		}
+		//next page wont register touch until you let go
+			while (TS_State.TouchDetected) {
+				BSP_TS_GetState(&TS_State);
+				if (!TS_State.TouchDetected) {
+				}
+				HAL_Delay(20); //WOOOO CANT TOUCH UNLESS YOU RELASE. the clk speed is super fast, need delay. ok if you slide the pen it breaks, but that dont count
+			}
 		break;
+	case PAGE_QUEUE:
+			//back button
+			if (TS_State.X >= backButton.x
+					&& TS_State.X <= (backButton.x + backButton.w)
+					&& TS_State.Y >= backButton.y
+					&& TS_State.Y <= (backButton.y + backButton.h)) {
+				currentPage = PAGE_MAIN;
+				DrawMainPage(pageNum);
+				//next page wont register touch until you let go
+					while (TS_State.TouchDetected) {
+						BSP_TS_GetState(&TS_State);
+						if (!TS_State.TouchDetected) {
+						}
+						HAL_Delay(20); //WOOOO CANT TOUCH UNLESS YOU RELASE. the clk speed is super fast, need delay. ok if you slide the pen it breaks, but that dont count
+					}
+			}
+			//run button
+			if (TS_State.X >= runButton.x
+					&& TS_State.X <= (runButton.x + runButton.w)
+					&& TS_State.Y >= runButton.y
+					&& TS_State.Y <= (runButton.y + runButton.h)) {
+				HAL_Delay(20);
+				//handle queue functionality here dorjee
+				transmitQueuedProtocols(queueSize);
+				queueSize = 0;
+				currentPage = PAGE_FINISH;
+				DrawPageFinish();
+			}
+			break;
 	case PAGE_FINISH:
 		if (TS_State.X >= backButton.x
 				&& TS_State.X <= (backButton.x + backButton.w)
