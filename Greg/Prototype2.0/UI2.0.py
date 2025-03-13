@@ -10,39 +10,7 @@ SETTINGS_FILE = "settings.txt"
 clipboard = {'well': None, 'step': None}
 undo_stack = []
 
-def copy_well(well_name):
-    clipboard['well'] = copy.deepcopy(wells_data[well_name])
-
-def paste_well():
-    if clipboard['well']:
-        if len(wells_data) >= 12:
-            messagebox.showwarning("Limit Reached", "You can only add up to 12 wells.")
-            return
-        well_name = f"Well {len(wells_data) + 1}"
-        wells_data[well_name] = copy.deepcopy(clipboard['well'])
-        # Code to refresh UI for the new well
-
-
-def copy_step(well_name, step_index):
-    clipboard['step'] = copy.deepcopy(wells_data[well_name]['steps'][step_index])
-
-def paste_step(well_name, steps_frame):
-    if clipboard['step']:
-        wells_data[well_name]['steps'].append(copy.deepcopy(clipboard['step']))
-        # Code to refresh UI for the new step
-        
-def undo():
-    if not undo_stack:
-        messagebox.showinfo("Undo", "Nothing to undo.")
-        return
-    action, name, data = undo_stack.pop()
-    if action == 'step':
-        wells_data[name]['steps'].append(data)
-        # Code to refresh UI
-    elif action == 'well':
-        wells_data[name] = data
-        # Code to refresh UI
-        
+#means of scrolling thourgh the UI frame   
 class ScrollableFrame(ttk.Frame):
     def __init__(self, container):
         super().__init__(container)
@@ -69,6 +37,45 @@ class ScrollableFrame(ttk.Frame):
     def unbind_scroll(self, canvas):
         canvas.unbind_all("<MouseWheel>")
 
+
+
+# copy a whole well
+def copy_well(well_name):
+    clipboard['well'] = copy.deepcopy(wells_data[well_name])
+#paste in a well
+def paste_well():
+    if clipboard['well']:
+        if len(wells_data) >= 12:
+            messagebox.showwarning("Limit Reached", "You can only add up to 12 wells.")
+            return
+        well_name = f"Well {len(wells_data) + 1}"
+        wells_data[well_name] = copy.deepcopy(clipboard['well'])
+        # Code to refresh UI for the new well
+
+#copy a whole step
+def copy_step(well_name, step_index):
+    clipboard['step'] = copy.deepcopy(wells_data[well_name]['steps'][step_index])
+#paste in step
+def paste_step(well_name, steps_frame):
+    if clipboard['step']:
+        wells_data[well_name]['steps'].append(copy.deepcopy(clipboard['step']))
+        # Code to refresh UI for the new step
+        
+def undo():
+    if not undo_stack:
+        messagebox.showinfo("Undo", "Nothing to undo.")
+        return
+    action, name, data = undo_stack.pop()
+    if action == 'step':
+        wells_data[name]['steps'].append(data)
+        # Code to refresh UI
+    elif action == 'well':
+        wells_data[name] = data
+        # Code to refresh UI
+        
+        
+
+#load the path for saving files
 def load_save_path():
     if os.path.exists(SETTINGS_FILE):
         with open(SETTINGS_FILE, "r") as f:
@@ -77,6 +84,12 @@ def load_save_path():
                 return path
     return None
 
+#saving directory
+SAVE_DIR = load_save_path() or select_save_folder()
+if SAVE_DIR:
+    os.makedirs(SAVE_DIR, exist_ok=True)
+
+#selecting the save folder
 def select_save_folder():
     folder_selected = filedialog.askdirectory()
     if folder_selected:
@@ -85,10 +98,15 @@ def select_save_folder():
         save_path_label.config(text=f"Save Folder: {folder_selected}")
         return folder_selected
     return None
-
-SAVE_DIR = load_save_path() or select_save_folder()
-if SAVE_DIR:
-    os.makedirs(SAVE_DIR, exist_ok=True)
+#change the save folder funciton
+def change_save_folder():
+    global SAVE_DIR
+    new_folder = select_save_folder()
+    if new_folder:
+        SAVE_DIR = new_folder
+        
+        
+        
 
 protocols = []
 
@@ -103,28 +121,52 @@ wells_data = {}
 
 file_name_var = tk.StringVar(value="protocols.txt")
 
+#updated parameter fields to ensure proper digit entries
 def create_parameter_fields(step_type, entries_frame, entries):
     for widget in entries_frame.winfo_children():
         widget.destroy()
     entries.clear()
 
-    if step_type == "Agitation":
-        labels = ["Volume (µL)", "% of Volume", "Speed", "Duration (s)"]
-        keys = ["volume", "percent_volume", "speed", "duration"]
-    elif step_type == "Pausing":
-        labels = ["Pause Time (s)"]
-        keys = ["pause_time"]
-    elif step_type == "Moving":
-        labels = ["Init Surface Time (s)", "Speed", "Sequences", "Sequence Pause Time (s)"]
-        keys = ["init_surface_time", "speed", "sequences", "sequence_pause_time"]
-    else:
-        labels, keys = [], []
+    # Define step-specific parameters and constraints
+    step_config = {
+        "Agitation": {
+            "labels": ["Volume (µL)", "% of Volume", "Speed", "Duration (s)"],
+            "keys": ["volume", "percent_volume", "speed", "duration"],
+            "limits": [1, 2, 1, 2]  # Example: Max digits per field
+        },
+        "Pausing": {
+            "labels": ["Pause Time (s)"],
+            "keys": ["pause_time"],
+            "limits": [1]  
+        },
+        "Moving": {
+            "labels": ["Init Surface Time (s)", "Speed", "Sequences", "Sequence Pause Time (s)"],
+            "keys": ["init_surface_time", "speed", "sequences", "sequence_pause_time"],
+            "limits": [3, 1, 1, 1]  # Enforces 3-digit limit for Init Surface Time
+        }
+    }
 
-    for label, key in zip(labels, keys):
+    if step_type not in step_config:
+        return  # Invalid step type, do nothing
+
+    config = step_config[step_type]
+    labels, keys, limits = config["labels"], config["keys"], config["limits"]
+
+    def validate_input(entry_text, max_digits):
+        return entry_text == "" or (entry_text.isdigit() and len(entry_text) <= max_digits)
+
+    for label, key, max_digits in zip(labels, keys, limits):
         ttk.Label(entries_frame, text=label).pack(side="left", padx=2)
-        entry = ttk.Entry(entries_frame, width=8)
+
+        # Validate user input (allow empty input for deletion)
+        vcmd = (entries_frame.register(lambda text, md=max_digits: validate_input(text, md)), "%P")
+
+        entry = ttk.Entry(entries_frame, width=8, validate="key", validatecommand=vcmd)
         entry.pack(side="left", padx=2)
         entries[key] = entry
+        
+        
+        
 
 def delete_step(well_name, step_frame, step_index):
     undo_stack.append(('step', well_name, wells_data[well_name]['steps'][step_index]))
@@ -179,15 +221,23 @@ def add_well():
 
     ttk.Button(well_frame, text="Add Step", command=lambda: add_step(well_name, steps_frame)).pack(pady=5)
     ttk.Button(well_frame, text="🛑 Delete Well", command=lambda: delete_well(well_name, well_frame)).pack(pady=5)
+    ttk.Button(well_frame, text="Copy Well", command=lambda: copy_well(selected_well_name)).pack(pady=5)
+    ttk.Button(well_frame, text="Paste Well", command=paste_well).pack(pady=5)
 
-def generate_protocol_file():
-    global protocols
-    protocols = []
+#generate the protocol files
+def generate_protocol_files():
+    if not os.path.exists(SAVE_DIR):
+        os.makedirs(SAVE_DIR)  # Ensure save directory exists
+
+    base_file_name = file_name_var.get().strip()
+    if not base_file_name:
+        messagebox.showerror("Error", "Please enter a file name!")
+        return
 
     for well_name, data in wells_data.items():
-        for step_type, entries in data["steps"]:
-            step_type_val = step_type.get()[0]  # First character
+        protocols = []  # Store protocols for this well
 
+        for step_type, entries in data["steps"]:
             if step_type.get() == "Agitation":
                 values = [
                     entries["volume"].get(),
@@ -211,19 +261,23 @@ def generate_protocol_file():
 
             protocols.append(protocol_string)
 
-    file_name = file_name_var.get().strip()
-    if not file_name.endswith(".txt"):
-        file_name += ".txt"
+        if protocols:  # Only save if protocols exist
+            file_name = f"{base_file_name}_{well_name}.txt"
+            protocol_file = os.path.join(SAVE_DIR, file_name)
 
-    protocol_file = os.path.join(SAVE_DIR, file_name)
-    with open(protocol_file, 'w') as f:
-        f.write("\n".join(protocols))
+            with open(protocol_file, 'w') as f:
+                f.write("\n".join(protocols))
 
-    qr = qrcode.make("\r\n".join(protocols))
-    qr_file = os.path.join(SAVE_DIR, "protocol_qr.png")
-    qr.save(qr_file)
+            qr = qrcode.make("\r\n".join(protocols))
+            qr_file = os.path.join(SAVE_DIR, f"{base_file_name}_{well_name}.png")
+            qr.save(qr_file)
 
-    messagebox.showinfo("Success", f"Protocols saved as: {protocol_file}\nQR Code saved as: {qr_file}")
+    messagebox.showinfo("Success", f"Protocols and QR codes saved with prefix '{base_file_name}_'!")
+
+
+
+#UI structure
+
 
 top_frame = ttk.Frame(root)
 top_frame.pack(fill="x", pady=5)
@@ -238,14 +292,8 @@ ttk.Label(file_frame, text="File Name:").pack(side="left", padx=5)
 file_name_entry = ttk.Entry(file_frame, textvariable=file_name_var)
 file_name_entry.pack(side="left", padx=5)
 
-def change_save_folder():
-    global SAVE_DIR
-    new_folder = select_save_folder()
-    if new_folder:
-        SAVE_DIR = new_folder
-
 ttk.Button(top_frame, text="Add Well", command=add_well).pack(side="left", padx=5)
-ttk.Button(top_frame, text="Generate Protocol File", command=generate_protocol_file).pack(side="left", padx=5)
+ttk.Button(top_frame, text="Generate Protocol File", command=generate_protocol_files).pack(side="left", padx=5)
 ttk.Button(file_frame, text="Select Folder", command=change_save_folder).pack(side="left", padx=5)
 
 # Buttons to add in the UI:
