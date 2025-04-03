@@ -8,14 +8,14 @@
     //     DIR = (DIR == HIGH) ? LOW : HIGH;  // Toggle between HIGH and LOW
     //     digitalWrite(DIR_PIN, DIR);  // Apply new direction
     // }
-char protocols[] = {
- "B9954","P9","M999959"
-};
-void parseProtocol(char protocols[]);
+// char protocols[] = {
+//  "B9954","P9","M999959"
+// };
+// void parseProtocol(char protocols[]);
 
-void parseProtocol(char protocols[]){
-  serialPrint("helloWorld");
-}
+// void parseProtocol(char protocols[]){
+//   serialPrint("helloWorld");
+// }
 
 int DIR = HIGH;
 int counter = 0;
@@ -46,12 +46,12 @@ void setup() {
 void loop() {
   
     // //this should run the motor in alternating directions continuously
-    // runmotor(600,HIGH,500);
-    // delay(50);
-    // runmotor(600,LOW,500);
-    // delay(50);
-    // // Step pulse
+    runmotor(600,HIGH,500);
+    delay(50);
+    runmotor(600,LOW,500);
+    delay(50);
+    // Step pulse
 
 
-    parseProtocols(Protocols);
+    //parseProtocols(Protocols);
 }
