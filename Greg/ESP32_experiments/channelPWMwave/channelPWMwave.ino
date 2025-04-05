@@ -11,7 +11,7 @@ void setup() {
 }
 
 void loop() {
-    counter++;
+    // counter++;
 
     // Step pulse
     digitalWrite(STEP_PIN, HIGH);
@@ -20,8 +20,8 @@ void loop() {
     delayMicroseconds(71);
 
     // Toggle direction every 1000 steps (adjust as needed)
-    if (counter % 1000 == 0) {  
-        DIR = (DIR == HIGH) ? LOW : HIGH;  // Toggle between HIGH and LOW
-        digitalWrite(DIR_PIN, DIR);  // Apply new direction
-    }
+    // if (counter % 1000 == 0) {  
+    //     DIR = (DIR == HIGH) ? LOW : HIGH;  // Toggle between HIGH and LOW
+    //     digitalWrite(DIR_PIN, DIR);  // Apply new direction
+    // }
 }

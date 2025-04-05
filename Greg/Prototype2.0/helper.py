@@ -180,6 +180,7 @@ def add_step(well_name, steps_frame):
 
 
 
+
 # Delete Well
 def delete_well(well_name, well_frame):
     undo_stack.append(('well', well_name, copy.deepcopy(wells_data[well_name])))
