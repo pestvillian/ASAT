@@ -41,12 +41,12 @@ extern SPI_HandleTypeDef XPT2046_SPI_PORT;
 #define TOUCH_ORIENTATION_PORTRAIT_MIRROR 	(2U)
 #define TOUCH_ORIENTATION_LANDSCAPE_MIRROR 	(3U)
 
-#define ORIENTATION	(TOUCH_ORIENTATION_PORTRAIT)
+#define ORIENTATION	(TOUCH_ORIENTATION_PORTRAIT) //no idea why its portrait
 
 // change depending on screen orientation
 #if (ORIENTATION == 0)
-#define XPT2046_SCALE_X 320
-#define XPT2046_SCALE_Y 240
+#define XPT2046_SCALE_X 320 //i changed these
+#define XPT2046_SCALE_Y 240 //changed it
 #elif (ORIENTATION == 1)
 #define XPT2046_SCALE_X 320
 #define XPT2046_SCALE_Y 240
