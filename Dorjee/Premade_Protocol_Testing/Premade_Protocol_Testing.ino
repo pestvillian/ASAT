@@ -26,6 +26,10 @@ const int HORIZONTAL_MOTOR_DIR_CHANNEL = 6;
 #define VERTICAL_SPEED 1000 //experimentally determine this
 #define HORIZONTAL_SPEED 1000
 
+typedef enum {
+  DIR_DOWN = 0, DIR_UP = 1
+} verticalDirection;
+
 // Initialize the tempBuffer with nulls ('\0')
 char tempBuffer[MAX_LINES][MAX_LINE_LENGTH] = { { '\0' } };
 void setup() {
@@ -162,7 +166,7 @@ void bindMotors(uint8_t depth) {
 
 
   //move vertically down
-  ledcWrite(VERTICAL_MOTOR_DIR, DIR_DOWN); //dir down
+  digitalWrite(VERTICAL_MOTOR_DIR, 0); //dir down
   ledcWriteTone(VERTICAL_MOTOR_STEP, VERTICAL_SPEED); //turn motor on
   delay(2000);
   ledcWriteTone(VERTICAL_MOTOR_STEP, 0); //turn motor off
