@@ -8,10 +8,10 @@
 
 #include <ezButton.h>
 
-ezButton limitSwitch(16);  // create ezButton object that attach to ESP32 pin GPIO16
+ezButton limitSwitch(5);  // create ezButton object that attach to ESP32 pin GPIO16
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   limitSwitch.setDebounceTime(50); // set debounce time to 50 milliseconds
 }
 
