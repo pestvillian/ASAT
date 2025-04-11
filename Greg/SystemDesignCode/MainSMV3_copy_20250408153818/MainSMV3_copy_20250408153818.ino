@@ -5,6 +5,8 @@ Overview:
 Create premade protocols that consist of three operations: agitate, pause, bind
 Write a state machine that calls existing motor functions with defined inputs and outputs
 *************/
+
+
 #include <ezButton.h>
 const int AGITATION_MOTOR_STEP = 12;
 const int AGITATION_MOTOR_DIR = 13;
@@ -13,6 +15,8 @@ const int AGITATION_MOTOR_DIR_CHANNEL = 2;
 
 #define MAX_LINE_LENGTH 32
 #define MAX_LINES 100
+
+
 // Initialize the tempBuffer with nulls ('\0')
 char tempBuffer[MAX_LINES][MAX_LINE_LENGTH] = { { '\0' } };
 //memset(tempBuffer, 0, sizeof(tempBuffer));
@@ -181,16 +185,49 @@ void setup() {
   //   }
   // }
   /*Limit Switch Test Case*/
-  autoHome();
+
+  moveMotor(2);
 }
 
 void loop() {
 }
 
-void autoHome() {
+/**
+ * @brief: take in a distance and move the gantry head that amount
+ * note this particular motor driver is quarter microsteped.
+ * @param distance
+ * @retval: none
+ */
+void moveMotor(uint16_t distance) {  // 1 step is 1.8 degrees
+  //convert distance to steps. for now i'm keeping it in number of revolutions
+  uint16_t steps = distanceToSteps(distance);
+  uint16_t stepFrequency = 500; // adjust to control speed (Hz)
+  float secondsToRun = (float)steps / stepFrequency; // time = steps / freq
+  uint32_t durationMs = (uint32_t)(secondsToRun * 1000);
+
+  digitalWrite(AGITATION_MOTOR_DIR, HIGH); // set direction
+  ledcWriteTone(AGITATION_MOTOR_STEP, stepFrequency); // start step pulses
   
+  delay(durationMs); // run long enough to cover desired steps
+
+  ledcWriteTone(AGITATION_MOTOR_STEP, 0); // stop step pulses
+}
+//angle (degrees) = (arc length / radius) * (180 / π)
+uint16_t distanceToSteps(uint16_t distance) {  //200 steps = 1 revolution
+
+  return distance * 200 * 4;
+}
+
+
+/**
+ * @brief:runs motor in home direction until a limit switch is hit
+ * @param none
+ * @retval: none
+ */
+void autoHome() {
+
   //run motor in one directin until limit switch is pressed
-  while(1){
+  while (1) {
     limitSwitch.loop();
     ledcWriteTone(AGITATION_MOTOR_STEP, 500);  // Drive motor
     digitalWrite(AGITATION_MOTOR_DIR, HIGH);
@@ -202,10 +239,10 @@ void autoHome() {
       Serial.println("The limit switch: TOUCHED -> UNTOUCHED");
     }
 
-    int state = limitSwitch.getState(); //determine the state of the limit switch
+    int state = limitSwitch.getState();  //determine the state of the limit switch
     if (state == HIGH) {
       Serial.println("The limit switch: Untouched");
-      
+
     } else {
       Serial.println("The limit switch: Touched");
       ledcWriteTone(AGITATION_MOTOR_STEP, 0);
