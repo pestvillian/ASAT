@@ -52,41 +52,40 @@ void setup() {
   for (int i = 0; i < size; i++) {
     Protocol parsed = parseProtocol(protocols[i]);  // Parse protocol
 
-
     //print out list
     Serial.print("Protocol: ");
     Serial.println(protocols[i]);
     //for each parsed protocol print out its information based on type
-    // switch (parsed.type) {
-    //   case AGITATION:
-    //     Serial.println("Type: Agitation");
-    //     Serial.print("Volume: ");
-    //     Serial.println(parsed.volume);
-    //     Serial.print("Percent Volume: ");
-    //     Serial.println(parsed.percentVolume);
-    //     Serial.print("Speed: ");
-    //     Serial.println(parsed.speed);
-    //     Serial.print("Duration: ");
-    //     Serial.println(parsed.duration);
-    //     break;
+    switch (parsed.type) {
+      case AGITATION:
+        Serial.println("Type: Agitation");
+        Serial.print("Volume: ");
+        Serial.println(parsed.volume);
+        Serial.print("Percent Volume: ");
+        Serial.println(parsed.percentVolume);
+        Serial.print("Speed: ");
+        Serial.println(parsed.speed);
+        Serial.print("Duration: ");
+        Serial.println(parsed.duration);
+        break;
 
-    //   case PAUSING:
-    //     Serial.println("Type: Pausing");
-    //     Serial.print("Duration: ");
-    //     Serial.println(parsed.duration);
-    //     break;
+      case PAUSING:
+        Serial.println("Type: Pausing");
+        Serial.print("Duration: ");
+        Serial.println(parsed.duration);
+        break;
 
-    //   case MOVING:
-    //     Serial.println("Type: Moving");
-    //     Serial.print("Initial Surface Time: ");
-    //     Serial.println(parsed.initialSurfaceTime);
-    //     Serial.print("Speed: ");
-    //     Serial.println(parsed.speed);
-    //     Serial.print("Stop at Sequences: ");
-    //     Serial.println(parsed.stopAtSequences);
-    //     Serial.print("Sequence Pause Time: ");
-    //     Serial.println(parsed.sequencePauseTime);
-    //     break;
+      case MOVING:
+        Serial.println("Type: Moving");
+        Serial.print("Initial Surface Time: ");
+        Serial.println(parsed.initialSurfaceTime);
+        Serial.print("Speed: ");
+        Serial.println(parsed.speed);
+        Serial.print("Stop at Sequences: ");
+        Serial.println(parsed.stopAtSequences);
+        Serial.print("Sequence Pause Time: ");
+        Serial.println(parsed.sequencePauseTime);
+        break;
   }
 
   //Serial.println("-----------------------------");
@@ -120,7 +119,11 @@ void loop() {
     }
   }
 }
-//function to parse thorugh the protocols
+/**
+ * @brief: iterate through the array and extract all information
+ * @param char *protocol : pause duration in seconds
+ * @retval: none
+ */
 Protocol parseProtocol(char *protocol) {
   Protocol parsed;  //object of protocol struct with the elements of all protocols contained
   parsed.type = getProtocolType(protocol);
