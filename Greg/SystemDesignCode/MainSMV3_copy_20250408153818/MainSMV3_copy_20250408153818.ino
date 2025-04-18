@@ -6,36 +6,55 @@ Create premade protocols that consist of three operations: agitate, pause, bind
 Write a state machine that calls existing motor functions with defined inputs and outputs
 *************/
 
-
 #include <ezButton.h>
-const int AGITATION_MOTOR_STEP = 12;
-const int AGITATION_MOTOR_DIR = 13;
-const int AGITATION_MOTOR_STEP_CHANNEL = 1;
-const int AGITATION_MOTOR_DIR_CHANNEL = 2;
 
 #define MAX_LINE_LENGTH 32
 #define MAX_LINES 100
 
+const int DIAG = 15; // diag pin on TMC
+
+const int AGITATION_MOTOR_STEP = 23;
+const int AGITATION_MOTOR_DIR = 22;
+
+const int MOTOR_X_STEP = 20;
+const int MOTOR_X_DIR = 21;
+
+const int MOTOR_Y_STEP = 18;
+const int MOTOR_Y_DIR = 19;
+
+const int AGITATION_MOTOR_STEP_CHANNEL = 11;
+const int AGITATION_MOTOR_DIR_CHANNEL = 12;
+
+const int MOTOR_X_STEP_CHANNEL = 13;
+const int MOTOR_X_DIR_CHANNEL = 8;
+
+const int MOTOR_Y_STEP_CHANNEL = 9;
+const int MOTOR_Y_DIR_CHANNEL = 10;
+
+ezButton limitSwitchX(16);        // create ezButton object that attach to ESP32 pin GPIO5
+ezButton limitSwitchY(5);         // create ezButton object that attach to ESP32 pin GPIO5
+ezButton limitSwitchAgitation(7); // create ezButton object that attach to ESP32 pin GPIO5
+
+HardwareSerial mySerial(1);
 
 // Initialize the tempBuffer with nulls ('\0')
-char tempBuffer[MAX_LINES][MAX_LINE_LENGTH] = { { '\0' } };
-//memset(tempBuffer, 0, sizeof(tempBuffer));
+char tempBuffer[MAX_LINES][MAX_LINE_LENGTH] = {{'\0'}};
+// memset(tempBuffer, 0, sizeof(tempBuffer));
 uint8_t startFlag = 0;
 uint8_t i = 0;
 uint8_t j = 0;
 
-
-ezButton limitSwitch(5);  // create ezButton object that attach to ESP32 pin GPIO16
-HardwareSerial mySerial(1);
-//types of protocols
-enum ProtocolType {
-  AGITATION,  // 'B'
-  PAUSING,    // 'P'
-  MOVING,     // 'M'
-  INVALID     // For unknown protocol types
+// types of protocols
+enum ProtocolType
+{
+  AGITATION, // 'B'
+  PAUSING,   // 'P'
+  MOVING,    // 'M'
+  INVALID    // For unknown protocol types
 };
 // Structure to store protocol properties
-struct Protocol {
+struct Protocol
+{
   ProtocolType type;
   uint8_t volume;
   uint8_t percentVolume;
@@ -46,44 +65,55 @@ struct Protocol {
   uint8_t sequencePauseTime;
 };
 
-//Protocol Array
+// Protocol Array
 char *protocols[] = {
-  "M827395", "B491762", "P3", "M615829", "B728341", "P7", "B983251", "M147693", "P5", "M283741",
-  "B672849", "P2", "M518392", "B739251", "P9", "M924873", "B356721", "P4", "M837462", "B671285",
-  "P6", "B924173", "M462839", "P8", "M183627", "B519284", "P1", "B832749", "M746218", "P7",
-  "M382615", "B721493", "P5", "B629471", "M548293", "P9", "M192847", "B364927", "P2", "M847362",
-  "B512874", "P6", "B937415", "M284759", "P4", "M682391", "B715428", "P3", "B492671", "M531827",
-  "P8", "M914275", "B267843", "P5", "B839472", "M362491", "P1", "M472681", "B619427", "P9",
-  "B738429", "M294783", "P6", "M483729", "B175392", "P3", "B926471", "M571839", "P7", "M318472",
-  "B827149", "P2", "B571382", "M649273", "P8", "M417629", "B385291", "P4", "B927416", "M518734",
-  "P6", "M742193", "B618492", "P1", "B574829", "M392847", "P9", "M673284", "B941752", "P5",
-  "B738192", "M512679", "P7", "M294678", "B415926", "P3", "B689472", "M471382", "P2", "M527491"
-};
+    "M827395", "B491762", "P3", "M615829", "B728341", "P7", "B983251", "M147693", "P5", "M283741",
+    "B672849", "P2", "M518392", "B739251", "P9", "M924873", "B356721", "P4", "M837462", "B671285",
+    "P6", "B924173", "M462839", "P8", "M183627", "B519284", "P1", "B832749", "M746218", "P7",
+    "M382615", "B721493", "P5", "B629471", "M548293", "P9", "M192847", "B364927", "P2", "M847362",
+    "B512874", "P6", "B937415", "M284759", "P4", "M682391", "B715428", "P3", "B492671", "M531827",
+    "P8", "M914275", "B267843", "P5", "B839472", "M362491", "P1", "M472681", "B619427", "P9",
+    "B738429", "M294783", "P6", "M483729", "B175392", "P3", "B926471", "M571839", "P7", "M318472",
+    "B827149", "P2", "B571382", "M649273", "P8", "M417629", "B385291", "P4", "B927416", "M518734",
+    "P6", "M742193", "B618492", "P1", "B574829", "M392847", "P9", "M673284", "B941752", "P5",
+    "B738192", "M512679", "P7", "M294678", "B415926", "P3", "B689472", "M471382", "P2", "M527491"};
 
-//global size of protocols
-int size = sizeof(protocols) / sizeof(protocols[0]);  // Get number of elements
+// global size of protocols
+int size = sizeof(protocols) / sizeof(protocols[0]); // Get number of elements
 
-//init functions
+// init functions
 Protocol parseProtocol(char *protocol);
 ProtocolType getProtocolType(char *protocol);
 
 // Initialize the tempBuffer with nulls ('\0')
 
-void setup() {
-  //Set up UART and GPIO
+void setup()
+{
+  // Set up UART and GPIO
   Serial.begin(115200);
-  limitSwitch.setDebounceTime(50);  // set debounce time of limit switch to 50 milliseconds
+  limitSwitchAgitation.setDebounceTime(50); // set debounce time of limit switch to 50 milliseconds
+  limitSwitchX.setDebounceTime(50);
+  limitSwitchY.setDebounceTime(50);
   pinMode(AGITATION_MOTOR_DIR, OUTPUT);
   pinMode(AGITATION_MOTOR_STEP, OUTPUT);
   // Setup Agitation Motor Step Signal
   ledcAttachChannel(AGITATION_MOTOR_STEP, 1000, 8, AGITATION_MOTOR_STEP_CHANNEL);
-  ledcWrite(AGITATION_MOTOR_STEP, 0);  //set duty cycle
-  //ledcChangeFrequency(AGITATION_MOTOR_STEP, 1000, 8);  //set real frequency here
-
+  ledcWrite(AGITATION_MOTOR_STEP, 0); // set duty cycle
   // Setup Agitation Motor Dir Signal
   ledcAttachChannel(AGITATION_MOTOR_DIR, 10, 8, AGITATION_MOTOR_DIR_CHANNEL);
-  ledcWrite(AGITATION_MOTOR_DIR, 0);  //set duty cycle
-  //ledcChangeFrequency(AGITATION_MOTOR_DIR, 10, 8);  //set real frequency here
+  ledcWrite(AGITATION_MOTOR_DIR, 0); // set duty cycle
+                                     // X direction Configuration
+  ledcAttachChannel(MOTOR_X_STEP, 1000, 8, MOTOR_X_STEP_CHANNEL);
+  ledcWrite(MOTOR_X_STEP, 0);
+  ledcAttachChannel(MOTOR_X_DIR, 1000, 8, MOTOR_X_DIR_CHANNEL);
+  ledcWrite(MOTOR_X_DIR, 0);
+  // Y direction Configuration
+  ledcAttachChannel(MOTOR_Y_STEP, 1000, 8, MOTOR_Y_STEP_CHANNEL);
+  ledcWrite(MOTOR_Y_STEP, 0);
+  ledcAttachChannel(MOTOR_Y_DIR, 1000, 8, MOTOR_Y_DIR_CHANNEL);
+  ledcWrite(MOTOR_Y_DIR, 0);
+  // ledcChangeFrequency(AGITATION_MOTOR_DIR, 10, 8);  //set real frequency here
+// ledcChangeFrequency(AGITATION_MOTOR_STEP, 1000, 8);  //set real frequency here
 
   /***** SANTIY CHECK MOTOR TESTING CODE BEGIN ******/
 
@@ -105,13 +135,13 @@ void setup() {
   /******** SANITY CHECK MOTOR TESTING CODE FINSIH *********/
 
   /** USEFUL FUNCTIONS:
-  * ledcWriteTone(AGITATION_MOTOR_STEP, 1000);
-  * ledcChangeFrequency(AGITATION_MOTOR_DIR, 10, 8);
- */
+   * ledcWriteTone(AGITATION_MOTOR_STEP, 1000);
+   * ledcChangeFrequency(AGITATION_MOTOR_DIR, 10, 8);
+   */
 
   /*********** RUN MAIN TEST ***********/
 
-  //Fill in tempBuffer with premade protocol
+  // Fill in tempBuffer with premade protocol
   strcpy(tempBuffer[0], "P3");
   strcpy(tempBuffer[1], "A340532");
   uint8_t i = 0;
@@ -140,56 +170,63 @@ void setup() {
 
   /*Main Test CASE*/
 
-  // //loop through array of protocols
-  // for (int i = 0; i < size; i++) {
-  //   Protocol parsed = parseProtocol(protocols[i]);  // Parse protocol
+  // loop through array of protocols
+  for (int i = 0; i < size; i++)
+  {
+    Protocol parsed = parseProtocol(protocols[i]); // Parse protocol
 
-  //   //print out list
-  //   Serial.print("Protocol: ");
-  //   Serial.println(protocols[i]);
-  //   //for each parsed protocol print out its information based on type
-  //   switch (parsed.type) {
-  //     //call the agitation function
-  //     case AGITATION:
-  //       agitateMotors(parsed.speed, parsed.duration, parsed.volume, parsed.percentVolume);  //agitate the motors
-  //                                                                                           //debug for information correctness
-  //       Serial.println("Type: Agitation");
-  //       Serial.print("Volume: ");
-  //       Serial.println(parsed.volume);
-  //       Serial.print("Percent Volume: ");
-  //       Serial.println(parsed.percentVolume);
-  //       Serial.print("Speed: ");
-  //       Serial.println(parsed.speed);
-  //       Serial.print("Duration: ");
-  //       Serial.println(parsed.duration);
-  //       break;
+    // print out list
+    Serial.print("Protocol: ");
+    Serial.println(protocols[i]);
+    // for each parsed protocol print out its information based on type
+    switch (parsed.type)
+    {
+    // call the agitation function
+    case AGITATION:
+      agitateMotors(parsed.speed, parsed.duration, parsed.volume, parsed.percentVolume); // agitate the motors
+                                                                                         // debug for information correctness
+      Serial.println("Type: Agitation");
+      Serial.print("Volume: ");
+      Serial.println(parsed.volume);
+      Serial.print("Percent Volume: ");
+      Serial.println(parsed.percentVolume);
+      Serial.print("Speed: ");
+      Serial.println(parsed.speed);
+      Serial.print("Duration: ");
+      Serial.println(parsed.duration);
+      break;
 
-  //     case PAUSING:
-  //       pauseMotors(parsed.duration);
-  //       Serial.println("Type: Pausing");
-  //       Serial.print("Duration: ");
-  //       Serial.println(parsed.duration);
-  //       break;
+    case PAUSING:
+      pauseMotors(parsed.duration);
+      Serial.println("Type: Pausing");
+      Serial.print("Duration: ");
+      Serial.println(parsed.duration);
+      break;
 
-  //     case MOVING:  //moving function not written yet.
-  //       Serial.println("Type: Moving");
-  //       Serial.print("Initial Surface Time: ");
-  //       Serial.println(parsed.initialSurfaceTime);
-  //       Serial.print("Speed: ");
-  //       Serial.println(parsed.speed);
-  //       Serial.print("Stop at Sequences: ");
-  //       Serial.println(parsed.stopAtSequences);
-  //       Serial.print("Sequence Pause Time: ");
-  //       Serial.println(parsed.sequencePauseTime);
-  //       break;
-  //   }
-  // }
+    case MOVING: // moving function not tested yet.
+      moveSample(parsed.initialSurfaceTime, parsed.speed, parsed.stopAtSequences, parsed.sequencePauseTime);
+      Serial.println("Type: Moving");
+      Serial.print("Initial Surface Time: ");
+      Serial.println(parsed.initialSurfaceTime);
+      Serial.print("Speed: ");
+      Serial.println(parsed.speed);
+      Serial.print("Stop at Sequences: ");
+      Serial.println(parsed.stopAtSequences);
+      Serial.print("Sequence Pause Time: ");
+      Serial.println(parsed.sequencePauseTime);
+      break;
+    }
+  }
   /*Limit Switch Test Case*/
-
-  moveMotor(2);
 }
 
-void loop() {
+// unused
+void loop()
+{
+  //
+  limitSwitchAgitation.loop();
+  limitSwitchX.loop();
+  limitSwitchY.loop();
 }
 
 /**
@@ -198,52 +235,174 @@ void loop() {
  * @param distance
  * @retval: none
  */
-void moveMotor(uint16_t distance) {  // 1 step is 1.8 degrees
-  //convert distance to steps. for now i'm keeping it in number of revolutions
+void moveMotor(int MOTOR_STEP, int MOTOR_DIR, int DIR, uint16_t speed, uint16_t distance)
+{ // 1 step is 1.8 degrees
+  // convert distance to steps. for now i'm keeping it in number of revolutions
   uint16_t steps = distanceToSteps(distance);
-  uint16_t stepFrequency = 500; // adjust to control speed (Hz)
+  uint16_t stepFrequency = mapSpeed(speed);          // adjust to control speed (Hz)
   float secondsToRun = (float)steps / stepFrequency; // time = steps / freq
   uint32_t durationMs = (uint32_t)(secondsToRun * 1000);
 
-  digitalWrite(AGITATION_MOTOR_DIR, HIGH); // set direction
-  ledcWriteTone(AGITATION_MOTOR_STEP, stepFrequency); // start step pulses
-  
+  digitalWrite(MOTOR_DIR, DIR);             // set direction
+  ledcWriteTone(MOTOR_STEP, stepFrequency); // start step pulses
+
   delay(durationMs); // run long enough to cover desired steps
 
-  ledcWriteTone(AGITATION_MOTOR_STEP, 0); // stop step pulses
+  ledcWriteTone(MOTOR_STEP, 0); // stop step pulses
 }
-//angle (degrees) = (arc length / radius) * (180 / π)
-uint16_t distanceToSteps(uint16_t distance) {  //200 steps = 1 revolution
+// angle (degrees) = (arc length / radius) * (180 / π)
+uint16_t distanceToSteps(uint16_t distance)
+{ // 200 steps = 1 revolution
 
   return distance * 200 * 4;
 }
 
+/**
+ * @brief:slowly moves the magnets into the sampletray and transports sample to next well"M742193"
+ * @param   initialSurfaceTime first 3 numbers
+ * @param speed fourth number
+ * @param stopAtSequences fifth number
+ * @param sequencePauseTime sixth number
+ * @retval: none
+ */
+void moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequences, uint8_t sequencePauseTime)
+{
+  homeAgitation();                                     // home the agitation motor and wait
+  moveMotor(MOTOR_Y_STEP, MOTOR_Y_DIR, LOW, speed, 1); // must determine distance from idle Y value to  where the surface is
+  pause(initialSurfaceTime);
+  // fulltraydepth is about 41mm
+  uint8_t segs = 41 / stopAtSequences; // franctions of segment distances
+  // incrementaly lower magnets
+  for (int i = 0; i < stopAtSequences; i++)
+  {
+    moveMotor(MOTOR_Y_STEP, MOTOR_Y_DIR, LOW, speed, segs);
+    delay(1000 * sequencePauseTime)
+  }
+
+  moveMotor(MOTOR_Y_STEP, MOTOR_Y_DIR, HIGH, speed, 4); // back to idle distance
+  delay(100);                                           // delay for smoothness
+  moveMotor(MOTOR_X_STEP, MOTOR_X_DIR, HIGH, speed, 1); // must determine distance between wells and relate to rotations
+}
 
 /**
  * @brief:runs motor in home direction until a limit switch is hit
  * @param none
  * @retval: none
  */
-void autoHome() {
-
-  //run motor in one directin until limit switch is pressed
-  while (1) {
-    limitSwitch.loop();
-    ledcWriteTone(AGITATION_MOTOR_STEP, 500);  // Drive motor
+void autoHome()
+{
+  // run motor Agitaion MOtor
+  while (1)
+  {
+    limitSwitchAgitation.loop();
+    ledcWriteTone(AGITATION_MOTOR_STEP, 500); // Drive motor
     digitalWrite(AGITATION_MOTOR_DIR, HIGH);
-    //determine if it is pressed
-    if (limitSwitch.isPressed()) {
+    // determine if it is pressed
+    if (limitSwitchAgitation.isPressed())
+    {
       Serial.println("The limit switch: UNTOUCHED -> TOUCHED");
     }
-    if (limitSwitch.isReleased()) {
+    if (limitSwitchAgitation.isReleased())
+    {
       Serial.println("The limit switch: TOUCHED -> UNTOUCHED");
     }
 
-    int state = limitSwitch.getState();  //determine the state of the limit switch
-    if (state == HIGH) {
+    int state = limitSwitchAgitation.getState(); // determine the state of the limit switch
+    if (state == HIGH)
+    {
       Serial.println("The limit switch: Untouched");
+    }
+    else
+    {
+      Serial.println("The limit switch: Touched");
+      ledcWriteTone(AGITATION_MOTOR_STEP, 0);
+      break;
+    }
+  }
+  // Home MOtor X
+  while (1)
+  {
+    limitSwitchX.loop();
+    ledcWriteTone(MOTOR_X_STEP, 500); // Drive motor
+    digitalWrite(MOTOR_X_DIR, HIGH);
+    // determine if it is pressed
+    if (limitSwitchX.isPressed())
+    {
+      Serial.println("The limit switch: UNTOUCHED -> TOUCHED");
+    }
+    if (limitSwitchX.isReleased())
+    {
+      Serial.println("The limit switch: TOUCHED -> UNTOUCHED");
+    }
 
-    } else {
+    int state = limitSwitchX.getState(); // determine the state of the limit switch
+    if (state == HIGH)
+    {
+      Serial.println("The limit switch: Untouched");
+    }
+    else
+    {
+      Serial.println("The limit switch: Touched");
+      ledcWriteTone(MOTOR_X_STEP, 0);
+      break;
+    }
+  }
+  // Home MOtor Y
+  while (1)
+  {
+    limitSwitchY.loop();
+    ledcWriteTone(MOTOR_Y_STEP, 500); // Drive motor
+    digitalWrite(MOTOR_Y_DIR, HIGH);
+    // determine if it is pressed
+    if (limitSwitchY.isPressed())
+    {
+      Serial.println("The limit switch: UNTOUCHED -> TOUCHED");
+    }
+    if (limitSwitchY.isReleased())
+    {
+      Serial.println("The limit switch: TOUCHED -> UNTOUCHED");
+    }
+
+    int state = limitSwitchY.getState(); // determine the state of the limit switch
+    if (state == HIGH)
+    {
+      Serial.println("The limit switch: Untouched");
+    }
+    else
+    {
+      Serial.println("The limit switch: Touched");
+      ledcWriteTone(MOTOR_Y_STEP, 0);
+      break;
+    }
+  }
+}
+
+void homeAgitation()
+{
+
+  // run motor Agitaion MOtor
+  while (1)
+  {
+    limitSwitchAgitation.loop();
+    ledcWriteTone(AGITATION_MOTOR_STEP, 500); // Drive motor
+    digitalWrite(AGITATION_MOTOR_DIR, HIGH);
+    // determine if it is pressed
+    if (limitSwitchAgitation.isPressed())
+    {
+      Serial.println("The limit switch: UNTOUCHED -> TOUCHED");
+    }
+    if (limitSwitchAgitation.isReleased())
+    {
+      Serial.println("The limit switch: TOUCHED -> UNTOUCHED");
+    }
+
+    int state = limitSwitchAgitation.getState(); // determine the state of the limit switch
+    if (state == HIGH)
+    {
+      Serial.println("The limit switch: Untouched");
+    }
+    else
+    {
       Serial.println("The limit switch: Touched");
       ledcWriteTone(AGITATION_MOTOR_STEP, 0);
       break;
@@ -251,17 +410,17 @@ void autoHome() {
   }
 }
 
-
-
 /**
  * @brief: Pause the motor for a number of seconds
  * @param pauseDuration: pause duration in seconds
  * @retval: none
  */
-void pauseMotors(uint8_t pauseDuration) {
-  //analogWrite(AGITATION_MOTOR_STEP, 255);  //no pwm signal, use high for debugging
+void pauseMotors(uint8_t pauseDuration)
+{
+  homeAgitation(); // home the agitator
+  // analogWrite(AGITATION_MOTOR_STEP, 255);  //no pwm signal, use high for debugging
   ledcWriteTone(AGITATION_MOTOR_STEP, 0);
-  delay(pauseDuration * 1000);  //convert from seconds to milliseconds for delay function
+  delay(pauseDuration * 1000); // convert from seconds to milliseconds for delay function
 }
 
 /**
@@ -271,49 +430,39 @@ void pauseMotors(uint8_t pauseDuration) {
  * @param percentDepth: percentage of well volume to be displaced
  * @retval: none
  */
-void agitateMotors(uint8_t agitateSpeed, uint8_t agitateDuration, uint8_t totalVolume, uint8_t percentDepth) {
-  //set motor speed
-  int agitationFrequency = mapSpeed(agitateSpeed);  //newmap
-  int depth = mapDepth(totalVolume, percentDepth);  // Number of direction changes per cycle
-  int toggleDelay = 1000 / (depth);                 // milliseconds per half-cycle (back and forth)
+void agitateMotors(uint8_t agitateSpeed, uint8_t agitateDuration, uint8_t totalVolume, uint8_t percentDepth)
+{
+  homeAgitation();
+  // set motor speed
+  int agitationFrequency = mapSpeed(agitateSpeed); // newmap
+  int depth = mapDepth(totalVolume, percentDepth); // Number of direction changes per cycle
+  int toggleDelay = 1000 / (depth);                // milliseconds per half-cycle (back and forth)
 
-  ledcWriteTone(AGITATION_MOTOR_STEP, agitationFrequency);  // Drive motor
+  ledcWriteTone(AGITATION_MOTOR_STEP, agitationFrequency); // Drive motor
 
-  //setup for changing directions
-  bool DIR = HIGH;                       //init direction
-  unsigned long startTime = millis();    //capture a start time
-  pinMode(AGITATION_MOTOR_DIR, OUTPUT);  //ensure pin is set to output
+  // setup for changing directions
+  bool DIR = HIGH;                      // init direction
+  unsigned long startTime = millis();   // capture a start time
+  pinMode(AGITATION_MOTOR_DIR, OUTPUT); // ensure pin is set to output
 
-  while (millis() - startTime < agitateDuration * 1000) {
-    digitalWrite(AGITATION_MOTOR_DIR, DIR);  //set new direction
-    delay(toggleDelay);                      //delay before next iteration
-    DIR = (DIR == HIGH) ? LOW : HIGH;        //change directions after every toggleDelay iteration
+  while (millis() - startTime < (agitateDuration * 1000))
+  {
+    digitalWrite(AGITATION_MOTOR_DIR, DIR); // set new direction
+    delay(toggleDelay);                     // delay before next iteration
+    DIR = (DIR == HIGH) ? LOW : HIGH;       // change directions after every toggleDelay iteration
   }
-  //turn motors off afrer delay is finished
+  // turn motors off afrer delay is finished
   ledcWriteTone(AGITATION_MOTOR_STEP, 0);
 }
 
-//   /**
-//  * @brief: Map agitationSpeed value to a PWM frequency
-//  * @param agitateSpeed: agitation speed on a scale of 1-9
-//  * @retval: frequency of a PWM signal given in Hz
-//  */
-//   int mapAgitationSpeed(uint8_t agitateSpeed) {
-//     if (agitateSpeed == 9) {
-//       return 1000;
-//     } else if (agitateSpeed == 1) {
-//       return 500;
-//     } else {
-//       return 800;
-//     }
-//   }
-
-//num1 and num2 are the integer ranges of speed, num3 and num4 are the frequency ranges
-unsigned int mapSpeed(float value) {
+// num1 and num2 are the integer ranges of speed, num3 and num4 are the frequency ranges
+unsigned int mapSpeed(float value)
+{
   return (value - 1) * (1000 - 400) / (9 - 1) + 400;
 }
-//maping ranges of depths to a fequency for direction channel
-unsigned int mapDepth(float value1, float value2) {
+// maping ranges of depths to a fequency for direction channel
+unsigned int mapDepth(float value1, float value2)
+{
   // Map value1 (1-6) directly to 5-20
   float mapped1 = ((value1 - 1) * (20 - 5) / (6 - 1)) + 5;
 
@@ -324,8 +473,10 @@ unsigned int mapDepth(float value1, float value2) {
   float finalValue = (mapped1 * 0.6) + (mapped2 * 0.4);
 
   // Clamp to 5-20
-  if (finalValue < 5) finalValue = 5;
-  if (finalValue > 20) finalValue = 20;
+  if (finalValue < 5)
+    finalValue = 5;
+  if (finalValue > 20)
+    finalValue = 20;
 
   return (unsigned int)finalValue;
 }
@@ -335,51 +486,55 @@ unsigned int mapDepth(float value1, float value2) {
  * @param char *protocol : pause duration in seconds
  * @retval: none
  */
-Protocol parseProtocol(char *protocol) {
-  Protocol parsed;  //object of protocol struct with the elements of all protocols contained
+Protocol parseProtocol(char *protocol)
+{
+  Protocol parsed; // object of protocol struct with the elements of all protocols contained
   parsed.type = getProtocolType(protocol);
-  //for each type extract its respective information
-  switch (parsed.type) {
-    case AGITATION:
-      parsed.volume = (protocol[1] - '0');                                      // Extract volume
-      parsed.percentVolume = ((protocol[2] - '0') * 10) + (protocol[3] - '0');  // % of volume
-      parsed.speed = (protocol[4] - '0');                                       // Speed
-      parsed.duration = ((protocol[5] - '0') * 10) + (protocol[6] - '0');       // Duration
-      break;
+  // for each type extract its respective information
+  switch (parsed.type)
+  {
+  case AGITATION:
+    parsed.volume = (protocol[1] - '0');                                     // Extract volume
+    parsed.percentVolume = ((protocol[2] - '0') * 10) + (protocol[3] - '0'); // % of volume
+    parsed.speed = (protocol[4] - '0');                                      // Speed
+    parsed.duration = ((protocol[5] - '0') * 10) + (protocol[6] - '0');      // Duration
+    break;
 
-    case PAUSING:
-      parsed.duration = (protocol[1] - '0');  // Only duration for pausing
-      break;
+  case PAUSING:
+    parsed.duration = (protocol[1] - '0'); // Only duration for pausing
+    break;
 
-    case MOVING:
-      parsed.initialSurfaceTime = ((protocol[1] - '0') * 100) + ((protocol[2] - '0') * 10) + (protocol[3] - '0');  // Initial surface time
-      parsed.speed = (protocol[4] - '0');                                                                          // Speed
-      parsed.stopAtSequences = (protocol[5] - '0');                                                                // Stop at sequences
-      parsed.sequencePauseTime = (protocol[6] - '0');                                                              // Sequence pause time
-      break;
+  case MOVING:
+    parsed.initialSurfaceTime = ((protocol[1] - '0') * 100) + ((protocol[2] - '0') * 10) + (protocol[3] - '0'); // Initial surface time
+    parsed.speed = (protocol[4] - '0');                                                                         // Speed
+    parsed.stopAtSequences = (protocol[5] - '0');                                                               // Stop at sequences
+    parsed.sequencePauseTime = (protocol[6] - '0');                                                             // Sequence pause time
+    break;
   }
 
   return parsed;
 }
 
 // Function to determine protocol type
-ProtocolType getProtocolType(char *protocol) {
-  //based on the first character of the protocols you can see what type of protocol it is
-  switch (protocol[0]) {  // Check the first character
-    case 'B':
-      return AGITATION;
-      break;
-    case 'P':
-      return PAUSING;
-      break;
-    case 'M':
-      return MOVING;
-      break;
-    default:
-      Serial.print("Error: Invalid protocol type '");
-      Serial.print(protocol[0]);
-      Serial.println("'");
-      return INVALID;
-      break;
+ProtocolType getProtocolType(char *protocol)
+{
+  // based on the first character of the protocols you can see what type of protocol it is
+  switch (protocol[0])
+  { // Check the first character
+  case 'B':
+    return AGITATION;
+    break;
+  case 'P':
+    return PAUSING;
+    break;
+  case 'M':
+    return MOVING;
+    break;
+  default:
+    Serial.print("Error: Invalid protocol type '");
+    Serial.print(protocol[0]);
+    Serial.println("'");
+    return INVALID;
+    break;
   }
 }
