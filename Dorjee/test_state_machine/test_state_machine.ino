@@ -17,7 +17,7 @@ const int VERTICAL_DIR_PIN = 14;
 typedef enum {
   UP = 0,
   DOWN = 1
-} verticalDirection; //i think is ground is up, vdd is down. need to test it
+} verticalDirection;  //i think is ground is up, vdd is down. need to test it
 
 const int HORIZONTAL_STEP_PIN = 25;
 const int HORIZONTAL_DIR_PIN = 26;
@@ -29,6 +29,13 @@ const int HORIZONTAL_DIR_PIN = 26;
 char tempBuffer[MAX_LINES][MAX_LINE_LENGTH] = { { '\0' } };
 uint8_t i = 0;
 uint8_t j = 0;
+
+typedef enum {
+  waitingState,
+  runState
+} operationState;
+
+operationState currentState = waitingState;
 
 void setup() {
   Serial.begin(115200);
@@ -46,7 +53,7 @@ void setup() {
 
   //horizontal motor
   pinMode(HORIZONTAL_DIR_PIN, OUTPUT);  // Set the pin as an output
-  digitalWrite(HORIZONTAL_DIR_PIN, 1); //its either 1 or 0, we are only going rightwards
+  digitalWrite(HORIZONTAL_DIR_PIN, 1);  //its either 1 or 0, we are only going rightwards
   ledcAttachChannel(HORIZONTAL_STEP_PIN, 1000, 8, 10);
   ledcWrite(HORIZONTAL_STEP_PIN, 0);
 
@@ -69,34 +76,70 @@ void setup() {
   timerStart(timer);
 
   Serial.println("Start Test");
-
-  //Fill in tempBuffer with premade protocol
-  strcpy(tempBuffer[1], "A999");  //mix time, mix speed, mix depth
-  strcpy(tempBuffer[2], "P5");
-  strcpy(tempBuffer[3], "A563");
-
-  //go line by line through tempBuffer and execute the protocol
-  for (int a = 1; a < MAX_LINES; a++) {  //skip first line cuz it is the title
-    //handle pause
-    if (tempBuffer[a][0] == 'P') {
-      Serial.println("Pausing");
-      pauseMotors(tempBuffer[a][1]);
-    }
-    //handle binding
-    if (tempBuffer[a][0] == 'B') {
-      //beingBinding(tempBuffer[1][1], tempBuffer[1][2]);
-    }
-    //handle agitation
-    if (tempBuffer[a][0] == 'A') {
-      Serial.println("Agitating");
-      startAgitating(tempBuffer[a][1], tempBuffer[a][2], tempBuffer[a][3]);
-    }
-  }
-
-  //startAgitating(tempBuffer[1][1], tempBuffer[1][2], tempBuffer[1][3]);
 }
 
 void loop() {
+  //state machine to handle the machine operation
+  switch (currentState) {
+    case waitingState:
+      // fill up tempBuffer with serial data
+      if (Serial.available()) {
+        // Read the incoming byte
+        char incomingByte = Serial.read();
+        tempBuffer[i][j] = incomingByte;
+        //Serial.println(incomingByte);
+        j++;
+        //handle newline
+        if (incomingByte == '\n') {
+          //Serial.println("testing new line");
+          tempBuffer[i][j] = '\0';
+          i++;
+          j = 0;
+        }
+        //handle tab operator
+        if (incomingByte == '\t') {
+          tempBuffer[i][j] = '\0';
+          i = 0;
+          j = 0;
+          currentState = runState;
+          Serial.println(tempBuffer[0]);
+          Serial.println(tempBuffer[1]);
+          Serial.println(tempBuffer[2]);
+          Serial.println(tempBuffer[3]);
+          Serial.println(tempBuffer[4]);
+          Serial.println(tempBuffer[5]);
+          Serial.println(tempBuffer[6]);
+        }
+      }
+      break;
+    case runState:
+      //go line by line through tempBuffer and execute the protocol
+      for (int a = 1; a < MAX_LINES; a++) {  //skip first line cuz it is the title
+        //handle pause
+        if (tempBuffer[a][0] == 'P') {
+          Serial.println("Pausing");
+          pauseMotors(tempBuffer[a][1]);
+        }
+        //handle binding
+        if (tempBuffer[a][0] == 'B') {
+          Serial.println("Binding");
+          beginBinding(tempBuffer[a][1]);
+        }
+        //handle agitation
+        if (tempBuffer[a][0] == 'A') {
+          Serial.println("Agitating");
+          startAgitating(tempBuffer[a][1], tempBuffer[a][2], tempBuffer[a][3]);
+        }
+      }
+      currentState = waitingState;
+      memset(tempBuffer, 0, sizeof(tempBuffer));
+      //shitty solution to the issue of uart data being sent while motors move
+      while(Serial.available()) {
+        Serial.read();
+      }
+      Serial.println("Finished Protocol");
+      break;
+  }
 }
 
 //pause the motor for specified time in milliseconds
@@ -158,22 +201,22 @@ void startAgitating(unsigned long mix_time, uint8_t mix_speed, uint8_t mix_depth
 }
 
 //for now, just move the motor up, to the right, and back down
-void begingBinding(char bindDepth) {
+void beginBinding(char bindDepth) {
   //move vertical motor up
   digitalWrite(VERTICAL_DIR_PIN, UP);
   ledcWrite(VERTICAL_STEP_PIN, 128);
-  delay(2000); //some bullshit idk how long, not doing acceleration either, also speed is not customizable rn
+  delay(2000);  //some bullshit idk how long, not doing acceleration either, also speed is not customizable rn
   ledcWrite(VERTICAL_STEP_PIN, 0);
 
   //move horizontal motor
   ledcWrite(HORIZONTAL_STEP_PIN, 128);
-  delay(2000); //some bullshit idk how long, not doing acceleration either, also speed is not customizable rn
+  delay(2000);  //some bullshit idk how long, not doing acceleration either, also speed is not customizable rn
   ledcWrite(HORIZONTAL_STEP_PIN, 0);
 
   //move vertical otor down
   digitalWrite(VERTICAL_DIR_PIN, DOWN);
   ledcWrite(VERTICAL_STEP_PIN, 128);
-  delay(2000); //some bullshit idk how long, not doing acceleration either, also speed is not customizable rn
+  delay(2000);  //some bullshit idk how long, not doing acceleration either, also speed is not customizable rn
   ledcWrite(VERTICAL_STEP_PIN, 0);
 }
 
