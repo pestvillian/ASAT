@@ -989,7 +989,6 @@ uint8_t storeProtocol(char new_protocol[MAX_LINES][MAX_LINE_LENGTH],
 
 	//check if all sectors are full before storing a protocol
 	uint8_t num_protocols = get_num_protocols_in_sector(sector);
-	printf("num_protocols: %d\n", num_protocols);
 	if (num_protocols == MAX_PROTOCOLS_IN_SECTOR) {
 		return 0;
 	}
@@ -1039,20 +1038,20 @@ uint8_t storeProtocol(char new_protocol[MAX_LINES][MAX_LINE_LENGTH],
 }
 
 //return number of protocols in the sector
+//NOTE: it doesnt actually do that. it checks the top of the sector first
+//if there is no protocol there. it will just assume the rest is empty.
 uint8_t get_num_protocols_in_sector(uint32_t sector) {
 	uint32_t flash_address = get_sector_address(sector);
 
-	uint8_t count = 0;
 	uint8_t i = 0;
 	for (i = 0; i < MAX_PROTOCOLS_IN_SECTOR; i++) {
 		uint8_t first_char = *(uint8_t*) (flash_address + i * PROTOCOL_SIZE);
 		//memory in flash is default 0xFF
-		if (first_char != 0xFF) {
-			count++;
-			//return i;
+		if (first_char == 0xFF) {
+			return i;
 		}
 	}
-	return count;
+	return i;
 }
 
 //check each sector sequentially for any space.
@@ -1138,8 +1137,8 @@ void transmitQueuedProtocols(uint8_t queueSize) {
  */
 void deleteProtocol(uint32_t sector, uint32_t offset) {
 	//initialize variables
-	int i = 0;  //protocol index
-	int j = 0;  //line index
+	uint8_t new_offset = offset + 1; //have it range from 1-3
+	int i = 0; int j = 0; //indices for moving through flash memory
 	char protocolStorage[MAX_PROTOCOLS_IN_SECTOR][MAX_LINES][MAX_LINE_LENGTH] =
 			{ { { '\0' } } };
 	uint32_t flash_address = get_sector_address(sector);
@@ -1149,14 +1148,22 @@ void deleteProtocol(uint32_t sector, uint32_t offset) {
 	memset(nullLine, 0x00, sizeof(nullLine));
 	uint8_t num_protocols = get_num_protocols_in_sector(sector);
 
+	int a=0; int b=0; //separate indices for protocolstorage
+
 	//copy all protocols in sector to local buffer
 	for (i = 0; i < MAX_PROTOCOLS_IN_SECTOR; i++) {
-		for (j = 0; j < MAX_LINES; j++) {
-			//get the address for the current line in the current protocol
-			uint32_t temp_address = flash_address + i * PROTOCOL_SIZE
-					+ j * MAX_LINE_LENGTH;
-			//read lines from memory into buffer until you reach garbage
-			read_from_flash(protocolStorage[i][j], temp_address); //only updates protocolStorage if its a valid line from memory
+		if (i != offset) {
+			//copy all lines of the protocol into the buffer
+			for (j = 0; j < MAX_LINES; j++) {
+				//get the address for the current line in the current protocol
+				uint32_t temp_address = flash_address + i * PROTOCOL_SIZE
+						+ j * MAX_LINE_LENGTH;
+				//read lines from memory into buffer until you reach garbage
+				read_from_flash(protocolStorage[a][b], temp_address); //only updates protocolStorage if its a valid line from memory
+				b++;
+			}
+			a++;
+			b = 0;
 		}
 	}
 
@@ -1169,11 +1176,7 @@ void deleteProtocol(uint32_t sector, uint32_t offset) {
 			//if first character of a line is null from qr scanner or trash from flash, ignore it
 				uint32_t temp_address = flash_address + i * PROTOCOL_SIZE
 						+ j * MAX_LINE_LENGTH;
-				if (i != offset)
-				{
-					//printf("len: %d and data: %s", strlen(protocolStorage[i][j]), protocolStorage[i][j]);
-					write_to_flash(protocolStorage[i][j], temp_address);
-				}
+				write_to_flash(protocolStorage[i][j], temp_address);
 
 		}
 	}
