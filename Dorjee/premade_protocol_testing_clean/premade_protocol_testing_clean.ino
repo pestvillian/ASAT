@@ -149,7 +149,7 @@ void startAgitating(unsigned long mix_time, uint8_t mix_speed, uint8_t mix_depth
     }
     if (timerTicks == agitateHalfPeriod) {
       ledcChangeFrequency(12, 5000, 8);
-      digitalWrite(AGITATION_DIR_PIN), !digitalRead(13));
+      digitalWrite(AGITATION_DIR_PIN, !digitalRead(13));
       timerTicks = 0;
     }
   }
