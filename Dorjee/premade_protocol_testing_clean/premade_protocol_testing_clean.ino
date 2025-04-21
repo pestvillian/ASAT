@@ -11,6 +11,17 @@ void IRAM_ATTR onTimer() {
 const int AGITATION_STEP_PIN = 12;
 const int AGITATION_DIR_PIN = 13;
 
+const int VERTICAL_STEP_PIN = 27;
+const int VERTICAL_DIR_PIN = 14;
+
+typedef enum {
+  UP = 0,
+  DOWN = 1
+} verticalDirection; //i think is ground is up, vdd is down. need to test it
+
+const int HORIZONTAL_STEP_PIN = 25;
+const int HORIZONTAL_DIR_PIN = 26;
+
 #define MAX_LINE_LENGTH 32
 #define MAX_LINES 100
 
@@ -27,6 +38,17 @@ void setup() {
   digitalWrite(AGITATION_DIR_PIN, 0);
   ledcAttachChannel(AGITATION_STEP_PIN, 5000, 8, 8);
   ledcWrite(AGITATION_STEP_PIN, 128);
+
+  //vertical motor
+  pinMode(VERTICAL_DIR_PIN, OUTPUT);  // Set the pin as an output
+  ledcAttachChannel(VERTICAL_STEP_PIN, 1000, 8, 9);
+  ledcWrite(VERTICAL_STEP_PIN, 0);
+
+  //horizontal motor
+  pinMode(HORIZONTAL_DIR_PIN, OUTPUT);  // Set the pin as an output
+  digitalWrite(HORIZONTAL_DIR_PIN, 1); //its either 1 or 0, we are only going rightwards
+  ledcAttachChannel(HORIZONTAL_STEP_PIN, 1000, 8, 10);
+  ledcWrite(HORIZONTAL_STEP_PIN, 0);
 
   // Timer initialisation at a frequency of 1 MHz (1 µs per tick)
   timer = timerBegin(1000000);
@@ -127,12 +149,32 @@ void startAgitating(unsigned long mix_time, uint8_t mix_speed, uint8_t mix_depth
     }
     if (timerTicks == agitateHalfPeriod) {
       ledcChangeFrequency(12, 5000, 8);
-      digitalWrite(13, !digitalRead(13));
+      digitalWrite(AGITATION_DIR_PIN), !digitalRead(13));
       timerTicks = 0;
     }
   }
   //finished agitating, turn the motor off
   ledcWrite(AGITATION_STEP_PIN, 0);
+}
+
+//for now, just move the motor up, to the right, and back down
+void begingBinding(char bindDepth) {
+  //move vertical motor up
+  digitalWrite(VERTICAL_DIR_PIN, UP);
+  ledcWrite(VERTICAL_STEP_PIN, 128);
+  delay(2000); //some bullshit idk how long, not doing acceleration either, also speed is not customizable rn
+  ledcWrite(VERTICAL_STEP_PIN, 0);
+
+  //move horizontal motor
+  ledcWrite(HORIZONTAL_STEP_PIN, 128);
+  delay(2000); //some bullshit idk how long, not doing acceleration either, also speed is not customizable rn
+  ledcWrite(HORIZONTAL_STEP_PIN, 0);
+
+  //move vertical otor down
+  digitalWrite(VERTICAL_DIR_PIN, DOWN);
+  ledcWrite(VERTICAL_STEP_PIN, 128);
+  delay(2000); //some bullshit idk how long, not doing acceleration either, also speed is not customizable rn
+  ledcWrite(VERTICAL_STEP_PIN, 0);
 }
 
 int mapSpeedtoFreq(int input_speed) {
