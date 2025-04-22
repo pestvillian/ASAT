@@ -251,10 +251,10 @@ void moveMotor(int MOTOR_STEP, int MOTOR_DIR, int DIR, uint16_t speed, uint16_t 
   float secondsToRun = (float)steps / stepFrequency; // time = steps / freq
   uint32_t durationMs = (uint32_t)(secondsToRun * 1000);
 
-  digitalWrite(MOTOR_DIR, DIR);             // set direction
-  ledcWriteTone(MOTOR_STEP, stepFrequency); // start step pulses
-  // moveTo(steps);
-  // run();
+  // digitalWrite(MOTOR_DIR, DIR);             // set direction
+  // ledcWriteTone(MOTOR_STEP, stepFrequency); // start step pulses
+  moveTo(steps);
+  run();
   delay(durationMs); // run long enough to cover desired steps
 
   // ledcWriteTone(MOTOR_STEP, 0); // stop step pulses
@@ -328,7 +328,7 @@ void autoHome()
       break;
     }
   }
-  // Home Motor X
+  // Home MOtor X
   while (1)
   {
     limitSwitchX.loop();
