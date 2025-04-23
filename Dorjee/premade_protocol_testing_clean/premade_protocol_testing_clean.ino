@@ -17,7 +17,7 @@ const int VERTICAL_DIR_PIN = 14;
 typedef enum {
   UP = 0,
   DOWN = 1
-} verticalDirection; //i think is ground is up, vdd is down. need to test it
+} verticalDirection;  //i think is ground is up, vdd is down. need to test it
 
 const int HORIZONTAL_STEP_PIN = 25;
 const int HORIZONTAL_DIR_PIN = 26;
@@ -41,13 +41,13 @@ void setup() {
 
   //vertical motor
   pinMode(VERTICAL_DIR_PIN, OUTPUT);  // Set the pin as an output
-  ledcAttachChannel(VERTICAL_STEP_PIN, 1000, 8, 9);
+  ledcAttachChannel(VERTICAL_STEP_PIN, 100, 8, 9);
   ledcWrite(VERTICAL_STEP_PIN, 0);
 
   //horizontal motor
   pinMode(HORIZONTAL_DIR_PIN, OUTPUT);  // Set the pin as an output
-  digitalWrite(HORIZONTAL_DIR_PIN, 1); //its either 1 or 0, we are only going rightwards
-  ledcAttachChannel(HORIZONTAL_STEP_PIN, 1000, 8, 10);
+  digitalWrite(HORIZONTAL_DIR_PIN, 1);  //its either 1 or 0, we are only going rightwards
+  ledcAttachChannel(HORIZONTAL_STEP_PIN, 100, 8, 10);
   ledcWrite(HORIZONTAL_STEP_PIN, 0);
 
   // Timer initialisation at a frequency of 1 MHz (1 µs per tick)
@@ -71,9 +71,11 @@ void setup() {
   Serial.println("Start Test");
 
   //Fill in tempBuffer with premade protocol
-  strcpy(tempBuffer[1], "A999");  //mix time, mix speed, mix depth
-  strcpy(tempBuffer[2], "P5");
-  strcpy(tempBuffer[3], "A563");
+  //strcpy(tempBuffer[1], "A999");  //mix time, mix speed, mix depth
+  //strcpy(tempBuffer[2], "P5");
+  //strcpy(tempBuffer[3], "A563");
+  strcpy(tempBuffer[4], "B5");
+
 
   //go line by line through tempBuffer and execute the protocol
   for (int a = 1; a < MAX_LINES; a++) {  //skip first line cuz it is the title
@@ -84,7 +86,7 @@ void setup() {
     }
     //handle binding
     if (tempBuffer[a][0] == 'B') {
-      //beingBinding(tempBuffer[1][1], tempBuffer[1][2]);
+      beginBinding(tempBuffer[1][1]);
     }
     //handle agitation
     if (tempBuffer[a][0] == 'A') {
@@ -157,23 +159,86 @@ void startAgitating(unsigned long mix_time, uint8_t mix_speed, uint8_t mix_depth
   ledcWrite(AGITATION_STEP_PIN, 0);
 }
 
+// //for now, just move the motor up, to the right, and back down
+// void begingBinding(char bindDepth) {
+//   //move vertical motor up
+//   digitalWrite(VERTICAL_DIR_PIN, UP);
+//   ledcChangeFrequency(VERTICAL_STEP_PIN, 100, 9);
+//   ledcWrite(VERTICAL_STEP_PIN, 128);
+//   delay(10);
+//   ledcChangeFrequency(VERTICAL_STEP_PIN, 300, 9);
+//   delay(10);
+//   ledcChangeFrequency(VERTICAL_STEP_PIN, 500, 9);
+//   delay(10);
+//   ledcChangeFrequency(VERTICAL_STEP_PIN, 700, 9);
+//   delay(2000);  //some bullshit idk how long, not doing acceleration either, also speed is not customizable rn
+//   ledcWrite(VERTICAL_STEP_PIN, 0);
+
+//   //move horizontal motor
+//   ledcChangeFrequency(HORIZONTAL_STEP_PIN, 100, 10);
+//   ledcWrite(HORIZONTAL_STEP_PIN, 128);
+//   delay(10);
+//   ledcChangeFrequency(HORIZONTAL_STEP_PIN, 300, 10);
+//   delay(10);
+//   ledcChangeFrequency(HORIZONTAL_STEP_PIN, 500, 10);
+//   delay(10);
+//   ledcChangeFrequency(HORIZONTAL_STEP_PIN, 700, 10);
+//   delay(2000);  //some bullshit idk how long, not doing acceleration either, also speed is not customizable rn
+//   ledcWrite(HORIZONTAL_STEP_PIN, 0);
+
+//   //move vertical otor down
+//   digitalWrite(VERTICAL_DIR_PIN, DOWN);
+//   ledcChangeFrequency(VERTICAL_STEP_PIN, 100, 9);
+//   ledcWrite(VERTICAL_STEP_PIN, 128);
+//   delay(10);
+//   ledcChangeFrequency(VERTICAL_STEP_PIN, 300, 9);
+//   delay(10);
+//   ledcChangeFrequency(VERTICAL_STEP_PIN, 500, 9);
+//   delay(10);
+//   ledcChangeFrequency(VERTICAL_STEP_PIN, 700, 9);
+//   delay(2000);  //some bullshit idk how long, not doing acceleration either, also speed is not customizable rn
+//   ledcWrite(VERTICAL_STEP_PIN, 0);
+// }
+
 //for now, just move the motor up, to the right, and back down
-void begingBinding(char bindDepth) {
+void beginBinding(char bindDepth) {
   //move vertical motor up
-  digitalWrite(VERTICAL_DIR_PIN, UP);
+  digitalWrite(VERTICAL_DIR_PIN, 0);  //is this up or down?
+  ledcChangeFrequency(VERTICAL_STEP_PIN, 100, 9);
   ledcWrite(VERTICAL_STEP_PIN, 128);
-  delay(2000); //some bullshit idk how long, not doing acceleration either, also speed is not customizable rn
+  delay(10);
+  ledcChangeFrequency(VERTICAL_STEP_PIN, 300, 9);
+  delay(10);
+  ledcChangeFrequency(VERTICAL_STEP_PIN, 500, 9);
+  delay(10);
+  ledcChangeFrequency(VERTICAL_STEP_PIN, 700, 9);
+  delay(1000);
   ledcWrite(VERTICAL_STEP_PIN, 0);
 
-  //move horizontal motor
+
+  //move horizontal motor right
+  ledcChangeFrequency(HORIZONTAL_STEP_PIN, 100, 10);
   ledcWrite(HORIZONTAL_STEP_PIN, 128);
-  delay(2000); //some bullshit idk how long, not doing acceleration either, also speed is not customizable rn
+  delay(10);
+  ledcChangeFrequency(HORIZONTAL_STEP_PIN, 300, 10);
+  delay(10);
+  ledcChangeFrequency(HORIZONTAL_STEP_PIN, 500, 10);
+  delay(10);
+  ledcChangeFrequency(HORIZONTAL_STEP_PIN, 700, 10);
+  delay(500);
   ledcWrite(HORIZONTAL_STEP_PIN, 0);
 
-  //move vertical otor down
-  digitalWrite(VERTICAL_DIR_PIN, DOWN);
+  //move vertical motor down
+  digitalWrite(VERTICAL_DIR_PIN, 1);  //is this up or down?
+  ledcChangeFrequency(VERTICAL_STEP_PIN, 100, 9);
   ledcWrite(VERTICAL_STEP_PIN, 128);
-  delay(2000); //some bullshit idk how long, not doing acceleration either, also speed is not customizable rn
+  delay(10);
+  ledcChangeFrequency(VERTICAL_STEP_PIN, 300, 9);
+  delay(10);
+  ledcChangeFrequency(VERTICAL_STEP_PIN, 500, 9);
+  delay(10);
+  ledcChangeFrequency(VERTICAL_STEP_PIN, 700, 9);
+  delay(1000);
   ledcWrite(VERTICAL_STEP_PIN, 0);
 }
 

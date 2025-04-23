@@ -177,23 +177,28 @@ void startAgitating(unsigned long mix_time, uint8_t mix_speed, uint8_t mix_depth
 
   //stay in this agitation loop until the total agitation time is finished
   while ((millis() - curTime) < mix_time_ms) {
-    if (timerTicks == 10) {
-      ledcChangeFrequency(12, 5000 + (500 * int_mix_speed / 3), 8);
+    // if (timerTicks == 10) {
+    //   ledcChangeFrequency(12, 5000 + (500 * int_mix_speed / 3), 8);
+    // }
+    // if (timerTicks == 20) {
+    //   ledcChangeFrequency(12, 5000 + (500 * int_mix_speed * 2 / 3), 8);
+    // }
+    // if (timerTicks == 30) {
+    //   ledcChangeFrequency(12, 5000 + (500 * int_mix_speed), 8);
+    // }
+    // if (timerTicks == agitateHalfPeriod - 20) {
+    //   ledcChangeFrequency(12, 5000 + (500 * int_mix_speed * 2 / 3), 8);
+    // }
+    // if (timerTicks == agitateHalfPeriod - 10) {
+    //   ledcChangeFrequency(12, 5000 + (500 * int_mix_speed / 3), 8);
+    // }
+        if ((timerTicks == 5) && (!digitalRead(13))) {
+      ledcChangeFrequency(12, agitateStepFrequency, 8);
+      digitalWrite(AGITATION_DIR_PIN, !digitalRead(13));
+      timerTicks = 0;
     }
-    if (timerTicks == 20) {
-      ledcChangeFrequency(12, 5000 + (500 * int_mix_speed * 2 / 3), 8);
-    }
-    if (timerTicks == 30) {
-      ledcChangeFrequency(12, 5000 + (500 * int_mix_speed), 8);
-    }
-    if (timerTicks == agitateHalfPeriod - 20) {
-      ledcChangeFrequency(12, 5000 + (500 * int_mix_speed * 2 / 3), 8);
-    }
-    if (timerTicks == agitateHalfPeriod - 10) {
-      ledcChangeFrequency(12, 5000 + (500 * int_mix_speed / 3), 8);
-    }
-    if (timerTicks == agitateHalfPeriod) {
-      ledcChangeFrequency(12, 5000, 8);
+    if ((timerTicks == 8) && (digitalRead(13))) {
+      ledcChangeFrequency(12, agitateStepFrequency, 8);
       digitalWrite(AGITATION_DIR_PIN, !digitalRead(13));
       timerTicks = 0;
     }
@@ -245,7 +250,7 @@ void beginBinding(char bindDepth) {
 }
 
 int mapSpeedtoFreq(int input_speed) {
-  int output_frequency = 5500 + (input_speed * 500);  //input speed of 9 maxes out at 10khz
+  int output_frequency = 820 + (input_speed * 20);  //input speed of 9 maxes out at 10khz
   return output_frequency;
 }
 
