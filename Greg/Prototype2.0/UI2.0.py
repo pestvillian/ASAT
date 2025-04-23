@@ -1,7 +1,9 @@
 import qrcode
 import tkinter as tk
+import pickle
 from tkinter import ttk, messagebox, filedialog, Canvas, Frame
 import os
+import copy
 import time
 
 SETTINGS_FILE = "settings.txt"
@@ -84,10 +86,6 @@ def load_save_path():
                 return path
     return None
 
-#saving directory
-SAVE_DIR = load_save_path() or select_save_folder()
-if SAVE_DIR:
-    os.makedirs(SAVE_DIR, exist_ok=True)
 
 #selecting the save folder
 def select_save_folder():
@@ -98,6 +96,7 @@ def select_save_folder():
         save_path_label.config(text=f"Save Folder: {folder_selected}")
         return folder_selected
     return None
+
 #change the save folder funciton
 def change_save_folder():
     global SAVE_DIR
@@ -106,7 +105,10 @@ def change_save_folder():
         SAVE_DIR = new_folder
         
         
-        
+#saving directory
+SAVE_DIR = load_save_path() or select_save_folder()
+if SAVE_DIR:
+    os.makedirs(SAVE_DIR, exist_ok=True)
 
 protocols = []
 
@@ -168,10 +170,7 @@ def create_parameter_fields(step_type, entries_frame, entries):
         
         
 
-def delete_step(well_name, step_frame, step_index):
-    undo_stack.append(('step', well_name, wells_data[well_name]['steps'][step_index]))
-    step_frame.destroy()
-    wells_data[well_name]['steps'].pop(step_index)
+
 
 def add_step(well_name, steps_frame):
     step_type = tk.StringVar(value="Agitation")
@@ -194,16 +193,35 @@ def add_step(well_name, steps_frame):
 
     step_menu.bind("<<ComboboxSelected>>", lambda e: create_parameter_fields(step_type.get(), entries_frame, entries))
 
-    delete_step_button = ttk.Button(step_frame, text="🗑️ Delete", command=lambda: delete_step(well_name, step_frame, step_index))
+    delete_step_button = ttk.Button(
+        step_frame,
+        text="🗑️ Delete",
+        command=lambda sf=step_frame: delete_step(well_name, sf)
+    )
+    
     delete_step_button.pack(side="right", padx=5)
 
     wells_data[well_name]["steps"].append((step_type, entries))
-
+    
+#delete wells
 def delete_well(well_name, well_frame):
     undo_stack.append(('well', well_name, copy.deepcopy(wells_data[well_name])))
     del wells_data[well_name]
     well_frame.destroy()
+    
+#delete steps  
+def delete_step(well_name, step_frame):
+    try:
+        step_index = next(i for i, (stype, _) in enumerate(wells_data[well_name]['steps'])
+                          if step_frame.winfo_exists() and step_frame in step_frame.master.winfo_children())
+    except StopIteration:
+        messagebox.showerror("Error", "Could not find the step to delete.")
+        return
 
+    undo_stack.append(('step', well_name, wells_data[well_name]['steps'][step_index]))
+    wells_data[well_name]['steps'].pop(step_index)
+    step_frame.destroy()
+    
 
 def add_well():
     if len(wells_data) >= 12:
@@ -245,7 +263,7 @@ def generate_protocol_files():
                     entries["speed"].get(),
                     entries["duration"].get()
                 ]
-                protocol_string = f"B{''.join(values)}"
+                protocol_string = f"A{''.join(values)}"
             elif step_type.get() == "Pausing":
                 protocol_string = f"P{entries['pause_time'].get()}"
             elif step_type.get() == "Moving":
@@ -255,7 +273,7 @@ def generate_protocol_files():
                     entries["sequences"].get(),
                     entries["sequence_pause_time"].get()
                 ]
-                protocol_string = f"M{''.join(values)}"
+                protocol_string = f"B{''.join(values)}"
             else:
                 continue  # Skip unknown types
 
