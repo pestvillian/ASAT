@@ -20,8 +20,8 @@ const int AGITATION_MOTOR_DIR = 22;
 const int MOTOR_X_STEP = 20;
 const int MOTOR_X_DIR = 21;
 
-const int MOTOR_Y_STEP = 12; //18
-const int MOTOR_Y_DIR = 14; // 19
+const int MOTOR_Y_STEP = 19; //19
+const int MOTOR_Y_DIR = 18; // 18
 
 const int AGITATION_MOTOR_STEP_CHANNEL = 11;
 const int AGITATION_MOTOR_DIR_CHANNEL = 12;
@@ -223,7 +223,8 @@ void setup()
   // }
   // /*Limit Switch Test Case*/
 
-  moveMotor(MOTOR_Y_STEP,MOTOR_Y_DIR,HIGH,2,1);
+  moveMotor(MOTOR_Y_STEP,MOTOR_Y_DIR,HIGH,9,60);
+  
 
 
 }
@@ -257,7 +258,7 @@ void moveMotor(int MOTOR_STEP, int MOTOR_DIR, int DIR, uint16_t speed, uint16_t 
   // run();
   delay(durationMs); // run long enough to cover desired steps
 
-  // ledcWriteTone(MOTOR_STEP, 0); // stop step pulses
+   ledcWriteTone(MOTOR_STEP, 0); // stop step pulses
 }
 // angle (degrees) = (arc length / radius) * (180 / π)
 uint16_t distanceToSteps(uint16_t distance)

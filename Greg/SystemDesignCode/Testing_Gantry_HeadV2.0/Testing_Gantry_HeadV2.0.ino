@@ -39,12 +39,12 @@ int size = sizeof(protocolInstructions) / sizeof(protocolInstructions[0]);  // G
 
 
 // Motor pins
-const int MOTOR_Y_STEP = 19;//19
-const int MOTOR_Y_DIR = 18; //18
-const int MOTOR_X_STEP = 20; //20
-const int MOTOR_X_DIR = 21;//21
-const int AGITATION_MOTOR_STEP = 23;
-const int AGITATION_MOTOR_DIR = 22;
+const int MOTOR_Y_STEP = 19;          //19
+const int MOTOR_Y_DIR = 18;           //18
+const int MOTOR_X_STEP = 21;          //21
+const int MOTOR_X_DIR = 20;           //20
+const int AGITATION_MOTOR_STEP = 23;  // 23
+const int AGITATION_MOTOR_DIR = 22;   //22
 
 // Limit switch pins
 const int LIMIT_Y_PIN = 2;
@@ -56,7 +56,7 @@ AccelStepper MOTORY(AccelStepper::DRIVER, MOTOR_Y_STEP, MOTOR_Y_DIR);
 AccelStepper MOTORX(AccelStepper::DRIVER, MOTOR_X_STEP, MOTOR_X_DIR);
 AccelStepper MOTOR_A(AccelStepper::DRIVER, AGITATION_MOTOR_STEP, AGITATION_MOTOR_DIR);
 
-const int stepsPerRevolution = 200;
+const int stepsPerRevolution = 800;
 
 // ezButton objects
 ezButton limitSwitchY(LIMIT_Y_PIN);
@@ -68,16 +68,60 @@ void setup() {
   limitSwitchAgitation.setDebounceTime(50);  // set debounce time of limit switch to 50 milliseconds
   limitSwitchX.setDebounceTime(50);
   limitSwitchY.setDebounceTime(50);
+  //max frequency
+  MOTOR_A.setMaxSpeed(7000);
+  //horizontal debugging
+  //testPCB();
+  //agitation debugging
 
-  moveMotor(MOTORY, 600, -1);
-  delay(500);
-  moveMotor(MOTORX, 600, 1);
+  // MOTOR_A.setSpeed(8000);
+  // MOTOR_A.setAcceleration(9000);                  // Fixed acceleration
+  // MOTOR_A.move(1000 * stepsPerRevolution);  // Relative move
+  // delay(50);//time to be configured
+
+  // while (MOTOR_A.distanceToGo() != 0) {
+  //   MOTOR_A.run();
+  // }
+  // while(1){
+    
+  //   moveMotor(MOTORX, 600, 9);
+  //   delay(500);
+  //   moveMotor(MOTORY, 600, 9);
+  //   delay(500);
+  // }
+  testPCB();
+    //moveMotor(MOTOR_A, 11000, 9);
+  //agitate(30);
+  
 }
 
+void agitate(uint8_t agitateDuration) {
+  unsigned long startTime = millis();  // capture a start time
+  //current time - start time = timeagitating. if it goes greater than the desired duration, stop
+  while ((millis() - startTime) < (agitateDuration * 1000)) {
+    moveMotor(MOTOR_A, 7000, 1);
+    moveMotor(MOTOR_A, 7000, -1);
+  }
+}
 
-void moveMotor(AccelStepper &motor, float speed, float rotations) {
-  motor.setMaxSpeed(speed);
-  motor.setAcceleration(900);                  // Fixed acceleration
+void testPCB(void) {
+  while (1) {
+    moveMotor(MOTORY, 700, -1);  // negative goes up
+    delay(500);
+    moveMotor(MOTORX, 500, 1);  // posotive goes to the right
+    delay(500);
+    moveMotor(MOTORX, 500, -1);  // posotive goes to the right
+    delay(500);
+    moveMotor(MOTORY, 700, 1);  // negative goes up
+    delay(500);
+   
+  }
+}
+
+void moveMotor(AccelStepper motor, float speed, float rotations) {
+
+  motor.setSpeed(speed);
+  motor.setAcceleration(10000);                 // Fixed acceleration
   motor.move(rotations * stepsPerRevolution);  // Relative move
 
   while (motor.distanceToGo() != 0) {
@@ -94,29 +138,27 @@ void moveMotor(AccelStepper &motor, float speed, float rotations) {
  * @param percentDepth: percentage of well volume to be displaced
  * @retval: none
  */
-void agitateMotors(uint8_t agitateSpeed, uint8_t agitateDuration, uint8_t totalVolume, uint8_t percentDepth)
-{
+void agitateMotors(uint8_t agitateSpeed, uint8_t agitateDuration, uint8_t totalVolume, uint8_t percentDepth) {
   homeAgitation();
   // set motor speed
-  int agitationFrequency = mapSpeed(agitateSpeed); // newmap
-  int depth = mapDepth(totalVolume, percentDepth); // Number of direction changes per cycle
-  int toggleDelay = 1000 / (depth);                // milliseconds per half-cycle (back and forth)
+  int agitationFrequency = mapSpeed(agitateSpeed);  // newmap
+  int depth = mapDepth(totalVolume, percentDepth);  // Number of direction changes per cycle
+  int toggleDelay = 1000 / (depth);                 // milliseconds per half-cycle (back and forth)
 
   //ledcWriteTone(AGITATION_MOTOR_STEP, agitationFrequency); // Drive motor - this is the old way
   MOTOR_A.setMaxSpeed(agitationFrequency);
-  MOTOR_A.setAcceleration(900);                  // Fixed acceleration
-  MOTOR_A.move(depth);  // Relative move
+  MOTOR_A.setAcceleration(900);  // Fixed acceleration
+  MOTOR_A.move(depth);           // Relative move
 
   // setup for changing directions
-  bool DIR = HIGH;                      // init direction
-  unsigned long startTime = millis();   // capture a start time
-  pinMode(AGITATION_MOTOR_DIR, OUTPUT); // ensure pin is set to output
+  bool DIR = HIGH;                       // init direction
+  unsigned long startTime = millis();    // capture a start time
+  pinMode(AGITATION_MOTOR_DIR, OUTPUT);  // ensure pin is set to output
 
-  while (millis() - startTime < (agitateDuration * 1000))
-  {
-    digitalWrite(AGITATION_MOTOR_DIR, DIR); // set new direction
-    delay(toggleDelay);                     // delay before next iteration
-    DIR = (DIR == HIGH) ? LOW : HIGH;       // change directions after every toggleDelay iteration
+  while (millis() - startTime < (agitateDuration * 1000)) {
+    digitalWrite(AGITATION_MOTOR_DIR, DIR);  // set new direction
+    delay(toggleDelay);                      // delay before next iteration
+    DIR = (DIR == HIGH) ? LOW : HIGH;        // change directions after every toggleDelay iteration
   }
   // turn motors off afrer delay is finished
   ledcWriteTone(AGITATION_MOTOR_STEP, 0);
@@ -124,13 +166,11 @@ void agitateMotors(uint8_t agitateSpeed, uint8_t agitateDuration, uint8_t totalV
 
 
 // num1 and num2 are the integer ranges of speed, num3 and num4 are the frequency ranges
-unsigned int mapSpeed(float value)
-{
+unsigned int mapSpeed(float value) {
   return (value - 1) * (1000 - 400) / (9 - 1) + 400;
 }
 // maping ranges of depths to a fequency for direction channel
-unsigned int mapDepth(float value1, float value2)
-{
+unsigned int mapDepth(float value1, float value2) {
   // Map value1 (1-6) directly to 5-20
   float mapped1 = ((value1 - 1) * (20 - 5) / (6 - 1)) + 5;
 
@@ -157,10 +197,10 @@ unsigned int mapDepth(float value1, float value2)
  * @param pauseDuration: pause duration in seconds
  * @retval: none
  */
-void pauseMotors(uint8_t pauseDuration){
+void pauseMotors(uint8_t pauseDuration) {
   //call the agitation homing function then wait for the desired amount of time
-  homeAgitation(); // home the agitator
-  delay(pauseDuration * 1000); // convert from seconds to milliseconds for delay function
+  homeAgitation();              // home the agitator
+  delay(pauseDuration * 1000);  // convert from seconds to milliseconds for delay function
 }
 
 
@@ -240,8 +280,8 @@ void autoHome() {
   }
 }
 
-void homeAgitation(){
-    // Home Agitation Motor
+void homeAgitation() {
+  // Home Agitation Motor
   MOTOR_A.setMaxSpeed(200);
   MOTOR_A.setAcceleration(900);
 
