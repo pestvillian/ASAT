@@ -21,12 +21,13 @@ typedef enum {
   DOWN = 1
 } verticalDirection;  //i think is ground is up, vdd is down. need to test it
 
-
 const int HORIZONTAL_STEP_PIN = 25;
 const int HORIZONTAL_DIR_PIN = 26;
 
 #define MAX_LINE_LENGTH 32
 #define MAX_LINES 100
+
+#define MAX_TIME 200
 
 // Initialize the tempBuffer with nulls ('\0')
 char tempBuffer[MAX_LINES][MAX_LINE_LENGTH] = { { '\0' } };
@@ -72,8 +73,8 @@ void setup() {
   // Attaches the interrupt function to the timer
   timerAttachInterrupt(timer, &onTimer);
 
-  // Configure an alarm to trigger the interrupt every 10 ms (100000 µs)
-  timerAlarm(timer, 10000, true, 0);  // 1000000 µs = 10ms = 0.01s
+  // Configure an alarm to trigger the interrupt every 1 ms (1000 µs)
+  timerAlarm(timer, 500, true, 0);  // 1000 µs = 1ms
 
   // Start of the timer
   timerStart(timer);
@@ -173,39 +174,77 @@ void startAgitating(unsigned long mix_time, uint8_t mix_speed, uint8_t mix_depth
 
   //get start time and start the motor up
   uint32_t curTime = millis();
-  ledcChangeFrequency(AGITATION_STEP_PIN, 200, 8);
+  ledcChangeFrequency(AGITATION_STEP_PIN, 1000, 8);
   ledcWrite(AGITATION_STEP_PIN, 128);
 
   //stay in this agitation loop until the total agitation time is finished
   while ((millis() - curTime) < mix_time_ms) {
     if (timerTicks == 1) {
-      ledcChangeFrequency(12, 200, 8);
+      ledcChangeFrequency(12, 2000, 8);
     }
     if (timerTicks == 2) {
+      ledcChangeFrequency(12, 3000, 8);
+    }
+    if (timerTicks == 3) {
+      ledcChangeFrequency(12, 4000, 8);
+    }
+    if (timerTicks == 4) {
+      ledcChangeFrequency(12, 5000, 8);
+    }
+    if (timerTicks == 5) {
+      ledcChangeFrequency(12, 6000, 8);
+    }
+    if (timerTicks == 6) {
+      ledcChangeFrequency(12, 7000, 8);
+    }
+    if (timerTicks == 7) {
+      ledcChangeFrequency(12, 8000, 8);
+    }
+    if (timerTicks == 8) {
+      ledcChangeFrequency(12, 9000, 8);
+    }
+    if (timerTicks == 9) {
+      ledcChangeFrequency(12, 10000, 8);
+    }
+    if (timerTicks == MAX_TIME - 10) {
+      ledcChangeFrequency(12, 9000, 8);
+    }
+    if (timerTicks == MAX_TIME - 9) {
+      ledcChangeFrequency(12, 8000, 8);
+    }
+    if (timerTicks == MAX_TIME - 8) {
+      ledcChangeFrequency(12, 7000, 8);
+    }
+    if (timerTicks == MAX_TIME - 7) {
+      ledcChangeFrequency(12, 6000, 8);
+    }
+    if (timerTicks == MAX_TIME - 6) {
+      ledcChangeFrequency(12, 5000, 8);
+    }
+    if (timerTicks == MAX_TIME - 5) {
+      ledcChangeFrequency(12, 4000, 8);
+    }
+    if (timerTicks == MAX_TIME - 4) {
+      ledcChangeFrequency(12, 3000, 8);
+    }
+    if (timerTicks == MAX_TIME - 3) {
+      ledcChangeFrequency(12, 2000, 8);
+    }
+    if (timerTicks == MAX_TIME - 1) {
       ledcChangeFrequency(12, 1000, 8);
     }
-    // if (timerTicks == 3) {
-    //   ledcChangeFrequency(12, 2000, 8);
+    // if ((timerTicks == 15) && (!digitalRead(13))) {
+    //   ledcChangeFrequency(12, agitateStepFrequency, 8);
+    //   digitalWrite(AGITATION_DIR_PIN, !digitalRead(13));
+    //   timerTicks = 0;
     // }
-    // if (timerTicks == 4) {
-    //   ledcChangeFrequency(12, 3000, 8);
+    // if ((timerTicks == 15) && (digitalRead(13))) {
+    //   ledcChangeFrequency(12, agitateStepFrequency, 8);
+    //   digitalWrite(AGITATION_DIR_PIN, !digitalRead(13));
+    //   timerTicks = 0;
     // }
-    // if (timerTicks == 15 - 3) {
-    //   ledcChangeFrequency(12, 2000, 8);
-    // }
-    // if (timerTicks == 15 - 2) {
-    //   ledcChangeFrequency(12, 1000, 8);
-    // }
-    if (timerTicks == 15 - 1) {
-      ledcChangeFrequency(12, 200, 8);
-    }
-    if ((timerTicks == 15) && (!digitalRead(13))) {
-      ledcChangeFrequency(12, agitateStepFrequency, 8);
-      digitalWrite(AGITATION_DIR_PIN, !digitalRead(13));
-      timerTicks = 0;
-    }
-    if ((timerTicks == 15) && (digitalRead(13))) {
-      ledcChangeFrequency(12, agitateStepFrequency, 8);
+    if ((timerTicks == MAX_TIME)) {
+      ledcChangeFrequency(12, 1000, 8);
       digitalWrite(AGITATION_DIR_PIN, !digitalRead(13));
       timerTicks = 0;
     }
