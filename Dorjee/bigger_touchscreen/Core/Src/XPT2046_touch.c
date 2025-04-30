@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <XPT2046_touch.h>
 
+#define NUMBER_OF_SAMPLES 8 //dorjee added this
+
 #if (ORIENTATION == 0)
 #define READ_X 0xD0
 #define READ_Y 0x90
@@ -104,7 +106,7 @@ bool XPT2046_TouchGetCoordinates(uint16_t* x, uint16_t* y)
     uint32_t avg_y = 0;
     uint8_t nsamples = 0;
 
-    for(uint8_t i = 0; i < 16; i++)
+    for(uint8_t i = 0; i < NUMBER_OF_SAMPLES; i++)
     {
         if(!XPT2046_TouchPressed())
             break;
@@ -142,14 +144,14 @@ bool XPT2046_TouchGetCoordinates(uint16_t* x, uint16_t* y)
 
     XPT2046_TouchUnselect();
 
-    if(nsamples < 16)
+    if(nsamples < NUMBER_OF_SAMPLES)
         return false;
 
-    uint32_t raw_x = (avg_x / 16);
+    uint32_t raw_x = (avg_x / NUMBER_OF_SAMPLES);
     if(raw_x < XPT2046_MIN_RAW_X) raw_x = XPT2046_MIN_RAW_X;
     if(raw_x > XPT2046_MAX_RAW_X) raw_x = XPT2046_MAX_RAW_X;
 
-    uint32_t raw_y = (avg_y / 16);
+    uint32_t raw_y = (avg_y / NUMBER_OF_SAMPLES);
     if(raw_y < XPT2046_MIN_RAW_Y) raw_y = XPT2046_MIN_RAW_Y;
     if(raw_y > XPT2046_MAX_RAW_Y) raw_y = XPT2046_MAX_RAW_Y;
 

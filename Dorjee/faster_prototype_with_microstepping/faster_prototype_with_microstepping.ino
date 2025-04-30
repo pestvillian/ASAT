@@ -27,7 +27,7 @@ const int HORIZONTAL_DIR_PIN = 26;
 #define MAX_LINE_LENGTH 32
 #define MAX_LINES 100
 
-#define MAX_TIME 200
+#define MAX_TIME 1000
 
 // Initialize the tempBuffer with nulls ('\0')
 char tempBuffer[MAX_LINES][MAX_LINE_LENGTH] = { { '\0' } };
@@ -46,7 +46,7 @@ void setup() {
 
   //agitation motor
   pinMode(AGITATION_DIR_PIN, OUTPUT);  //vertical motor dir pin is a digital gpio
-  digitalWrite(AGITATION_DIR_PIN, 0);
+  digitalWrite(AGITATION_DIR_PIN, 1);
   ledcAttachChannel(AGITATION_STEP_PIN, 100, 8, 8);
   ledcWrite(AGITATION_STEP_PIN, 0);
 
@@ -74,7 +74,7 @@ void setup() {
   timerAttachInterrupt(timer, &onTimer);
 
   // Configure an alarm to trigger the interrupt every 1 ms (1000 µs)
-  timerAlarm(timer, 500, true, 0);  // 1000 µs = 1ms
+  timerAlarm(timer, 150, true, 0);  // 1000 µs = 1ms
 
   // Start of the timer
   timerStart(timer);
@@ -180,58 +180,82 @@ void startAgitating(unsigned long mix_time, uint8_t mix_speed, uint8_t mix_depth
   //stay in this agitation loop until the total agitation time is finished
   while ((millis() - curTime) < mix_time_ms) {
     if (timerTicks == 1) {
-      ledcChangeFrequency(12, 2000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 2000, 8);
     }
     if (timerTicks == 2) {
-      ledcChangeFrequency(12, 3000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 3000, 8);
     }
     if (timerTicks == 3) {
-      ledcChangeFrequency(12, 4000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 4000, 8);
     }
     if (timerTicks == 4) {
-      ledcChangeFrequency(12, 5000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 5000, 8);
     }
     if (timerTicks == 5) {
-      ledcChangeFrequency(12, 6000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 6000, 8);
     }
     if (timerTicks == 6) {
-      ledcChangeFrequency(12, 7000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 7000, 8);
     }
     if (timerTicks == 7) {
-      ledcChangeFrequency(12, 8000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 8000, 8);
     }
     if (timerTicks == 8) {
-      ledcChangeFrequency(12, 9000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 9000, 8);
     }
     if (timerTicks == 9) {
-      ledcChangeFrequency(12, 10000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 10000, 8);
+    }
+    if (timerTicks == 10) {
+      ledcChangeFrequency(AGITATION_STEP_PIN, 11000, 8);
+    }
+    // if (timerTicks == 11) {
+    //   ledcChangeFrequency(12, 12000, 8);
+    // }
+    // if (timerTicks == 12) {
+    //   ledcChangeFrequency(12, 13000, 8);
+    // }
+    // if (timerTicks == 13) {
+    //   ledcChangeFrequency(12, 14000, 8);
+    // }
+    // if (timerTicks == MAX_TIME - 14) {
+    //   ledcChangeFrequency(12, 13000, 8);
+    // }
+    // if (timerTicks == MAX_TIME - 13) {
+    //   ledcChangeFrequency(12, 12000, 8);
+    // }
+    // if (timerTicks == MAX_TIME - 12) {
+    //   ledcChangeFrequency(12, 11000, 8);
+    // }
+    if (timerTicks == MAX_TIME - 11) {
+      ledcChangeFrequency(AGITATION_STEP_PIN, 10000, 8);
     }
     if (timerTicks == MAX_TIME - 10) {
-      ledcChangeFrequency(12, 9000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 9000, 8);
     }
     if (timerTicks == MAX_TIME - 9) {
-      ledcChangeFrequency(12, 8000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 8000, 8);
     }
     if (timerTicks == MAX_TIME - 8) {
-      ledcChangeFrequency(12, 7000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 7000, 8);
     }
     if (timerTicks == MAX_TIME - 7) {
-      ledcChangeFrequency(12, 6000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 6000, 8);
     }
     if (timerTicks == MAX_TIME - 6) {
-      ledcChangeFrequency(12, 5000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 5000, 8);
     }
     if (timerTicks == MAX_TIME - 5) {
-      ledcChangeFrequency(12, 4000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 4000, 8);
     }
     if (timerTicks == MAX_TIME - 4) {
-      ledcChangeFrequency(12, 3000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 3000, 8);
     }
     if (timerTicks == MAX_TIME - 3) {
-      ledcChangeFrequency(12, 2000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 2000, 8);
     }
     if (timerTicks == MAX_TIME - 1) {
-      ledcChangeFrequency(12, 1000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 1000, 8);
     }
     // if ((timerTicks == 15) && (!digitalRead(13))) {
     //   ledcChangeFrequency(12, agitateStepFrequency, 8);
@@ -244,7 +268,7 @@ void startAgitating(unsigned long mix_time, uint8_t mix_speed, uint8_t mix_depth
     //   timerTicks = 0;
     // }
     if ((timerTicks == MAX_TIME)) {
-      ledcChangeFrequency(12, 1000, 8);
+      ledcChangeFrequency(AGITATION_STEP_PIN, 1000, 8);
       digitalWrite(AGITATION_DIR_PIN, !digitalRead(13));
       timerTicks = 0;
     }
@@ -257,41 +281,41 @@ void startAgitating(unsigned long mix_time, uint8_t mix_speed, uint8_t mix_depth
 void beginBinding(char bindDepth) {
   //move vertical motor up
   digitalWrite(VERTICAL_DIR_PIN, 1);  //is this up or down?
-  ledcChangeFrequency(VERTICAL_STEP_PIN, 100, 9);
+  ledcChangeFrequency(VERTICAL_STEP_PIN, 100, 8);
   ledcWrite(VERTICAL_STEP_PIN, 128);
   delay(10);
-  ledcChangeFrequency(VERTICAL_STEP_PIN, 300, 9);
+  ledcChangeFrequency(VERTICAL_STEP_PIN, 300, 8);
   delay(10);
-  ledcChangeFrequency(VERTICAL_STEP_PIN, 500, 9);
+  ledcChangeFrequency(VERTICAL_STEP_PIN, 500, 8);
   delay(10);
-  ledcChangeFrequency(VERTICAL_STEP_PIN, 700, 9);
-  delay(1000);
+  ledcChangeFrequency(VERTICAL_STEP_PIN, 700, 8);
+  delay(500);
   ledcWrite(VERTICAL_STEP_PIN, 0);
 
 
   //move horizontal motor right
-  ledcChangeFrequency(HORIZONTAL_STEP_PIN, 100, 10);
+  ledcChangeFrequency(HORIZONTAL_STEP_PIN, 100, 8);
   ledcWrite(HORIZONTAL_STEP_PIN, 128);
   delay(10);
-  ledcChangeFrequency(HORIZONTAL_STEP_PIN, 300, 10);
+  ledcChangeFrequency(HORIZONTAL_STEP_PIN, 300, 8);
   delay(10);
-  ledcChangeFrequency(HORIZONTAL_STEP_PIN, 500, 10);
+  ledcChangeFrequency(HORIZONTAL_STEP_PIN, 500, 8);
   delay(10);
-  ledcChangeFrequency(HORIZONTAL_STEP_PIN, 700, 10);
-  delay(500);
+  ledcChangeFrequency(HORIZONTAL_STEP_PIN, 700, 8);
+  delay(200);
   ledcWrite(HORIZONTAL_STEP_PIN, 0);
 
   //move vertical motor down
   digitalWrite(VERTICAL_DIR_PIN, 0);  //is this up or down?
-  ledcChangeFrequency(VERTICAL_STEP_PIN, 100, 9);
+  ledcChangeFrequency(VERTICAL_STEP_PIN, 100, 8);
   ledcWrite(VERTICAL_STEP_PIN, 128);
   delay(10);
-  ledcChangeFrequency(VERTICAL_STEP_PIN, 300, 9);
+  ledcChangeFrequency(VERTICAL_STEP_PIN, 300, );
   delay(10);
-  ledcChangeFrequency(VERTICAL_STEP_PIN, 500, 9);
+  ledcChangeFrequency(VERTICAL_STEP_PIN, 500, 8);
   delay(10);
-  ledcChangeFrequency(VERTICAL_STEP_PIN, 700, 9);
-  delay(1000);
+  ledcChangeFrequency(VERTICAL_STEP_PIN, 700, 8);
+  delay(500);
   ledcWrite(VERTICAL_STEP_PIN, 0);
 }
 
