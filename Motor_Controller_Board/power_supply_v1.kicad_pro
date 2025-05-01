@@ -611,6 +611,18 @@
     [
       "2f03ad95-f17d-4603-9f9b-c868204db81c",
       "Root"
+    ],
+    [
+      "1132a342-589f-4523-a20b-cee7da5a1aed",
+      "Power Supply"
+    ],
+    [
+      "41c029e7-cf72-41c6-b200-264a704f7fea",
+      "Microcontroller"
+    ],
+    [
+      "de697c7d-15b2-499b-acfa-e9ff24654033",
+      "Stepper Drivers"
     ]
   ],
   "text_variables": {}
