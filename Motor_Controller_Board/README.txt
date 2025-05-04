@@ -7,3 +7,5 @@ List of changes to track progress.
 4/30/25. schematic rough draft is done. i need to revisions now to make sure it will actually work. there is a main page, buck page, microcontroller page, and a stepper driver page. 
 
 5/2/25. revised schematic with Mishari and Alex. pretty confident in the design, so we started picking footprints. I've finished the microcontroller and stepper driver footprints, working on the buck regulators right now. i want to use the same 50V rated capacitor for both Cin and Cout.
+
+5/3/25. all footprints assigned and every part manufacturer, manufacturer part number, and jcsc part number for BOM. added boot configuration for microcontroller. ready to begin premature layout, but still very open to changes in schematic.

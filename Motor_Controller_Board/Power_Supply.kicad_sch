@@ -1160,6 +1160,107 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "power:PWR_FLAG"
+			(power)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#FLG"
+				(at 0 1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "PWR_FLAG"
+				(at 0 3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Special symbol for telling ERC where power comes from"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "flag power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "PWR_FLAG_0_0"
+				(pin power_out line
+					(at 0 0 90)
+					(length 0)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "PWR_FLAG_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 1.27) (xy -1.016 1.905) (xy 0 2.54) (xy 1.016 1.905) (xy 0 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 	)
 	(text "Cin low ESR aluminum electrolytic cap"
 		(exclude_from_sim no)
@@ -1243,7 +1344,7 @@
 	)
 	(text "+24V SMPS"
 		(exclude_from_sim no)
-		(at 20.32 94.996 0)
+		(at 17.78 94.996 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1418,12 +1519,6 @@
 		(uuid "10b1b085-2c01-4bcf-814d-51e9bbbd7389")
 	)
 	(junction
-		(at 39.37 93.98)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "1e3e5e2e-da07-458e-b5ab-d66ac39f276a")
-	)
-	(junction
 		(at 86.36 64.77)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1488,6 +1583,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "67fc2055-6a8b-4515-98f1-4df8424f6100")
+	)
+	(junction
+		(at 35.56 93.98)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "6d1a8469-58cc-4a84-815c-86c0e803001b")
 	)
 	(junction
 		(at 97.79 153.67)
@@ -1584,6 +1685,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "e4b4a2e4-e429-43f8-ba74-568054fdf725")
+	)
+	(junction
+		(at 39.37 93.98)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "ee10962b-b88b-481c-95fb-c4ffc5014520")
 	)
 	(junction
 		(at 76.2 137.16)
@@ -1969,6 +2076,16 @@
 	)
 	(wire
 		(pts
+			(xy 35.56 93.98) (xy 39.37 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5e7054e5-418f-44c4-88bd-82a4b09824e5")
+	)
+	(wire
+		(pts
 			(xy 115.57 137.16) (xy 116.84 137.16)
 		)
 		(stroke
@@ -2339,7 +2456,7 @@
 	)
 	(wire
 		(pts
-			(xy 35.56 97.79) (xy 35.56 96.52)
+			(xy 33.02 97.79) (xy 33.02 96.52)
 		)
 		(stroke
 			(width 0)
@@ -2359,7 +2476,7 @@
 	)
 	(wire
 		(pts
-			(xy 35.56 96.52) (xy 34.29 96.52)
+			(xy 33.02 96.52) (xy 31.75 96.52)
 		)
 		(stroke
 			(width 0)
@@ -2569,7 +2686,7 @@
 	)
 	(wire
 		(pts
-			(xy 34.29 93.98) (xy 39.37 93.98)
+			(xy 31.75 93.98) (xy 35.56 93.98)
 		)
 		(stroke
 			(width 0)
@@ -2786,32 +2903,32 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 120.65 137.16 90)
+		(lib_id "Device:L")
+		(at 121.92 142.24 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "147a6607-babb-47d0-b164-7223d14c33d2")
-		(property "Reference" "R206"
-			(at 120.65 132.588 90)
+		(uuid "07ef1cba-0780-4c1c-8c2f-5cb33b336b2c")
+		(property "Reference" "L203"
+			(at 122.174 143.764 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "12k"
-			(at 120.65 134.62 90)
+		(property "Value" "47u"
+			(at 122.174 145.796 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 120.65 138.938 90)
+		(property "Footprint" "Inductor_SMD:L_12x12mm_H8mm"
+			(at 121.92 142.24 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2820,7 +2937,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 120.65 137.16 0)
+			(at 121.92 142.24 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2828,8 +2945,35 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Resistor"
-			(at 120.65 137.16 0)
+		(property "Description" "Inductor"
+			(at 121.92 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "SXN(Shun Xiang Nuo Elec)"
+			(at 121.92 142.24 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "SMDRI127-470MT"
+			(at 121.92 142.24 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C9906"
+			(at 121.92 142.24 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2838,15 +2982,209 @@
 			)
 		)
 		(pin "2"
-			(uuid "12411c2f-5667-4acd-bdd3-d17376a3655f")
+			(uuid "7355c270-3ca8-44d7-aff2-05422c52cf88")
 		)
 		(pin "1"
-			(uuid "ae9dd544-7d5b-4108-bfd0-83eb67bf4ca9")
+			(uuid "42a1b6e9-ac81-4eda-8126-ea93121967cd")
 		)
 		(instances
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
-					(reference "R206")
+					(reference "L203")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C_Polarized")
+		(at 128.27 147.32 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1d47bce3-4d56-435c-84b9-e6ed4ac1422e")
+		(property "Reference" "C209"
+			(at 132.08 145.1609 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "220u"
+			(at 132.08 147.7009 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_Elec_10x10.2"
+			(at 129.2352 151.13 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 128.27 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Polarized capacitor"
+			(at 128.27 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "PANASONIC"
+			(at 128.27 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "EEEFP1H221AP"
+			(at 128.27 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C178579"
+			(at 128.27 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ee951ed5-8d76-4e69-94e0-d2609faa9812")
+		)
+		(pin "2"
+			(uuid "a3c34c36-2b7b-4134-97f5-90736057524c")
+		)
+		(instances
+			(project "power_supply_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
+					(reference "C209")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C_Polarized")
+		(at 77.47 58.42 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "24bf0695-197a-42ae-9846-64738bb36ddb")
+		(property "Reference" "C202"
+			(at 81.28 56.2609 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "220u"
+			(at 81.28 58.8009 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_Elec_10x10.2"
+			(at 78.4352 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 77.47 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Polarized capacitor"
+			(at 77.47 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "PANASONIC"
+			(at 77.47 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "EEEFP1H221AP"
+			(at 77.47 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C178579"
+			(at 77.47 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e4d54370-8048-4d1a-bc11-54deb392ece1")
+		)
+		(pin "2"
+			(uuid "9fc36a54-422e-45f4-8fb2-090ebe8b1b46")
+		)
+		(instances
+			(project "power_supply_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
+					(reference "C202")
 					(unit 1)
 				)
 			)
@@ -2916,73 +3254,6 @@
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
 					(reference "D201")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:L")
-		(at 121.92 99.06 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "284ab8f3-a8e9-4489-af12-0753371f341b")
-		(property "Reference" "L202"
-			(at 122.174 100.584 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "68u"
-			(at 122.174 102.616 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 121.92 99.06 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 121.92 99.06 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Inductor"
-			(at 121.92 99.06 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "a0f2c6e8-c338-4b1c-8907-9d4f9582df99")
-		)
-		(pin "1"
-			(uuid "ecf61452-2fb0-48af-9bd6-3b443d1f774a")
-		)
-		(instances
-			(project "power_supply_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
-					(reference "L202")
 					(unit 1)
 				)
 			)
@@ -3061,6 +3332,100 @@
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
 					(reference "U201")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 120.65 137.16 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "2b2488a2-6817-4bd8-afe3-274ba9f587ea")
+		(property "Reference" "R206"
+			(at 120.65 132.588 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "12k"
+			(at 120.65 134.62 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 120.65 138.938 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 120.65 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 120.65 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 120.65 137.16 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF1202T5E"
+			(at 120.65 137.16 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C22790"
+			(at 120.65 137.16 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "b1057319-cbcc-4370-8dbc-77c2f714986e")
+		)
+		(pin "1"
+			(uuid "167d6ee0-a9e3-4fed-8dc2-ea28f049e032")
+		)
+		(instances
+			(project "power_supply_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
+					(reference "R206")
 					(unit 1)
 				)
 			)
@@ -3213,35 +3578,34 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:C_Polarized")
-		(at 128.27 104.14 0)
+		(lib_id "power:PWR_FLAG")
+		(at 35.56 93.98 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "315ebef6-a841-4a19-a3ab-da5bc891c201")
-		(property "Reference" "C206"
-			(at 132.08 101.9809 0)
+		(uuid "390743d7-0f48-4b86-a1f6-5cd0e6c07ec1")
+		(property "Reference" "#FLG0201"
+			(at 35.56 92.075 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(hide yes)
 			)
 		)
-		(property "Value" "220u"
-			(at 132.08 104.5209 0)
+		(property "Value" "PWR_FLAG"
+			(at 35.56 88.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Footprint" ""
-			(at 129.2352 107.95 0)
+			(at 35.56 93.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3250,7 +3614,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 128.27 104.14 0)
+			(at 35.56 93.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3258,77 +3622,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Polarized capacitor"
-			(at 128.27 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "259fbbfd-77b7-4236-aa40-d4238bf0344c")
-		)
-		(pin "2"
-			(uuid "4eb7851e-427e-4747-b2bc-bd48112e3213")
-		)
-		(instances
-			(project "power_supply_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
-					(reference "C206")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 120.65 128.27 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "36acb079-0224-44c8-af38-4b582debd1ab")
-		(property "Reference" "C207"
-			(at 123.698 122.936 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "1n"
-			(at 122.174 124.968 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 124.46 127.3048 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 120.65 128.27 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 120.65 128.27 0)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 35.56 93.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3337,85 +3632,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "2c6e3410-81b8-4e78-98af-4af6f13ee93e")
-		)
-		(pin "2"
-			(uuid "187a16c8-cb30-49c4-b17f-a0c14b4f410a")
+			(uuid "0941e427-93c9-4e34-80f2-b7f5d006a28e")
 		)
 		(instances
-			(project "power_supply_v1"
+			(project ""
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
-					(reference "C207")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C_Polarized")
-		(at 76.2 99.06 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "3c5d60f5-e81b-4124-b89c-ef8e2f2046e3")
-		(property "Reference" "C205"
-			(at 80.01 96.9009 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "680u"
-			(at 80.01 99.4409 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 77.1652 102.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 76.2 99.06 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Polarized capacitor"
-			(at 76.2 99.06 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "c750ede8-9874-461b-bf04-bebadfcd3413")
-		)
-		(pin "2"
-			(uuid "57ba62b6-66ac-4403-ac69-922280a31fb7")
-		)
-		(instances
-			(project "power_supply_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
-					(reference "C205")
+					(reference "#FLG0201")
 					(unit 1)
 				)
 			)
@@ -3448,7 +3670,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 124.46 84.1248 0)
 			(effects
 				(font
@@ -3475,6 +3697,33 @@
 				(hide yes)
 			)
 		)
+		(property "Manufacturer" "Samsung Electro-Mechanics"
+			(at 120.65 85.09 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "CL10B102KB8NNNC"
+			(at 120.65 85.09 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C1588"
+			(at 120.65 85.09 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "9fbc320b-15e5-4b63-a9d0-5110193961ae")
 		)
@@ -3492,7 +3741,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 35.56 97.79 0)
+		(at 33.02 97.79 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3501,7 +3750,7 @@
 		(fields_autoplaced yes)
 		(uuid "52513917-0ac9-48d8-b96b-bb9fde089ff0")
 		(property "Reference" "#PWR0204"
-			(at 35.56 104.14 0)
+			(at 33.02 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3510,7 +3759,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 35.56 102.87 0)
+			(at 33.02 102.87 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3519,7 +3768,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 35.56 97.79 0)
+			(at 33.02 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3528,7 +3777,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 35.56 97.79 0)
+			(at 33.02 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3537,7 +3786,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 35.56 97.79 0)
+			(at 33.02 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3626,16 +3875,16 @@
 	)
 	(symbol
 		(lib_id "Device:C_Polarized")
-		(at 128.27 147.32 0)
+		(at 76.2 99.06 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "5ac2268d-e076-40e3-b065-b48dcbd4d548")
-		(property "Reference" "C209"
-			(at 132.08 145.1609 0)
+		(uuid "61fc6f46-8226-45eb-a9a3-7e76aa4bc1c6")
+		(property "Reference" "C205"
+			(at 80.01 96.9009 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3644,7 +3893,7 @@
 			)
 		)
 		(property "Value" "220u"
-			(at 132.08 147.7009 0)
+			(at 80.01 99.4409 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3652,8 +3901,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
-			(at 129.2352 151.13 0)
+		(property "Footprint" "Capacitor_SMD:C_Elec_10x10.2"
+			(at 77.1652 102.87 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3662,7 +3911,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 128.27 147.32 0)
+			(at 76.2 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3671,7 +3920,34 @@
 			)
 		)
 		(property "Description" "Polarized capacitor"
-			(at 128.27 147.32 0)
+			(at 76.2 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "PANASONIC"
+			(at 76.2 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "EEEFP1H221AP"
+			(at 76.2 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C178579"
+			(at 76.2 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3680,15 +3956,15 @@
 			)
 		)
 		(pin "1"
-			(uuid "c6b52d36-c48d-43a0-ba2e-feda29b6e2ec")
+			(uuid "0975683b-1851-4930-8902-221df312152e")
 		)
 		(pin "2"
-			(uuid "4990983a-1342-41db-ada1-e3478faca70f")
+			(uuid "d76469db-e479-4f86-9331-788bb9b0d53b")
 		)
 		(instances
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
-					(reference "C209")
+					(reference "C205")
 					(unit 1)
 				)
 			)
@@ -3831,73 +4107,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:L")
-		(at 121.92 142.24 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "7e079be4-7e8d-475c-ae39-c75a76923e86")
-		(property "Reference" "L203"
-			(at 122.174 143.764 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "68u"
-			(at 122.174 145.796 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 121.92 142.24 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 121.92 142.24 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Inductor"
-			(at 121.92 142.24 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "6d31af38-3ad2-4874-b0b2-92c26b9e2cb7")
-		)
-		(pin "1"
-			(uuid "3f45847c-4ce1-4121-8d54-3ebfea06197e")
-		)
-		(instances
-			(project "power_supply_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
-					(reference "L203")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 105.41 86.36 0)
 		(unit 1)
@@ -4034,6 +4243,102 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:C")
+		(at 120.65 128.27 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "92de3e2c-0436-4048-a32a-5dad2eb4d063")
+		(property "Reference" "C207"
+			(at 123.698 122.936 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "1n"
+			(at 122.174 124.968 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+			(at 124.46 127.3048 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 120.65 128.27 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 120.65 128.27 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "Samsung Electro-Mechanics"
+			(at 120.65 128.27 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "CL10B102KB8NNNC"
+			(at 120.65 128.27 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C1588"
+			(at 120.65 128.27 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "fbff03dd-d32b-4962-834d-1ac8309287ae")
+		)
+		(pin "2"
+			(uuid "de57aba6-8198-42cb-a3ed-7d0f54596a24")
+		)
+		(instances
+			(project "power_supply_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
+					(reference "C207")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 97.79 110.49 0)
 		(unit 1)
@@ -4095,76 +4400,6 @@
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
 					(reference "#PWR0205")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C_Polarized")
-		(at 77.47 58.42 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "99ae9f4d-6384-43a1-90b1-505ff5ae7543")
-		(property "Reference" "C202"
-			(at 81.28 56.2609 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "680u"
-			(at 81.28 58.8009 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 78.4352 62.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 77.47 58.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Polarized capacitor"
-			(at 77.47 58.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "f74535a5-695f-4a79-9dff-891d26d10c92")
-		)
-		(pin "2"
-			(uuid "251647a8-9627-4a23-97f5-653139797c29")
-		)
-		(instances
-			(project "power_supply_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
-					(reference "C202")
 					(unit 1)
 				)
 			)
@@ -4289,6 +4524,33 @@
 				(hide yes)
 			)
 		)
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 123.19 53.34 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF3001T5E"
+			(at 123.19 53.34 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C4211"
+			(at 123.19 53.34 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "790691ab-8ba9-4366-aaba-ac36030ef582")
 		)
@@ -4321,7 +4583,7 @@
 				)
 			)
 		)
-		(property "Value" "68u"
+		(property "Value" "47u"
 			(at 123.444 61.976 90)
 			(effects
 				(font
@@ -4329,7 +4591,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Inductor_SMD:L_12x12mm_H8mm"
 			(at 123.19 58.42 0)
 			(effects
 				(font
@@ -4349,6 +4611,33 @@
 		)
 		(property "Description" "Inductor"
 			(at 123.19 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "SXN(Shun Xiang Nuo Elec)"
+			(at 123.19 58.42 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "SMDRI127-470MT"
+			(at 123.19 58.42 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C9906"
+			(at 123.19 58.42 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4416,6 +4705,33 @@
 		)
 		(property "Description" "Resistor"
 			(at 120.65 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 120.65 93.98 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF1202T5E"
+			(at 120.65 93.98 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C22790"
+			(at 120.65 93.98 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4558,6 +4874,33 @@
 				(hide yes)
 			)
 		)
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 111.76 44.45 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF1001T5E"
+			(at 111.76 44.45 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C21190"
+			(at 111.76 44.45 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "bd209fae-8a87-4869-9d09-b0fff8e7eb4e")
 		)
@@ -4574,32 +4917,35 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector_Generic:Conn_01x02")
-		(at 29.21 96.52 180)
+		(lib_id "Device:C_Polarized")
+		(at 128.27 104.14 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "cfe34908-5d25-4662-a1c5-9ae284c87797")
-		(property "Reference" "J201"
-			(at 29.21 87.63 0)
+		(fields_autoplaced yes)
+		(uuid "c688a275-1b67-4888-be46-b0c339b33d10")
+		(property "Reference" "C206"
+			(at 132.08 101.9809 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
-		(property "Value" "Conn_01x02"
-			(at 29.21 90.17 0)
+		(property "Value" "220u"
+			(at 132.08 104.5209 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
-		(property "Footprint" "TerminalBlock:TerminalBlock_bornier-2_P5.08mm"
-			(at 29.21 96.52 0)
+		(property "Footprint" "Capacitor_SMD:C_Elec_10x10.2"
+			(at 129.2352 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4608,7 +4954,195 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 29.21 96.52 0)
+			(at 128.27 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Polarized capacitor"
+			(at 128.27 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "PANASONIC"
+			(at 128.27 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "EEEFP1H221AP"
+			(at 128.27 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C178579"
+			(at 128.27 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "6053af9e-3a07-4a42-8d43-27ec388ecb9f")
+		)
+		(pin "2"
+			(uuid "c145e1c8-4ecc-44a5-acd8-e13dc9458b91")
+		)
+		(instances
+			(project "power_supply_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
+					(reference "C206")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:L")
+		(at 121.92 99.06 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c6d68965-6a24-4234-b24f-cf62ef438e54")
+		(property "Reference" "L202"
+			(at 122.174 100.584 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "47u"
+			(at 122.174 102.616 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Inductor_SMD:L_12x12mm_H8mm"
+			(at 121.92 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 121.92 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Inductor"
+			(at 121.92 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "SXN(Shun Xiang Nuo Elec)"
+			(at 121.92 99.06 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "SMDRI127-470MT"
+			(at 121.92 99.06 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C9906"
+			(at 121.92 99.06 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "7cd0585f-c267-4560-b2f1-c0f795c55ee7")
+		)
+		(pin "1"
+			(uuid "861a630d-138e-4553-91e7-e92014b52d58")
+		)
+		(instances
+			(project "power_supply_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
+					(reference "L202")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x02")
+		(at 26.67 96.52 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "cfe34908-5d25-4662-a1c5-9ae284c87797")
+		(property "Reference" "J201"
+			(at 22.352 88.392 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x02"
+			(at 22.352 90.932 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "TerminalBlock:TerminalBlock_bornier-2_P5.08mm"
+			(at 26.67 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 26.67 96.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4617,7 +5151,7 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 29.21 96.52 0)
+			(at 26.67 96.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4668,7 +5202,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_Elec_10x10.2"
 			(at 130.5052 67.31 0)
 			(effects
 				(font
@@ -4892,7 +5426,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "f36b84b6-eaf9-4218-8e83-7ec234da0fa2")
+		(uuid "ef23d6d3-e077-4462-879e-531792984b39")
 		(property "Reference" "C208"
 			(at 80.01 140.0809 0)
 			(effects
@@ -4902,7 +5436,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "680u"
+		(property "Value" "220u"
 			(at 80.01 142.6209 0)
 			(effects
 				(font
@@ -4911,7 +5445,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_Elec_10x10.2"
 			(at 77.1652 146.05 0)
 			(effects
 				(font
@@ -4938,11 +5472,38 @@
 				(hide yes)
 			)
 		)
+		(property "Manufacturer" "PANASONIC"
+			(at 76.2 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "EEEFP1H221AP"
+			(at 76.2 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C178579"
+			(at 76.2 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "77d9da29-3d39-40ba-8002-8820ea849b9e")
+			(uuid "92d8c20b-dd04-4c47-ad59-173c70c43d27")
 		)
 		(pin "2"
-			(uuid "68411c7d-1b94-42a6-83b7-86145f767c35")
+			(uuid "8900e78d-963d-4766-9360-035f1dcc43bf")
 		)
 		(instances
 			(project "power_supply_v1"

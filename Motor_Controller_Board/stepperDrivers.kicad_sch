@@ -42721,22 +42721,22 @@
 		(uuid "d3c8c2db-8b1b-43db-9932-1af53a4748c1")
 	)
 	(junction
+		(at 180.34 93.98)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "1780d3f2-acf5-41d7-8414-d999dd3cd90c")
+	)
+	(junction
 		(at 217.17 43.18)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "0ebc1e1d-4f0e-4785-9569-fc1b6d55e36e")
+		(uuid "1a6c2aa3-f850-427b-9451-ec153c85cd71")
 	)
 	(junction
 		(at 241.3 57.15)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "1f003b1c-f7c1-4fc3-bbfa-09674d7b69f8")
-	)
-	(junction
-		(at 68.58 36.83)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "22f7c69f-7290-4867-99f1-2fc874df5261")
 	)
 	(junction
 		(at 64.77 29.21)
@@ -42757,12 +42757,6 @@
 		(uuid "2e24c5eb-0a08-4bdb-bd25-3ae0af085e04")
 	)
 	(junction
-		(at 120.65 120.65)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "300a5314-2f3b-4419-8a56-061db98e366a")
-	)
-	(junction
 		(at 92.71 50.8)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -42773,6 +42767,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "36667f3d-cf1a-4b44-8f2b-71406d354015")
+	)
+	(junction
+		(at 120.65 120.65)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "3904bdc0-2851-4675-b51c-b15cd9d7a5f9")
 	)
 	(junction
 		(at 217.17 34.29)
@@ -42847,10 +42847,10 @@
 		(uuid "60525e69-2fdb-4cb6-a5b2-49d7608bf4bf")
 	)
 	(junction
-		(at 180.34 93.98)
+		(at 68.58 36.83)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "61fd360d-aed1-4d93-87f1-7e89dca4f4c4")
+		(uuid "671f3910-1004-48fa-84ba-d52bdf5409c5")
 	)
 	(junction
 		(at 213.36 34.29)
@@ -43147,16 +43147,6 @@
 			(type default)
 		)
 		(uuid "0d545077-7c20-4450-91f1-e646be71a052")
-	)
-	(wire
-		(pts
-			(xy 179.07 93.98) (xy 180.34 93.98)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0dbfa814-2803-4c4f-b91d-9d6bb0e7f69e")
 	)
 	(wire
 		(pts
@@ -43840,16 +43830,6 @@
 	)
 	(wire
 		(pts
-			(xy 179.07 81.28) (xy 179.07 93.98)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "57a636c3-b18c-4bf4-8774-b6b4cc7ed8f6")
-	)
-	(wire
-		(pts
 			(xy 116.84 111.76) (xy 120.65 111.76)
 		)
 		(stroke
@@ -44097,6 +44077,16 @@
 			(type default)
 		)
 		(uuid "771a33ae-3ac1-4378-ba99-ec98271b73c3")
+	)
+	(wire
+		(pts
+			(xy 180.34 83.82) (xy 180.34 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "78715a8c-96e3-4c89-a762-44ea4f67fa55")
 	)
 	(wire
 		(pts
@@ -45660,7 +45650,7 @@
 	)
 	(global_label "VDD"
 		(shape input)
-		(at 179.07 81.28 180)
+		(at 180.34 83.82 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -45670,7 +45660,7 @@
 		)
 		(uuid "09a099b4-f82a-456f-b22d-ed1793a1dfea")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 172.4562 81.28 0)
+			(at 173.7262 83.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -46176,6 +46166,15 @@
 				(hide yes)
 			)
 		)
+		(property "Manufacturer" "Nichicon"
+			(at 144.78 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "1e1d1dd9-28d9-4b6a-9da3-f5c7f98947dd")
 		)
@@ -46186,6 +46185,102 @@
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
 					(reference "C420")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 43.18 87.63 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "0914fb4c-608b-49c4-907b-385f77507ca3")
+		(property "Reference" "R411"
+			(at 45.72 84.074 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10k"
+			(at 45.212 85.598 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 43.18 89.408 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 43.18 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 43.18 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 43.18 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF1002T5E"
+			(at 43.18 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C25804"
+			(at 43.18 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "12779781-3a93-4a43-aa59-b86c250825b8")
+		)
+		(pin "2"
+			(uuid "b6c533c6-2b46-4bf7-94fb-c8ce96bbf781")
+		)
+		(instances
+			(project "power_supply_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
+					(reference "R411")
 					(unit 1)
 				)
 			)
@@ -46289,23 +46384,23 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 95.25 146.05 90)
+		(at 191.77 97.79 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "0f867536-e8e7-4147-bfc6-38d0ba5dedfe")
-		(property "Reference" "R420"
-			(at 95.504 148.082 90)
+		(uuid "0dc952f0-a84f-4bd3-b9a2-0c1e7b929eec")
+		(property "Reference" "R416"
+			(at 192.024 99.822 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "25k"
-			(at 95.758 149.86 90)
+		(property "Value" "100k"
+			(at 192.024 101.6 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -46313,7 +46408,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 95.25 147.828 90)
+			(at 191.77 99.568 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -46322,7 +46417,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 95.25 146.05 0)
+			(at 191.77 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -46331,7 +46426,34 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 95.25 146.05 0)
+			(at 191.77 97.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 191.77 97.79 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF1003T5E"
+			(at 191.77 97.79 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C25803"
+			(at 191.77 97.79 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -46340,15 +46462,15 @@
 			)
 		)
 		(pin "2"
-			(uuid "cea3393d-6c59-4fbc-8201-321d747fbe08")
+			(uuid "96f9c826-1fa9-484e-ba02-03910971bab5")
 		)
 		(pin "1"
-			(uuid "bedd88ae-e0fb-4267-9ae4-311108096880")
+			(uuid "dc6629be-e10c-417b-a7b0-122e46b4a566")
 		)
 		(instances
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "R420")
+					(reference "R416")
 					(unit 1)
 				)
 			)
@@ -46585,73 +46707,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 43.18 91.44 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "14161679-51ef-4a22-9ee1-e9fbad1da01f")
-		(property "Reference" "R413"
-			(at 43.434 93.472 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "100k"
-			(at 43.434 95.25 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 43.18 93.218 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 43.18 91.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 43.18 91.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "76815724-d998-4379-be38-52d93bb551ad")
-		)
-		(pin "1"
-			(uuid "54f60ab8-44b8-49f0-a332-792496a930c5")
-		)
-		(instances
-			(project "power_supply_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "R413")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:D")
 		(at 151.13 144.78 180)
 		(unit 1)
@@ -46668,7 +46723,7 @@
 				)
 			)
 		)
-		(property "Value" "D"
+		(property "Value" "IN5402"
 			(at 151.638 149.098 0)
 			(effects
 				(font
@@ -46676,7 +46731,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Diode_THT:D_DO-27_P15.24mm_Horizontal"
 			(at 151.13 144.78 0)
 			(effects
 				(font
@@ -46891,21 +46946,23 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "21f09bab-cdc6-4113-aefc-970b1096e18a")
+		(uuid "219445b3-8548-4c71-b75d-616eb4be0069")
 		(property "Reference" "R423"
-			(at 95.504 167.64 90)
+			(at 97.79 167.894 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
 		(property "Value" "10k"
-			(at 95.25 169.418 90)
+			(at 97.282 169.418 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
@@ -46935,11 +46992,38 @@
 				(hide yes)
 			)
 		)
-		(pin "2"
-			(uuid "7e04bb77-e3dd-4f30-9739-d3c6411125a7")
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 95.25 171.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF1002T5E"
+			(at 95.25 171.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C25804"
+			(at 95.25 171.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
 		)
 		(pin "1"
-			(uuid "c9d7c387-a5b0-42d1-8442-2578f31297ff")
+			(uuid "02524713-fed8-4067-bae7-534b541f7388")
+		)
+		(pin "2"
+			(uuid "b30468a7-d747-4b94-b23d-90f566e4149c")
 		)
 		(instances
 			(project "power_supply_v1"
@@ -47316,6 +47400,102 @@
 	)
 	(symbol
 		(lib_id "Device:R")
+		(at 154.94 139.7 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "33714210-cddd-4690-bd54-4e50735c6b4d")
+		(property "Reference" "R419"
+			(at 156.464 138.684 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10k"
+			(at 157.226 140.462 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 153.162 139.7 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 154.94 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 154.94 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 154.94 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF1002T5E"
+			(at 154.94 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C25804"
+			(at 154.94 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "2d018ffe-9db7-4333-8539-40037fe4a6fd")
+		)
+		(pin "2"
+			(uuid "3da7bb90-e7dc-48ee-ac24-7ab5689a8bcf")
+		)
+		(instances
+			(project "power_supply_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
+					(reference "R419")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
 		(at 209.55 40.64 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -47537,73 +47717,6 @@
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
 					(reference "R412")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 191.77 68.58 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "3d745ffc-fb1a-49f0-b227-7c9a251f06fa")
-		(property "Reference" "R408"
-			(at 192.024 70.612 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "25k"
-			(at 192.278 72.39 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 191.77 70.358 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 191.77 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 191.77 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "2480f318-09a7-4d47-bbb4-37557db5ebf1")
-		)
-		(pin "1"
-			(uuid "85bbc350-e5c4-4c8f-9f3c-cfc77793d1d6")
-		)
-		(instances
-			(project "power_supply_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "R408")
 					(unit 1)
 				)
 			)
@@ -47936,73 +48049,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 43.18 87.63 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "4eb199db-115f-417d-806a-fbc729f50683")
-		(property "Reference" "R411"
-			(at 43.434 83.82 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "10k"
-			(at 43.18 85.598 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 43.18 89.408 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 43.18 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 43.18 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "17eb94b4-2045-4965-8538-a77b7d65ab91")
-		)
-		(pin "1"
-			(uuid "38a34d62-cbe4-4065-af17-9d7ee73d3c2e")
-		)
-		(instances
-			(project "power_supply_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "R411")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C")
 		(at 130.81 116.84 0)
 		(unit 1)
@@ -48048,6 +48094,33 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 130.81 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "Samsung Electro-Mechanics"
+			(at 130.81 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "CL21A226MAQNNNE"
+			(at 130.81 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C45783"
 			(at 130.81 116.84 0)
 			(effects
 				(font
@@ -48125,6 +48198,15 @@
 				(hide yes)
 			)
 		)
+		(property "Manufacturer" "Nichicon"
+			(at 92.71 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "7911e058-1933-4d8e-9fcf-44b7be2fcf23")
 		)
@@ -48157,7 +48239,7 @@
 				)
 			)
 		)
-		(property "Value" "D"
+		(property "Value" "IN5402"
 			(at 99.568 65.278 0)
 			(effects
 				(font
@@ -48165,7 +48247,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Diode_THT:D_DO-27_P15.24mm_Horizontal"
 			(at 99.06 60.96 0)
 			(effects
 				(font
@@ -48220,6 +48302,100 @@
 			(project ""
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
 					(reference "D401")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 120.65 116.84 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "57284c1e-ed95-4865-9a9a-5910f288ee32")
+		(property "Reference" "C415"
+			(at 125.73 115.824 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100n"
+			(at 125.73 117.856 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+			(at 119.6848 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 120.65 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 120.65 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "Samsung Electro-Mechanics"
+			(at 120.65 116.84 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "CL05B104KO5NNNC"
+			(at 120.65 116.84 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C1525"
+			(at 120.65 116.84 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e8a678ec-2afe-4942-b25a-9fa47bf1ef9e")
+		)
+		(pin "2"
+			(uuid "f27ba04f-b327-4dd3-b898-a7e73502d2f4")
+		)
+		(instances
+			(project "power_supply_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
+					(reference "C415")
 					(unit 1)
 				)
 			)
@@ -48309,7 +48485,7 @@
 				)
 			)
 		)
-		(property "Value" "D"
+		(property "Value" "IN5402"
 			(at 248.158 71.628 0)
 			(effects
 				(font
@@ -48317,7 +48493,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Diode_THT:D_DO-27_P15.24mm_Horizontal"
 			(at 247.65 67.31 0)
 			(effects
 				(font
@@ -48445,34 +48621,32 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:C")
-		(at 68.58 33.02 0)
+		(lib_id "Device:R")
+		(at 43.18 91.44 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "69e8a1ac-b527-42ef-b9d3-bb79d334b245")
-		(property "Reference" "C401"
-			(at 71.12 32.258 0)
+		(uuid "5f81de3a-19eb-4f15-9b49-23c1b2ca0699")
+		(property "Reference" "R413"
+			(at 43.434 93.472 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Value" "100n"
-			(at 71.12 34.036 0)
+		(property "Value" "100k"
+			(at 43.434 95.25 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
-			(at 69.5452 36.83 0)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 43.18 93.218 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -48481,7 +48655,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 68.58 33.02 0)
+			(at 43.18 91.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -48489,8 +48663,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
-			(at 68.58 33.02 0)
+		(property "Description" "Resistor"
+			(at 43.18 91.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -48498,16 +48672,43 @@
 				(hide yes)
 			)
 		)
-		(pin "1"
-			(uuid "7141da75-fcd7-40a0-9a60-aa748f1f5ff2")
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 43.18 91.44 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF1003T5E"
+			(at 43.18 91.44 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C25803"
+			(at 43.18 91.44 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
 		)
 		(pin "2"
-			(uuid "4358cb85-543c-4f47-8134-11d8336a262e")
+			(uuid "e675d533-2f7c-49c3-a307-dfefece00d5a")
+		)
+		(pin "1"
+			(uuid "833fd7b0-0cdf-4625-96e9-e50d9c392f55")
 		)
 		(instances
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "C401")
+					(reference "R413")
 					(unit 1)
 				)
 			)
@@ -48677,32 +48878,34 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 102.87 55.88 0)
+		(lib_id "Device:C")
+		(at 227.33 39.37 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "76e83c2a-3ea1-4af5-adae-0ed20e2d6ade")
-		(property "Reference" "R405"
-			(at 107.188 55.372 0)
+		(uuid "76eda646-e255-4a30-9bfb-4e28a471e6f1")
+		(property "Reference" "C404"
+			(at 229.87 38.608 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
-		(property "Value" "10k"
-			(at 106.426 57.658 0)
+		(property "Value" "22u"
+			(at 229.87 40.386 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 101.092 55.88 90)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+			(at 228.2952 43.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -48711,7 +48914,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 102.87 55.88 0)
+			(at 227.33 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -48719,8 +48922,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Resistor"
-			(at 102.87 55.88 0)
+		(property "Description" "Unpolarized capacitor"
+			(at 227.33 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -48728,83 +48931,43 @@
 				(hide yes)
 			)
 		)
-		(pin "2"
-			(uuid "d5b0d302-15f9-4353-a975-df2d5c08e548")
+		(property "Manufacturer" "Samsung Electro-Mechanics"
+			(at 227.33 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "CL21A226MAQNNNE"
+			(at 227.33 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C45783"
+			(at 227.33 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
 		)
 		(pin "1"
-			(uuid "5e0f409d-58d7-48d4-8eeb-971bae98cbe9")
-		)
-		(instances
-			(project ""
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "R405")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 191.77 93.98 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "7baddfcd-d38a-4546-b303-fe370ead65b0")
-		(property "Reference" "R415"
-			(at 192.024 90.17 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "10k"
-			(at 191.77 91.948 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 191.77 95.758 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 191.77 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 191.77 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
+			(uuid "5d1d2852-852a-4141-b22c-c29dc626d43c")
 		)
 		(pin "2"
-			(uuid "8ce59b3f-5af7-4708-b584-7841334759cf")
-		)
-		(pin "1"
-			(uuid "fe06c067-0691-4325-b6e8-360a3de59dd3")
+			(uuid "cd6781e6-497c-4e29-a7a9-52e7faa9d788")
 		)
 		(instances
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "R415")
+					(reference "C404")
 					(unit 1)
 				)
 			)
@@ -48855,6 +49018,33 @@
 		)
 		(property "Description" "Resistor"
 			(at 95.25 175.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 95.25 175.26 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF1003T5E"
+			(at 95.25 175.26 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C25803"
+			(at 95.25 175.26 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49170,31 +49360,33 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 251.46 62.23 0)
+		(at 191.77 93.98 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "8055e93b-1b8b-474f-8e77-4e3c69340447")
-		(property "Reference" "R407"
-			(at 255.778 61.722 0)
+		(uuid "8368453a-262c-4e0d-8ba1-78830d043707")
+		(property "Reference" "R415"
+			(at 194.31 90.424 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
 		(property "Value" "10k"
-			(at 255.016 64.008 0)
+			(at 193.802 91.948 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 249.682 62.23 90)
+			(at 191.77 95.758 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49203,7 +49395,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 251.46 62.23 0)
+			(at 191.77 93.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49212,7 +49404,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 251.46 62.23 0)
+			(at 191.77 93.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49220,16 +49412,43 @@
 				(hide yes)
 			)
 		)
-		(pin "2"
-			(uuid "bc27f050-fe8b-46a3-a74d-dd21907a394a")
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 191.77 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF1002T5E"
+			(at 191.77 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C25804"
+			(at 191.77 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
 		)
 		(pin "1"
-			(uuid "2aa4ea12-f0b6-4934-a8fe-a10cb8f9a74d")
+			(uuid "d671135c-d0d9-443c-a60a-9c1b544d862a")
+		)
+		(pin "2"
+			(uuid "5a9ee3b3-6bea-4df4-b37e-54023ae085cd")
 		)
 		(instances
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "R407")
+					(reference "R415")
 					(unit 1)
 				)
 			)
@@ -49452,6 +49671,15 @@
 				(hide yes)
 			)
 		)
+		(property "Manufacturer" "Nichicon"
+			(at 241.3 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "e669380d-8733-4a1c-a1dc-094a20c99989")
 		)
@@ -49475,21 +49703,23 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "8c5ef334-79ed-4ba6-be21-328e3658909b")
+		(uuid "8fc3662a-f3bd-4d55-a729-1b3f775f6800")
 		(property "Reference" "R401"
-			(at 57.15 32.512 0)
+			(at 54.61 32.512 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
 		(property "Value" "10k"
-			(at 57.912 34.544 0)
+			(at 55.626 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
@@ -49519,11 +49749,38 @@
 				(hide yes)
 			)
 		)
-		(pin "2"
-			(uuid "2740af09-8d4b-427e-b744-a7b6f0ec9f52")
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 60.96 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF1002T5E"
+			(at 60.96 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C25804"
+			(at 60.96 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
 		)
 		(pin "1"
-			(uuid "b921ca61-f9d8-4f4f-af46-057450558a8a")
+			(uuid "ec815a77-e666-4f46-86f6-bca2b80c8d73")
+		)
+		(pin "2"
+			(uuid "91c346c8-cd8b-4fdb-aaa5-955ba0d32855")
 		)
 		(instances
 			(project "power_supply_v1"
@@ -49535,16 +49792,16 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:C")
-		(at 227.33 39.37 0)
+		(lib_id "Device:R")
+		(at 251.46 62.23 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "90117818-6ed7-4940-8dda-eec4d780b15f")
-		(property "Reference" "C404"
-			(at 229.87 38.608 0)
+		(uuid "901c7a81-3176-40af-9020-d8aa0917e6d9")
+		(property "Reference" "R407"
+			(at 252.984 61.214 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49552,8 +49809,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "22u"
-			(at 229.87 40.386 0)
+		(property "Value" "10k"
+			(at 253.746 62.992 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49561,8 +49818,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
-			(at 228.2952 43.18 0)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 249.682 62.23 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49571,7 +49828,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 227.33 39.37 0)
+			(at 251.46 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49579,8 +49836,35 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
-			(at 227.33 39.37 0)
+		(property "Description" "Resistor"
+			(at 251.46 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 251.46 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF1002T5E"
+			(at 251.46 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C25804"
+			(at 251.46 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49589,15 +49873,15 @@
 			)
 		)
 		(pin "1"
-			(uuid "ba81a234-67b1-431d-ba8f-3b367aff1f8a")
+			(uuid "44a36d9c-b025-4dc3-a4a8-b2798dcd2fb7")
 		)
 		(pin "2"
-			(uuid "ae214f86-10da-409c-9672-2e4cb16dc756")
+			(uuid "fbc01832-223f-4f21-964e-a509e00fa45c")
 		)
 		(instances
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "C404")
+					(reference "R407")
 					(unit 1)
 				)
 			)
@@ -49955,7 +50239,7 @@
 				)
 			)
 		)
-		(property "Value" "25k"
+		(property "Value" "24k"
 			(at 43.688 66.04 90)
 			(effects
 				(font
@@ -49990,6 +50274,33 @@
 				(hide yes)
 			)
 		)
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 43.18 62.23 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF2402T5E"
+			(at 43.18 62.23 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C23352"
+			(at 43.18 62.23 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "4de9cc7f-41c5-40f9-859e-102181ba29d2")
 		)
@@ -50000,6 +50311,194 @@
 			(project ""
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
 					(reference "R406")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 191.77 68.58 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a3f9574b-1e1b-46d5-8d67-f8e33fc8ccc4")
+		(property "Reference" "R408"
+			(at 192.024 70.612 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "24k"
+			(at 192.278 72.39 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 191.77 70.358 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 191.77 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 191.77 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 191.77 68.58 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF2402T5E"
+			(at 191.77 68.58 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C23352"
+			(at 191.77 68.58 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "bf418034-77a0-42b9-a8f8-b7e6fc48a12e")
+		)
+		(pin "1"
+			(uuid "021bccef-46b8-433d-bac7-fe9ec7908ee1")
+		)
+		(instances
+			(project "power_supply_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
+					(reference "R408")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 68.58 33.02 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a4f65074-0dd6-4081-8f1d-33f93ed5c16d")
+		(property "Reference" "C401"
+			(at 73.66 32.004 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100n"
+			(at 73.66 34.036 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+			(at 67.6148 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 68.58 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 68.58 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "Samsung Electro-Mechanics"
+			(at 68.58 33.02 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "CL05B104KO5NNNC"
+			(at 68.58 33.02 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C1525"
+			(at 68.58 33.02 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "b973e5fb-3c01-4469-995b-b84a66f49dda")
+		)
+		(pin "2"
+			(uuid "ec3096c9-e135-44f2-94fc-26963b742f23")
+		)
+		(instances
+			(project "power_supply_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
+					(reference "C401")
 					(unit 1)
 				)
 			)
@@ -50201,75 +50700,6 @@
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
 					(reference "#PWR0406")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 120.65 116.84 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "b7013a65-f2be-424b-8a9b-9a7a69bd171b")
-		(property "Reference" "C415"
-			(at 123.19 116.078 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "100n"
-			(at 123.19 117.856 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
-			(at 121.6152 120.65 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 120.65 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 120.65 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "51d5b7b8-5c01-42ad-99c3-7a119065e3a2")
-		)
-		(pin "2"
-			(uuid "20a61954-cfa5-4440-a7fe-701c0684683a")
-		)
-		(instances
-			(project "power_supply_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "C415")
 					(unit 1)
 				)
 			)
@@ -50597,33 +51027,31 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 78.74 33.02 0)
+		(at 217.17 39.37 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "cb253179-e775-4904-9558-de1d2a26a91b")
-		(property "Reference" "C402"
-			(at 81.28 32.258 0)
+		(uuid "cd26fbaa-262a-40cc-b885-997bf607cbdd")
+		(property "Reference" "C403"
+			(at 222.25 38.354 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Value" "22u"
-			(at 81.28 34.036 0)
+		(property "Value" "100n"
+			(at 222.25 40.386 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
-			(at 79.7052 36.83 0)
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+			(at 216.2048 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -50632,7 +51060,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 78.74 33.02 0)
+			(at 217.17 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -50641,7 +51069,34 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 78.74 33.02 0)
+			(at 217.17 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "Samsung Electro-Mechanics"
+			(at 217.17 39.37 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "CL05B104KO5NNNC"
+			(at 217.17 39.37 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C1525"
+			(at 217.17 39.37 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -50650,15 +51105,15 @@
 			)
 		)
 		(pin "1"
-			(uuid "961fc427-4079-402a-8078-b969370c4b29")
+			(uuid "52764f79-d8c6-4ff4-87ea-d92d092b1d49")
 		)
 		(pin "2"
-			(uuid "2ca3062e-4c7f-4540-bc92-23cd0ac1d704")
+			(uuid "64a5b25c-a434-44ca-bb99-2fb0a8d9bbee")
 		)
 		(instances
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "C402")
+					(reference "C403")
 					(unit 1)
 				)
 			)
@@ -51284,32 +51739,34 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 154.94 139.7 0)
+		(lib_id "Device:C")
+		(at 78.74 33.02 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "e290bae5-d4fc-47d3-b96f-567d76aaf8b9")
-		(property "Reference" "R419"
-			(at 159.258 139.192 0)
+		(uuid "e47e4695-7663-4220-9ce9-84bc17a6aa39")
+		(property "Reference" "C402"
+			(at 81.28 32.258 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
-		(property "Value" "10k"
-			(at 158.496 141.478 0)
+		(property "Value" "22u"
+			(at 81.28 34.036 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 153.162 139.7 90)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+			(at 79.7052 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -51318,7 +51775,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 154.94 139.7 0)
+			(at 78.74 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -51326,8 +51783,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Resistor"
-			(at 154.94 139.7 0)
+		(property "Description" "Unpolarized capacitor"
+			(at 78.74 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -51335,16 +51792,43 @@
 				(hide yes)
 			)
 		)
-		(pin "2"
-			(uuid "eff4f3ee-0ef6-4c88-add6-8e3b85d9b1a2")
+		(property "Manufacturer" "Samsung Electro-Mechanics"
+			(at 78.74 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "CL21A226MAQNNNE"
+			(at 78.74 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C45783"
+			(at 78.74 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
 		)
 		(pin "1"
-			(uuid "915616c0-6765-4d00-97b6-88234fc0b890")
+			(uuid "651ec265-ed2f-40a8-accf-a939e24c3c77")
+		)
+		(pin "2"
+			(uuid "e873ad5b-4f45-4164-931e-04ee71eccc5b")
 		)
 		(instances
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "R419")
+					(reference "C402")
 					(unit 1)
 				)
 			)
@@ -51439,6 +51923,102 @@
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
 					(reference "R409")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 102.87 55.88 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e7f53a08-0497-4a9f-a039-3165421c4296")
+		(property "Reference" "R405"
+			(at 104.394 54.864 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10k"
+			(at 105.156 56.642 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 101.092 55.88 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 102.87 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 102.87 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 102.87 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF1002T5E"
+			(at 102.87 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C25804"
+			(at 102.87 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "898ffdf0-37c6-4517-8a41-1c7deef35a4b")
+		)
+		(pin "2"
+			(uuid "62cf67b1-bb43-47c0-bab3-35b599221e81")
+		)
+		(instances
+			(project "power_supply_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
+					(reference "R405")
 					(unit 1)
 				)
 			)
@@ -51541,34 +52121,32 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:C")
-		(at 217.17 39.37 0)
+		(lib_id "Device:R")
+		(at 95.25 146.05 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "ec4ff118-84a4-49ba-8499-379d2e4477e0")
-		(property "Reference" "C403"
-			(at 219.71 38.608 0)
+		(uuid "ea968707-7b4d-4f5e-9796-cad36cec2fd8")
+		(property "Reference" "R420"
+			(at 95.504 148.082 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Value" "100n"
-			(at 219.71 40.386 0)
+		(property "Value" "24k"
+			(at 95.758 149.86 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
-			(at 218.1352 43.18 0)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 95.25 147.828 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -51577,7 +52155,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 217.17 39.37 0)
+			(at 95.25 146.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -51585,8 +52163,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
-			(at 217.17 39.37 0)
+		(property "Description" "Resistor"
+			(at 95.25 146.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -51594,16 +52172,43 @@
 				(hide yes)
 			)
 		)
-		(pin "1"
-			(uuid "602a931f-99dd-4c14-a33f-658f9a162a07")
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 95.25 146.05 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF2402T5E"
+			(at 95.25 146.05 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JCSC Part Number" "C23352"
+			(at 95.25 146.05 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
 		)
 		(pin "2"
-			(uuid "3fb757e0-fe31-43fa-ad5e-d3bf0356f5b7")
+			(uuid "a20a2d1d-7b13-4784-9333-c6144e33dffc")
+		)
+		(pin "1"
+			(uuid "d1e8af08-7987-4f9c-874e-30626ca290ba")
 		)
 		(instances
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "C403")
+					(reference "R420")
 					(unit 1)
 				)
 			)
@@ -51926,73 +52531,6 @@
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
 					(reference "R422")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 191.77 97.79 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "f6353987-88d8-4347-a9af-9561bb3c752a")
-		(property "Reference" "R416"
-			(at 192.024 99.822 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "100k"
-			(at 192.024 101.6 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 191.77 99.568 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 191.77 97.79 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 191.77 97.79 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "f8f78768-b87b-473b-b151-88ffadb8130c")
-		)
-		(pin "1"
-			(uuid "4373f3b1-dc10-40d3-9906-969a073e9ca4")
-		)
-		(instances
-			(project "power_supply_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "R416")
 					(unit 1)
 				)
 			)
