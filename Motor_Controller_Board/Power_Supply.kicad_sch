@@ -2972,7 +2972,7 @@
 				(hide yes)
 			)
 		)
-		(property "JCSC Part Number" "C9906"
+		(property "LCSC Part Number" "C9906"
 			(at 121.92 142.24 90)
 			(effects
 				(font
@@ -2991,6 +2991,101 @@
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
 					(reference "L203")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 110.49 85.09 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "0ad255cc-0898-4b68-8fb3-752664f6cd76")
+		(property "Reference" "R203"
+			(at 110.49 78.74 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1k"
+			(at 110.49 81.28 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 110.49 86.868 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 110.49 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 110.49 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 110.49 85.09 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF1001T5E"
+			(at 110.49 85.09 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C21190"
+			(at 110.49 85.09 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "71480c6c-8a5e-4bc3-b1c8-f0bc2ece1eb8")
+		)
+		(pin "1"
+			(uuid "ae16c5f5-db91-43a8-9b8b-2e6da8eb2e12")
+		)
+		(instances
+			(project "power_supply_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
+					(reference "R203")
 					(unit 1)
 				)
 			)
@@ -3244,6 +3339,33 @@
 				(hide yes)
 			)
 		)
+		(property "Manufacturer" "MDD(Microdiode Semiconductor)"
+			(at 118.11 63.5 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "SS54"
+			(at 118.11 63.5 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C22452"
+			(at 118.11 63.5 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "ebf73014-95dd-4e23-8927-e5ea568df12d")
 		)
@@ -3254,6 +3376,111 @@
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
 					(reference "D201")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Regulator_Switching:LM2596S-ADJ")
+		(at 97.79 96.52 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "27aefa03-c5e2-4ba4-93a3-da23b3999d35")
+		(property "Reference" "U202"
+			(at 90.424 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "LM2596S-ADJ"
+			(at 105.41 102.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:TO-263-5_TabPin3"
+			(at 99.06 102.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm2596.pdf"
+			(at 97.79 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Adjustable 3A Step-Down Voltage Regulator, TO-263"
+			(at 97.79 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "Texas Instruments"
+			(at 97.79 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "LM2596SX-ADJ/NOPB"
+			(at 97.79 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C29781"
+			(at 97.79 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "4"
+			(uuid "e0a64011-3ae5-498b-8880-cfe1d482375a")
+		)
+		(pin "2"
+			(uuid "80a5e470-69d5-4db4-856a-f340cc1a9dfb")
+		)
+		(pin "5"
+			(uuid "b08fab0e-c808-4ba7-a6b8-7aede04cd317")
+		)
+		(pin "1"
+			(uuid "7b3fa771-f0fa-4d2e-8de1-e4d1813a406d")
+		)
+		(pin "3"
+			(uuid "cd28c616-ce7a-436b-99c1-e86041d6ca5b")
+		)
+		(instances
+			(project "power_supply_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
+					(reference "U202")
 					(unit 1)
 				)
 			)
@@ -3305,6 +3532,33 @@
 			)
 		)
 		(property "Description" "Adjustable 3A Step-Down Voltage Regulator, TO-263"
+			(at 99.06 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "Texas Instruments"
+			(at 99.06 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "LM2596SX-ADJ/NOPB"
+			(at 99.06 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C29781"
 			(at 99.06 55.88 0)
 			(effects
 				(font
@@ -3407,7 +3661,7 @@
 				(hide yes)
 			)
 		)
-		(property "JCSC Part Number" "C22790"
+		(property "LCSC Part Number" "C22790"
 			(at 120.65 137.16 90)
 			(effects
 				(font
@@ -3426,152 +3680,6 @@
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
 					(reference "R206")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Regulator_Switching:LM2596S-ADJ")
-		(at 97.79 96.52 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "2f6ff773-15d9-4ce5-89af-fec107148f10")
-		(property "Reference" "U202"
-			(at 90.424 90.17 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "LM2596S-ADJ"
-			(at 104.902 103.124 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Package_TO_SOT_SMD:TO-263-5_TabPin3"
-			(at 99.06 102.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm2596.pdf"
-			(at 97.79 96.52 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Adjustable 3A Step-Down Voltage Regulator, TO-263"
-			(at 97.79 96.52 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "4"
-			(uuid "ce47d46d-5beb-43fe-9384-a2c60d25dbc0")
-		)
-		(pin "2"
-			(uuid "fc84a24d-9f48-42dc-8189-a2899c73951f")
-		)
-		(pin "5"
-			(uuid "a5d6b558-fb41-45c6-9d95-27bb7d0f3d54")
-		)
-		(pin "1"
-			(uuid "9ea0222f-eb8e-4ba8-b83a-98956af70674")
-		)
-		(pin "3"
-			(uuid "c88f7254-cfae-4c66-b3fa-4e2901ce6c10")
-		)
-		(instances
-			(project "power_supply_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
-					(reference "U202")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 110.49 128.27 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "3052bd8d-2ca7-4a6d-b650-8d00bdea77f5")
-		(property "Reference" "R205"
-			(at 110.49 121.92 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "1k"
-			(at 110.49 124.46 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 110.49 130.048 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 110.49 128.27 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 110.49 128.27 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "4c2e3e77-fb9d-4cf4-a97a-338182559289")
-		)
-		(pin "1"
-			(uuid "cb91d6b7-d755-4f4b-88d7-4fa722b21bd3")
-		)
-		(instances
-			(project "power_supply_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
-					(reference "R205")
 					(unit 1)
 				)
 			)
@@ -3715,7 +3823,7 @@
 				(hide yes)
 			)
 		)
-		(property "JCSC Part Number" "C1588"
+		(property "LCSC Part Number" "C1588"
 			(at 120.65 85.09 90)
 			(effects
 				(font
@@ -3972,15 +4080,15 @@
 	)
 	(symbol
 		(lib_id "Device:D_Schottky")
-		(at 116.84 104.14 270)
+		(at 116.84 147.32 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "6a692034-51af-4323-9d50-941c7a565f33")
-		(property "Reference" "D202"
-			(at 108.966 105.41 90)
+		(uuid "6af5b841-a3a6-4e06-89a3-a0d0e3532296")
+		(property "Reference" "D203"
+			(at 108.966 148.59 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3989,7 +4097,7 @@
 			)
 		)
 		(property "Value" "SS54"
-			(at 108.966 107.95 90)
+			(at 108.966 151.13 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3998,7 +4106,7 @@
 			)
 		)
 		(property "Footprint" "Diode_SMD:D_SMA"
-			(at 116.84 104.14 0)
+			(at 116.84 147.32 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4007,7 +4115,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 116.84 104.14 0)
+			(at 116.84 147.32 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4016,7 +4124,34 @@
 			)
 		)
 		(property "Description" "Schottky diode"
-			(at 116.84 104.14 0)
+			(at 116.84 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "MDD(Microdiode Semiconductor)"
+			(at 116.84 147.32 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "SS54"
+			(at 116.84 147.32 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C22452"
+			(at 116.84 147.32 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4025,15 +4160,15 @@
 			)
 		)
 		(pin "2"
-			(uuid "1f1d84cf-79c3-4f62-8c57-f85234593068")
+			(uuid "f12533e0-3a9c-40dd-a306-4293417065ae")
 		)
 		(pin "1"
-			(uuid "e194fc84-8c94-4117-a5bf-292b22f17cb1")
+			(uuid "b83cf388-d036-4d55-959e-74aeb395bebf")
 		)
 		(instances
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
-					(reference "D202")
+					(reference "D203")
 					(unit 1)
 				)
 			)
@@ -4101,6 +4236,208 @@
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
 					(reference "#PWR0206")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Regulator_Switching:LM2596S-ADJ")
+		(at 97.79 139.7 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "7344c3c6-6c1f-4d5a-827c-0fdb8f5cd766")
+		(property "Reference" "U203"
+			(at 90.424 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "LM2596S-ADJ"
+			(at 105.41 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:TO-263-5_TabPin3"
+			(at 99.06 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm2596.pdf"
+			(at 97.79 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Adjustable 3A Step-Down Voltage Regulator, TO-263"
+			(at 97.79 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "Texas Instruments"
+			(at 97.79 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "LM2596SX-ADJ/NOPB"
+			(at 97.79 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C29781"
+			(at 97.79 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "4"
+			(uuid "7a19e7e4-bddd-4eb0-b135-29b4799ce047")
+		)
+		(pin "2"
+			(uuid "75e41f9d-00b8-404f-9081-d1559937196b")
+		)
+		(pin "5"
+			(uuid "e94bcc2b-0da4-4a1f-bf8c-7ebc80b61045")
+		)
+		(pin "1"
+			(uuid "6fcc10f6-f90f-4489-af7d-9217bd3a2d72")
+		)
+		(pin "3"
+			(uuid "1536aa0a-6b67-4fcc-84e9-bf58bcb72197")
+		)
+		(instances
+			(project "power_supply_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
+					(reference "U203")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C_Polarized")
+		(at 128.27 104.14 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "80c4175e-a9ce-4414-9c16-d2d684e9b57c")
+		(property "Reference" "C206"
+			(at 132.08 101.9809 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "220u"
+			(at 132.08 104.5209 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_Elec_10x10.2"
+			(at 129.2352 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 128.27 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Polarized capacitor"
+			(at 128.27 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "PANASONIC"
+			(at 128.27 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "EEEFP1H221AP"
+			(at 128.27 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C178579"
+			(at 128.27 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "0f330c28-82d0-4da9-bffa-c09d48f87124")
+		)
+		(pin "2"
+			(uuid "57ce24e5-82fe-49ea-be73-4085e72b871e")
+		)
+		(instances
+			(project "power_supply_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
+					(reference "C206")
 					(unit 1)
 				)
 			)
@@ -4175,15 +4512,15 @@
 	)
 	(symbol
 		(lib_id "Device:D_Schottky")
-		(at 116.84 147.32 270)
+		(at 116.84 104.14 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "8a4f7f80-784e-4d7b-9076-4567d52a3a68")
-		(property "Reference" "D203"
-			(at 108.966 148.59 90)
+		(uuid "91013314-8150-456c-b340-03426c01f8ff")
+		(property "Reference" "D202"
+			(at 108.966 105.41 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4192,7 +4529,7 @@
 			)
 		)
 		(property "Value" "SS54"
-			(at 108.966 151.13 90)
+			(at 108.966 107.95 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4201,7 +4538,7 @@
 			)
 		)
 		(property "Footprint" "Diode_SMD:D_SMA"
-			(at 116.84 147.32 0)
+			(at 116.84 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4210,7 +4547,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 116.84 147.32 0)
+			(at 116.84 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4219,7 +4556,34 @@
 			)
 		)
 		(property "Description" "Schottky diode"
-			(at 116.84 147.32 0)
+			(at 116.84 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "MDD(Microdiode Semiconductor)"
+			(at 116.84 104.14 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "SS54"
+			(at 116.84 104.14 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C22452"
+			(at 116.84 104.14 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4228,15 +4592,15 @@
 			)
 		)
 		(pin "2"
-			(uuid "61e9c72c-d2c2-40d9-a117-0f336a8efdb8")
+			(uuid "43112798-8e3f-4f34-b50a-2c4ce4e9882e")
 		)
 		(pin "1"
-			(uuid "d1310091-3b3a-4d17-82da-30468d8b1201")
+			(uuid "aed29a85-1c5d-4358-ae9d-d9f2bfaf4d9f")
 		)
 		(instances
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
-					(reference "D203")
+					(reference "D202")
 					(unit 1)
 				)
 			)
@@ -4314,7 +4678,7 @@
 				(hide yes)
 			)
 		)
-		(property "JCSC Part Number" "C1588"
+		(property "LCSC Part Number" "C1588"
 			(at 120.65 128.27 90)
 			(effects
 				(font
@@ -4542,7 +4906,7 @@
 				(hide yes)
 			)
 		)
-		(property "JCSC Part Number" "C4211"
+		(property "LCSC Part Number" "C4211"
 			(at 123.19 53.34 90)
 			(effects
 				(font
@@ -4636,7 +5000,7 @@
 				(hide yes)
 			)
 		)
-		(property "JCSC Part Number" "C9906"
+		(property "LCSC Part Number" "C9906"
 			(at 123.19 58.42 90)
 			(effects
 				(font
@@ -4730,7 +5094,7 @@
 				(hide yes)
 			)
 		)
-		(property "JCSC Part Number" "C22790"
+		(property "LCSC Part Number" "C22790"
 			(at 120.65 93.98 90)
 			(effects
 				(font
@@ -4892,7 +5256,7 @@
 				(hide yes)
 			)
 		)
-		(property "JCSC Part Number" "C21190"
+		(property "LCSC Part Number" "C21190"
 			(at 111.76 44.45 90)
 			(effects
 				(font
@@ -4911,103 +5275,6 @@
 			(project ""
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
 					(reference "R201")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C_Polarized")
-		(at 128.27 104.14 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "c688a275-1b67-4888-be46-b0c339b33d10")
-		(property "Reference" "C206"
-			(at 132.08 101.9809 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "220u"
-			(at 132.08 104.5209 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_Elec_10x10.2"
-			(at 129.2352 107.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 128.27 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Polarized capacitor"
-			(at 128.27 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Manufacturer" "PANASONIC"
-			(at 128.27 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MPN" "EEEFP1H221AP"
-			(at 128.27 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC Part Number" "C178579"
-			(at 128.27 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "6053af9e-3a07-4a42-8d43-27ec388ecb9f")
-		)
-		(pin "2"
-			(uuid "c145e1c8-4ecc-44a5-acd8-e13dc9458b91")
-		)
-		(instances
-			(project "power_supply_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
-					(reference "C206")
 					(unit 1)
 				)
 			)
@@ -5083,7 +5350,7 @@
 				(hide yes)
 			)
 		)
-		(property "JCSC Part Number" "C9906"
+		(property "LCSC Part Number" "C9906"
 			(at 121.92 99.06 90)
 			(effects
 				(font
@@ -5112,7 +5379,7 @@
 		(at 26.67 96.52 180)
 		(unit 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(uuid "cfe34908-5d25-4662-a1c5-9ae284c87797")
@@ -5273,16 +5540,16 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 110.49 85.09 90)
+		(at 110.49 128.27 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "d3fb5bd1-b009-4463-876b-67f32d5c241a")
-		(property "Reference" "R203"
-			(at 110.49 78.74 90)
+		(uuid "d74a8a51-8ba8-4ebe-b14f-c86f9241127c")
+		(property "Reference" "R205"
+			(at 110.49 121.92 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5290,7 +5557,7 @@
 			)
 		)
 		(property "Value" "1k"
-			(at 110.49 81.28 90)
+			(at 110.49 124.46 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5298,7 +5565,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 110.49 86.868 90)
+			(at 110.49 130.048 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5307,7 +5574,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 110.49 85.09 0)
+			(at 110.49 128.27 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5316,7 +5583,34 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 110.49 85.09 0)
+			(at 110.49 128.27 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 110.49 128.27 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "0603WAF1001T5E"
+			(at 110.49 128.27 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C21190"
+			(at 110.49 128.27 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5325,93 +5619,15 @@
 			)
 		)
 		(pin "2"
-			(uuid "12c5e700-7e31-40cc-bc45-0113c2f2734e")
+			(uuid "9c09a454-7a6d-4c25-8eed-7269bb38a93e")
 		)
 		(pin "1"
-			(uuid "30ba457b-20b0-457d-ab46-3e64a545c7de")
+			(uuid "b58277c5-931a-44ff-acc1-908dd09269d0")
 		)
 		(instances
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
-					(reference "R203")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Regulator_Switching:LM2596S-ADJ")
-		(at 97.79 139.7 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "dfd05ddf-dcb5-441a-8aef-0e24f37cd5fb")
-		(property "Reference" "U203"
-			(at 90.424 133.604 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "LM2596S-ADJ"
-			(at 104.902 146.05 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Package_TO_SOT_SMD:TO-263-5_TabPin3"
-			(at 99.06 146.05 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm2596.pdf"
-			(at 97.79 139.7 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Adjustable 3A Step-Down Voltage Regulator, TO-263"
-			(at 97.79 139.7 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "4"
-			(uuid "564c7bbd-a3a6-4fb4-b7ce-923f51f3caab")
-		)
-		(pin "2"
-			(uuid "63e27d20-9a8c-4de8-b6c8-668deb9d30d0")
-		)
-		(pin "5"
-			(uuid "5ec68d9f-c8de-4e4b-a98a-6f556506e22d")
-		)
-		(pin "1"
-			(uuid "427c8672-c35a-43b3-8958-bb7daf60d5dd")
-		)
-		(pin "3"
-			(uuid "caf4126f-8962-4f6a-a92e-c86ee897a345")
-		)
-		(instances
-			(project ""
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/1132a342-589f-4523-a20b-cee7da5a1aed"
-					(reference "U203")
+					(reference "R205")
 					(unit 1)
 				)
 			)
