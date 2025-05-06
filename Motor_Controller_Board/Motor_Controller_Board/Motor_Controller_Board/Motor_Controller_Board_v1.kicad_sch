@@ -6,11 +6,12 @@
 	(paper "A4")
 	(title_block
 		(title "Motor Controller Board")
+		(date "2025-05-05")
 		(rev "v1")
 		(company "University of California, Santa Cruz")
 	)
 	(lib_symbols)
-	(text "MOTOR CONTROLLER BOARD"
+	(text "MOTOR CONTROLLER BOARD v2"
 		(exclude_from_sim no)
 		(at 66.548 18.288 0)
 		(effects
