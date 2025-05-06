@@ -455,7 +455,7 @@
       "no_connect_dangling": "warning",
       "pin_not_connected": "error",
       "pin_not_driven": "error",
-      "pin_to_pin": "warning",
+      "pin_to_pin": "error",
       "power_pin_not_driven": "error",
       "same_local_global_label": "warning",
       "similar_label_and_power": "warning",
@@ -499,9 +499,15 @@
         "wire_width": 6
       },
       {
-        "name": "USB",
+        "name": "H",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "priority": 0,
+        "schematic_color": "rgba(0, 0, 0, 0.000)"
+      },
+      {
+        "name": "USB",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "priority": 1,
         "schematic_color": "rgba(0, 0, 0, 0.000)"
       }
     ],
@@ -512,8 +518,8 @@
     "netclass_assignments": null,
     "netclass_patterns": [
       {
-        "netclass": "USB",
-        "pattern": "/USB*"
+        "netclass": "H",
+        "pattern": "/AGITATE*"
       }
     ]
   },

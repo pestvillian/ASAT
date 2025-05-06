@@ -323,25 +323,6 @@
 				)
 			)
 			(pin passive line
-				(at -3.81 -40.64 90)
-				(length 2.54)
-				(hide yes)
-				(name "GND"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "29"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin passive line
 				(at 0 -40.64 90)
 				(length 2.54)
 				(name "GND"
@@ -352,6 +333,25 @@
 					)
 				)
 				(number "18"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -40.64 90)
+				(length 2.54)
+				(hide yes)
+				(name "GND"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "29"
 					(effects
 						(font
 							(size 1.27 1.27)
