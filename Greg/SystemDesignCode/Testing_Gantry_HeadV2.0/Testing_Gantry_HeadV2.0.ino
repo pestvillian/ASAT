@@ -69,7 +69,9 @@ void setup() {
   limitSwitchX.setDebounceTime(50);
   limitSwitchY.setDebounceTime(50);
   //max frequency
+  MOTOR_A.enableOutputs();
   MOTOR_A.setMaxSpeed(7000);
+  MOTOR_A
   //horizontal debugging
   //testPCB();
   //agitation debugging
