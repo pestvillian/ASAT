@@ -14898,16 +14898,6 @@
 		)
 		(uuid "6d6c24c4-6082-40a7-8ebd-0948b5928468")
 	)
-	(text "back current sunk to ground before reaching driver vbb pin"
-		(exclude_from_sim no)
-		(at 144.526 62.484 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "89bb4454-0b00-4ed0-9b7c-53c61f086f19")
-	)
 	(text "Vref = 0.35V"
 		(exclude_from_sim no)
 		(at 98.298 118.364 0)
@@ -15003,28 +14993,6 @@
 			)
 		)
 		(uuid "d2d714cb-445f-4bbf-8ad7-2cfc2c1247bb")
-	)
-	(text "what type of diode for flyback? likely needs 50V rating?"
-		(exclude_from_sim no)
-		(at 142.494 58.928 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "d3c8c2db-8b1b-43db-9932-1af53a4748c1")
-	)
-	(text "CHANGE THIS LCSC PART NUMBER"
-		(exclude_from_sim no)
-		(at 138.938 56.388 0)
-		(effects
-			(font
-				(size 2.54 2.54)
-				(thickness 0.508)
-				(bold yes)
-			)
-		)
-		(uuid "fdbae54e-4387-4412-90cc-b1a990dc019c")
 	)
 	(junction
 		(at 228.6 57.15)
@@ -20831,7 +20799,7 @@
 	)
 	(symbol
 		(lib_id "Device:D")
-		(at 104.14 62.23 180)
+		(at 104.14 62.23 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -20839,15 +20807,15 @@
 		(dnp no)
 		(uuid "54e6829d-9a11-4696-86a8-6a8bc9300f19")
 		(property "Reference" "D401"
-			(at 104.394 64.516 0)
+			(at 104.394 67.056 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "SMAJ22A"
-			(at 104.648 66.548 0)
+		(property "Value" "SMAJ28A"
+			(at 104.14 65.024 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -20908,7 +20876,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "SMAJ22A"
+		(property "MPN" "SMAJ28A"
 			(at 104.14 62.23 0)
 			(effects
 				(font
@@ -20917,7 +20885,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part Number" "C148220"
+		(property "LCSC Part Number" "C148227"
 			(at 104.14 62.23 0)
 			(effects
 				(font
@@ -21030,6 +20998,118 @@
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
 					(reference "C417")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:D")
+		(at 157.48 146.05 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "57dac351-44dd-4f90-8faa-e687fc881b72")
+		(property "Reference" "D403"
+			(at 157.734 150.876 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "SMAJ28A"
+			(at 157.48 148.844 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Diode_SMD:D_SMA"
+			(at 157.48 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 157.48 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Diode"
+			(at 157.48 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Device" "D"
+			(at 157.48 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Pins" "1=K 2=A"
+			(at 157.48 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "Littelfuse"
+			(at 157.48 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "SMAJ28A"
+			(at 157.48 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C148227"
+			(at 157.48 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "853e98a8-1ad3-4015-848b-9e5f94c38bff")
+		)
+		(pin "2"
+			(uuid "0187a1fd-3e34-4b04-8d15-8722708fa4e4")
+		)
+		(instances
+			(project "Motor_Controller_Board_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
+					(reference "D403")
 					(unit 1)
 				)
 			)
@@ -21540,7 +21620,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10R"
+		(property "Value" "10k"
 			(at 258.826 64.262 0)
 			(effects
 				(font
@@ -22376,7 +22456,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10R"
+		(property "Value" "10k"
 			(at 163.576 141.732 0)
 			(effects
 				(font
@@ -23803,6 +23883,118 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:D")
+		(at 252.73 68.58 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "bf8c91ba-9261-453c-8ac7-88deb7a446a2")
+		(property "Reference" "D402"
+			(at 252.984 73.406 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "SMAJ28A"
+			(at 252.73 71.374 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Diode_SMD:D_SMA"
+			(at 252.73 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 252.73 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Diode"
+			(at 252.73 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Device" "D"
+			(at 252.73 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Pins" "1=K 2=A"
+			(at 252.73 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "Littelfuse"
+			(at 252.73 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "SMAJ28A"
+			(at 252.73 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C148227"
+			(at 252.73 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "4ceb9610-79d9-4225-8e00-d141719aa228")
+		)
+		(pin "2"
+			(uuid "19f43868-945e-4f16-8a70-143f7047b201")
+		)
+		(instances
+			(project "Motor_Controller_Board_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
+					(reference "D402")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C")
 		(at 77.47 57.15 180)
 		(unit 1)
@@ -24159,118 +24351,6 @@
 			(project ""
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
 					(reference "J401")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:D")
-		(at 157.48 146.05 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "cfb45435-0e43-422e-8233-fe07913fa8bc")
-		(property "Reference" "D403"
-			(at 157.734 148.336 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "SMAJ22A"
-			(at 157.988 150.368 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Diode_SMD:D_SMA"
-			(at 157.48 146.05 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 157.48 146.05 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Diode"
-			(at 157.48 146.05 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" "D"
-			(at 157.48 146.05 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=K 2=A"
-			(at 157.48 146.05 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Manufacturer" "Littelfuse"
-			(at 157.48 146.05 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MPN" "SMAJ22A"
-			(at 157.48 146.05 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC Part Number" "C148220"
-			(at 157.48 146.05 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "90e43e40-5edf-4e4f-b42a-89805e9d0645")
-		)
-		(pin "2"
-			(uuid "5330a817-5306-42bc-a72c-a2c074caa506")
-		)
-		(instances
-			(project "Motor_Controller_Board_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "D403")
 					(unit 1)
 				)
 			)
@@ -25188,7 +25268,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10R"
+		(property "Value" "10k"
 			(at 110.236 57.912 0)
 			(effects
 				(font
@@ -25612,118 +25692,6 @@
 			(project "power_supply_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
 					(reference "R414")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:D")
-		(at 252.73 68.58 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "f43a4cfb-14f7-4a50-b7c3-e135daf63d79")
-		(property "Reference" "D402"
-			(at 252.984 70.866 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "SMAJ22A"
-			(at 253.238 72.898 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Diode_SMD:D_SMA"
-			(at 252.73 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 252.73 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Diode"
-			(at 252.73 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" "D"
-			(at 252.73 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=K 2=A"
-			(at 252.73 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Manufacturer" "Littelfuse"
-			(at 252.73 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MPN" "SMAJ22A"
-			(at 252.73 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC Part Number" "C148220"
-			(at 252.73 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "57aa0db4-232a-4455-8cc8-b91db17c7b0b")
-		)
-		(pin "2"
-			(uuid "4bfa39c0-1062-4dde-87dd-bb2ab4627da5")
-		)
-		(instances
-			(project "Motor_Controller_Board_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "D402")
 					(unit 1)
 				)
 			)
