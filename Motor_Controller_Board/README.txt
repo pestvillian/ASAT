@@ -9,3 +9,15 @@ List of changes to track progress.
 5/2/25. revised schematic with Mishari and Alex. pretty confident in the design, so we started picking footprints. I've finished the microcontroller and stepper driver footprints, working on the buck regulators right now. i want to use the same 50V rated capacitor for both Cin and Cout.
 
 5/3/25. all footprints assigned and every part manufacturer, manufacturer part number, and jcsc part number for BOM. added boot configuration for microcontroller. ready to begin premature layout, but still very open to changes in schematic.
+
+5/3/25. added all 3d models and starting pcb layout. it is tricky
+
+5/4/25. drastically simplified design by using 24V from SMPS for all motors. only one buck regulator for logic components. layout has begun and a general placement for parts has been established by myself without review from team yet. many changes can be made. stepper drivers likely will switch to +3.3V logic, vmotor filtering should be changed to surface mounts for size continuity, copy pasting the setup from one driver to the other two, and more. 
+
+5/5/25. Reviewed schematic with Alex and Mishari. We are confident in the schematic, we will clean up a few last things tonight and then continue layout tomorrow.
+
+5/5/25. placed all components in a rough outline, going to review with teammates tomorrow.
+
+5/6/25. 75% of routing finished, but the routing was very sloppy.
+
+5/7/25. pcb design is almost finished. Petersen was relatively happy with our layout and gave some tips. mishari will implement the tips tonight. no erc or drc errors currently except for the asats logo on the pcb layout. needs a final review tomorrow and then it will be ordered!
