@@ -30,7 +30,7 @@ const int MOTOR_X_DIR = 20;
 
 const int MOTOR_Y_STEP = 19;  //
 const int MOTOR_Y_DIR = 18;   //
-const int AGITATION_MOTOR_STEP_CHANNEL = 5;
+const int AGITATION_MOTOR_STEP_CHANNEL = 2;
 const int MOTOR_X_STEP_CHANNEL = 4;
 const int MOTOR_Y_STEP_CHANNEL = 3;
 
@@ -92,8 +92,7 @@ ProtocolType getProtocolType(char *protocol);
 void setup() {
   // Set up UART and GPIO
   Serial.begin(115200);
-  pixels.begin();  // for led side quest
-
+  pixels.begin();                            // for led side quest
   limitSwitchAgitation.setDebounceTime(50);  // set debounce time of limit switch to 50 milliseconds
   limitSwitchX.setDebounceTime(50);
   limitSwitchY.setDebounceTime(50);
@@ -105,21 +104,17 @@ void setup() {
   pinMode(5, INPUT_PULLDOWN);
   pinMode(6, INPUT_PULLDOWN);
 
-  // Setup Agitation Motor Step Signal
+  // Setup  Motor Step Signal
   ledcAttachChannel(AGITATION_MOTOR_STEP, 1000, 8, AGITATION_MOTOR_STEP_CHANNEL);
-  ledcWrite(AGITATION_MOTOR_STEP, 0);  // set duty cycle
-  // Setup Agitation Motor Dir Signal
-  ledcWrite(AGITATION_MOTOR_DIR, 0);  // set duty cycle
   ledcAttachChannel(MOTOR_X_STEP, 1000, 8, MOTOR_X_STEP_CHANNEL);
-  ledcWrite(MOTOR_X_STEP, 0);
-
-  ledcWrite(MOTOR_X_DIR, 0);
-  // Y direction Configuration
   ledcAttachChannel(MOTOR_Y_STEP, 1000, 8, MOTOR_Y_STEP_CHANNEL);
-  ledcWrite(MOTOR_Y_STEP, 0);
 
-  ledcWrite(MOTOR_Y_DIR, 0);
+  //rx pin is set to a microstepping trace
+  pinMode(17, OUTPUT);
+  digitalWrite(17, HIGH);
 
+  //config Enable Pin
+  pinMode(15, OUTPUT);
   /** USEFUL FUNCTIONS:
    * ledcWriteTone(AGITATION_MOTOR_STEP, 1000);
    * ledcChangeFrequency(AGITATION_MOTOR_DIR, 10, 8);
@@ -207,111 +202,240 @@ void setup() {
   //fun
   //sidequest
 
-  // while(1){
+  // while (1) {
   //   for (int i = 0; i < 256; i++) {
-  //   // Set the pixel to the current color in the wheel
-  //   pixels.setPixelColor(0, Wheel(i));
-  //   pixels.show();
-  //   delay(100);
+  //     // Set the pixel to the current color in the wheel
+  //     pixels.setPixelColor(0, Wheel(i));
+  //     pixels.show();
+  //     delay(100);
+  //   }
   // }
 
-  // while(1){
-  //   moveMotor(MOTOR_X_STEP,MOTOR_X_DIR,HIGH,2,1);
-  //   delay(100);
-  //   moveMotor(MOTOR_X_STEP,MOTOR_X_DIR,LOW,2,1);
-  //   delay(100);
-  // }
-  // //more fun
-  autoHome();  //starting point
-  while (1) {
-    moveMotorY(HIGH, 5, 8);
-    moveMotorX(HIGH, 3, 8.75);  //HIGH = RIght
-    moveMotorY(HIGH, 5, 8);     //LOW = UP ???????
 
-    moveMotorX(HIGH, 3, 8.75);  //HIGH = RIght
-    moveMotorY(LOW, 5, 8);      //LOW = UP ???????
+  /*WORKS this block FUcking Works. 
+  // digitalWrite(AGITATION_MOTOR_DIR, HIGH);
+  // ledcWriteTone(AGITATION_MOTOR_STEP,5000);
+  l
+  anybody says shit!!! upload this :*/
+  // autoHome();  //starting point
+  //moveMotorA(HIGH,1,20);// HIGH = DOWN
+  agitateMotors(9, 90, 2, 50);
+}
 
-    moveMotorX(HIGH, 3, 8.75);  //HIGH = RIght
-    moveMotorY(HIGH, 5, 8);     //LOW = UP ???????
+/**
+ * @brief: take in a distance and move the gantry head that amount
+ * note this particular motor driver is quarter microsteped.
+ * @param distance
+ * @retval: none
+ */
+void moveMotorA(int DIR, uint32_t speed, float distance) {  //
+  // convert distance to steps. for now i'm keeping it in number of revolutions
+  uint32_t steps = distanceToStepsA(distance);
+  uint16_t stepFrequency = mapSpeedA(speed);          // adjust to control speed (Hz)
+  float secondsToRun = (float)steps / stepFrequency;  // time = steps / freq
+  uint32_t durationMs = (uint32_t)(secondsToRun * 1000);
 
-    moveMotorX(HIGH, 3, 8.75);  //HIGH = RIght
-    moveMotorY(LOW, 5, 8);      //LOW = UP ???????
-    autoHome();
+  Serial.print("Agitation Frequency");
+  Serial.println(stepFrequency);
+  Serial.print("Agitation moving delay");
+  Serial.println(durationMs);
+
+  digitalWrite(AGITATION_MOTOR_DIR, DIR);              // set direction
+  ledcWriteTone(AGITATION_MOTOR_STEP, stepFrequency);  // start step pulses
+
+  delay(durationMs);  // run long enough to cover desired steps
+
+  ledcWriteTone(AGITATION_MOTOR_STEP, 0);  // stop step pulses
+}
+// angle (degrees) = (arc length / radius) * (180 / π)
+uint32_t distanceToStepsA(float distance)  // about 8.75mm
+{
+  //return distance * 200 * 16; // one rotation
+  return (uint32_t)(distance * (3200.0 / 20.0) + 0.5f);
+}
+// num1 and num2 are the integer ranges of speed, num3 and num4 are the frequency ranges
+unsigned int mapSpeedA(float value) {
+  return (value - 1) * (15000 - 8000) / (9 - 1) + 8000;
+}
+/**
+ * @brief: perform the agitation operation of moving motors up and down very quickly
+ * @param agitateSpeed: agitation speed on a scale of 1-9
+ * @param agitateDuration: agitation duration given in seconds
+ * @param percentDepth: percentage of well volume to be displaced
+ * @retval: a useful professor petersen
+ */
+void agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t totalVolume, uint8_t percentDepth) {
+  //homeAgitation();
+  // set motor speed
+  int agitationFrequency = mapSpeedA(agitateSpeed);  // newmap
+
+  //int toggleDelay = 1000 / (depth);                // milliseconds per half-cycle (back and forth)
+  uint16_t depth = totalVolume;
+  // setup for changing directions
+  bool DIR = HIGH;                       // init direction
+  unsigned long startTime = millis();    // capture a start time
+  pinMode(AGITATION_MOTOR_DIR, OUTPUT);  // ensure pin is set to output
+
+  while (millis() - startTime < (agitateDuration * 1000)) {
+    digitalWrite(AGITATION_MOTOR_DIR, DIR);                   // set new direction
+    delay(1);                                                 //delay before next iteration
+    ledcWriteTone(AGITATION_MOTOR_STEP, agitationFrequency);  // Drive motor
+    delay(200);                                               //controls depth of penetration
+    ledcWriteTone(AGITATION_MOTOR_STEP, 0);                   // stop motor
+
+    DIR = (DIR == HIGH) ? LOW : HIGH;  // change directions after every toggleDelay iteration
   }
-
-
-  // moveMotorA(LOW,9,600000000);
-  // agitateMotors(12000, 60, 1, 90);
+  // turn motors off afrer delay is finished
+  ledcWriteTone(AGITATION_MOTOR_STEP, 0);
 }
 
-// unused
-void loop() {
-  // //
-  limitSwitchAgitation.loop();
-  limitSwitchX.loop();
-  limitSwitchY.loop();
-}
 /**
  * @brief:runs motor in home direction until a limit switch is hit
  * @param none
  * @retval: none
  */
 void autoHome() {
-  // Home MOtor X
-
-  while (1) {
-    limitSwitchX.loop();                //check status of limit switch
-    ledcWriteTone(MOTOR_X_STEP, 1000);  // Drive motor
-    digitalWrite(MOTOR_X_DIR, LOW);     //home direction is left = LOW
-    //debug
-    //determine output of the status of limit switchS
-
-    uint8_t state = digitalRead(4);
+  int motorSequence = 0;  //controls sequence of motors homing.
+  Serial.println("HOMEING!!!");
+  //home agitation motor
+  if (motorSequence == 0) {
+    digitalWrite(AGITATION_MOTOR_DIR, LOW);
+    ledcWriteTone(AGITATION_MOTOR_STEP, 10000);  // Drive motor
+    // determine if it is pressed
+    uint8_t stateA = digitalRead(6);
     Serial.print("Limit switch status => ");
-    Serial.println(state);
+    Serial.println(stateA);
+    pixels.setPixelColor(0, 250);  //third light state
+    pixels.show();
 
     //if the state of the limit switch is high that means it has been pressed
-    if (state != 1) {
-      Serial.println("Limit switch is currently Touched");
-      //turn off motor in this event
-      digitalWrite(MOTOR_X_DIR, HIGH);
-      ledcWriteTone(MOTOR_X_STEP, 0);  //
-
-      moveMotorX(HIGH, 2, 4);  //nudge motor to the right so it's not on the limit switch
-      break;
-
-    } else {
-      //Serial.println("Limit switch is currently Untouched");
-      continue;
+    while (1) {
+      stateA = digitalRead(6);
+      if (stateA != 1) {
+        Serial.println("Limit switch is currently Touched");
+        //turn off motor in this event
+        digitalWrite(AGITATION_MOTOR_DIR, HIGH);
+        ledcWriteTone(AGITATION_MOTOR_STEP, 0);  //
+        moveMotorA(HIGH, 8, 16);
+        //light off
+        pixels.setPixelColor(0, 0);  //
+        pixels.show();
+        motorSequence = 1;
+        break;
+      } else {
+        //Serial.println("Limit switch is currently Untouched");
+        continue;
+      }
     }
   }
-
-
   // Home MOtor Y
-  while (1) {
-    limitSwitchY.loop();               //check status of limit switch
+  if (motorSequence == 1) {
+
     ledcWriteTone(MOTOR_Y_STEP, 800);  // Drive motor
     digitalWrite(MOTOR_Y_DIR, HIGH);   //home direction is Down = LOW
-                                       //debug
-    uint8_t state = digitalRead(5);
+
+    uint8_t stateY = digitalRead(5);  //read status of limit switch
     Serial.print("Limit switch status => ");
-    Serial.println(state);
-
+    Serial.println(stateY);
+    pixels.setPixelColor(0, 150);  //second light state
+    pixels.show();
     //if the state of the limit switch is high that means it has been pressed
-    if (state != 1) {
-      Serial.println("Limit switch is currently Touched");
-      //turn off motor in this event
-      digitalWrite(MOTOR_Y_DIR, HIGH);
-      ledcWriteTone(MOTOR_Y_STEP, 0);  //
-
-      moveMotorY(HIGH, 4, 16);  //nudge motor to the right so it's not on the limit switch
-      break;
-
-    } else {
-      //Serial.println("Limit switch is currently Untouched");
-      continue;
+    while (1) {
+      stateY = digitalRead(5);  //read status of limit switch
+      if (stateY != 1) {
+        Serial.println("Limit switch is currently Touched");
+        //turn off motor in this event
+        digitalWrite(MOTOR_Y_DIR, HIGH);
+        ledcWriteTone(MOTOR_Y_STEP, 0);  //
+        moveMotorY(LOW, 4, 8);           //nudge motor to the right so it's not on the limit switch
+        motorSequence = 2;
+        break;
+      } else {
+        //Serial.println("Limit switch is currently Untouched");
+        continue;
+      }
     }
   }
+
+  //homing X
+  if (motorSequence == 2) {
+
+    ledcWriteTone(MOTOR_X_STEP, 800);  // Drive motor
+    digitalWrite(MOTOR_X_DIR, LOW);    //home direction is left = LOW
+
+
+    uint8_t stateX = digitalRead(4);  //check status of limit switch
+    Serial.print("Limit switch status => ");
+    Serial.println(stateX);
+    //if the state of the limit switch is high that means it has been pressed
+
+    while (1) {
+      //the motor should be running the whole time that the limit switch is untouched
+      pixels.setPixelColor(0, 90);  //first light state
+      pixels.show();
+      stateX = digitalRead(4);  //check status of limit switch
+      if (stateX != 1) {
+        Serial.println("Limit switch is currently Touched");
+        pixels.setPixelColor(0, 150);  //first light state
+        pixels.show();
+        //turn off motor in this event
+        digitalWrite(MOTOR_X_DIR, HIGH);
+        ledcWriteTone(MOTOR_X_STEP, 0);  //
+        moveMotorX(HIGH, 2, 2);          //nudge motor to the right so it's not on the limit switch
+
+        break;
+      }
+    }
+  }
+
+
+  //homing complete begin phase 2
+
+  //move all three axis to there init positions
+
+  moveMotorY(LOW, 4, 12);   // motor y to init position
+  moveMotorX(HIGH, 5, 12);  //motor x to init position
+  moveMotorA(HIGH, 4, 4);   //move Agitation Head so that the plastic Combs are just above the test rack
+
+
+  //rest of the homing repositioning sequence goes here:)
+}
+
+void homeAgitation() {
+  int motorSequence = 0;  //controls sequence of motors homing.
+  Serial.println("HOMEING!!!");
+  //home agitation motor
+  if (motorSequence == 0) {
+    digitalWrite(AGITATION_MOTOR_DIR, HIGH);
+    ledcWriteTone(AGITATION_MOTOR_STEP, 10000);  // Drive motor
+    // determine if it is pressed
+    uint8_t stateA = digitalRead(6);
+    Serial.print("Limit switch status => ");
+    Serial.println(stateA);
+    pixels.setPixelColor(0, 250);  //third light state
+    pixels.show();
+
+    //if the state of the limit switch is high that means it has been pressed
+    while (1) {
+      stateA = digitalRead(6);
+      if (stateA != 1) {
+        Serial.println("Limit switch is currently Touched");
+        //turn off motor in this event
+        digitalWrite(AGITATION_MOTOR_DIR, HIGH);
+        ledcWriteTone(AGITATION_MOTOR_STEP, 0);  //
+        moveMotorA(LOW, 8, 16);
+        //light off
+        pixels.setPixelColor(0, 0);  //
+        pixels.show();
+        motorSequence = 1;
+        break;
+      } else {
+        //Serial.println("Limit switch is currently Untouched");
+        continue;
+      }
+    }
+  }
+  moveMotorA(LOW, 8, 4);  // home to init position where the combs are just above the tray
 }
 
 
@@ -348,87 +472,6 @@ uint32_t distanceToStepsY(float distance)  // about 8.75mm
 unsigned int mapSpeedY(float value) {
   return (value - 1) * (1000 - 400) / (9 - 1) + 400;
 }
-
-
-
-
-
-/**
- * @brief: take in a distance and move the gantry head that amount
- * note this particular motor driver is quarter microsteped.
- * @param distance
- * @retval: none
- */
-void moveMotorA(int DIR, uint32_t speed, float distance) {  // 1 step is 1.8 degrees
-  // convert distance to steps. for now i'm keeping it in number of revolutions
-  uint32_t steps = distanceToStepsA(distance);
-  uint16_t stepFrequency = mapSpeedA(speed);          // adjust to control speed (Hz)
-  float secondsToRun = (float)steps / stepFrequency;  // time = steps / freq
-  uint32_t durationMs = (uint32_t)(secondsToRun * 1000);
-
-  Serial.print("Agitation Frequency");
-  Serial.println(stepFrequency);
-  Serial.print("Agitation moving delay");
-  Serial.println(durationMs);
-
-
-  digitalWrite(AGITATION_MOTOR_DIR, DIR);              // set direction
-  ledcWriteTone(AGITATION_MOTOR_STEP, stepFrequency);  // start step pulses
-
-  delay(durationMs);  // run long enough to cover desired steps
-
-  ledcWriteTone(AGITATION_MOTOR_STEP, 0);  // stop step pulses
-}
-// angle (degrees) = (arc length / radius) * (180 / π)
-uint32_t distanceToStepsA(float distance)  // about 8.75mm
-{
-  // return distance * 200 * 16; // one rotation
-  return (uint32_t)(distance * (3200.0 / 8.0) + 0.5f);
-}
-// num1 and num2 are the integer ranges of speed, num3 and num4 are the frequency ranges
-unsigned int mapSpeedA(float value) {
-  return (value - 1) * (1000 - 400) / (9 - 1) + 400;
-}
-
-
-
-/**
- * @brief: perform the agitation operation of moving motors up and down very quickly
- * @param agitateSpeed: agitation speed on a scale of 1-9
- * @param agitateDuration: agitation duration given in seconds
- * @param percentDepth: percentage of well volume to be displaced
- * @retval: a useful professor petersen
- */
-void agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t totalVolume, uint8_t percentDepth) {
-  //homeAgitation();
-  // set motor speed
-  //int agitationFrequency = mapSpeed(agitateSpeed); // newmap
-
-  //int toggleDelay = 1000 / (depth);                // milliseconds per half-cycle (back and forth)
-
-  // setup for changing directions
-  bool DIR = LOW;                        // init direction
-  unsigned long startTime = millis();    // capture a start time
-  pinMode(AGITATION_MOTOR_DIR, OUTPUT);  // ensure pin is set to output
-
-  while (millis() - startTime < (agitateDuration * 1000)) {
-    digitalWrite(AGITATION_MOTOR_DIR, DIR);             // set new direction
-    delay(1);                                           //delay before next iteration
-    ledcWriteTone(AGITATION_MOTOR_STEP, agitateSpeed);  // Drive motor
-    delay(300);                                         //controls depth of penetration
-    ledcWriteTone(AGITATION_MOTOR_STEP, 0);             // stop motor
-
-
-    DIR = (DIR == HIGH) ? LOW : HIGH;  // change directions after every toggleDelay iteration
-  }
-  // turn motors off afrer delay is finished
-  ledcWriteTone(AGITATION_MOTOR_STEP, 0);
-}
-
-
-
-
-
 
 /**
  * @brief: take in a distance and move the gantry head that amount
@@ -500,31 +543,7 @@ unsigned int mapSpeedX(float value) {
 //   moveMotor(MOTOR_X_STEP, MOTOR_X_DIR, HIGH, speed, 1); // must determine distance between wells and relate to rotations
 // }
 
-void homeAgitation() {
 
-  // run motor Agitaion MOtor
-  while (1) {
-    limitSwitchAgitation.loop();
-    ledcWriteTone(AGITATION_MOTOR_STEP, 500);  // Drive motor
-    digitalWrite(AGITATION_MOTOR_DIR, HIGH);
-    // determine if it is pressed
-    if (limitSwitchAgitation.isPressed()) {
-      Serial.println("The limit switch: UNTOUCHED -> TOUCHED");
-    }
-    if (limitSwitchAgitation.isReleased()) {
-      Serial.println("The limit switch: TOUCHED -> UNTOUCHED");
-    }
-
-    int state = limitSwitchAgitation.getState();  // determine the state of the limit switch
-    if (state == HIGH) {
-      Serial.println("The limit switch: Untouched");
-    } else {
-      Serial.println("The limit switch: Touched");
-      ledcWriteTone(AGITATION_MOTOR_STEP, 0);
-      break;
-    }
-  }
-}
 
 /**
  * @brief: Pause the motor for a number of seconds
@@ -613,8 +632,10 @@ ProtocolType getProtocolType(char *protocol) {
       break;
   }
 }
-
-// Helper function to convert HSV to RGB
+// unused
+void loop() {
+}
+// Helper function to convert HSV to RGB for side quest
 uint32_t Wheel(byte WheelPos) {
   WheelPos = 255 - WheelPos;
   if (WheelPos < 85) {
