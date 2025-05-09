@@ -23,3 +23,5 @@ List of changes to track progress.
 5/7/25. pcb design is almost finished. Petersen was relatively happy with our layout and gave some tips. mishari will implement the tips tonight. no erc or drc errors currently except for the asats logo on the pcb layout. needs a final review tomorrow and then it will be ordered!
 
 5/8/25. Mishari added bottom +24V plane instead of 2mm trace and was reviewed by team. Changed enable pins to be controlled by esp32. added potentiometer. alex, mishari and Dorjee all reviewed footprints and design. we plan to order tomorrow, will review tonight and tomorrow before ordering.
+
+5/8/25. switched board to horizontal text and cleaned it up.

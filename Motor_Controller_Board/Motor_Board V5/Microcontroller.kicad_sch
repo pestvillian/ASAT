@@ -2688,9 +2688,9 @@
 		)
 		(uuid "7ec0ac44-20be-4ad2-9e87-be1dbb2b13a6")
 	)
-	(text "ESP32-C6-MINI"
+	(text "ESP32-C6-MINI-1U"
 		(exclude_from_sim no)
-		(at 69.088 50.038 0)
+		(at 72.644 50.038 0)
 		(effects
 			(font
 				(size 2.54 2.54)

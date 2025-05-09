@@ -455,14 +455,14 @@
 				(pin output line
 					(at 12.7 -6.35 180)
 					(length 2.54)
-					(name "OUT1A"
+					(name "OUT1B"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "24"
+					(number "21"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -473,14 +473,14 @@
 				(pin output line
 					(at 12.7 -8.89 180)
 					(length 2.54)
-					(name "OUT1B"
+					(name "OUT1A"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "21"
+					(number "24"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -14382,14 +14382,14 @@
 				(pin output line
 					(at 12.7 -6.35 180)
 					(length 2.54)
-					(name "OUT1A"
+					(name "OUT1B"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "24"
+					(number "21"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -14400,14 +14400,14 @@
 				(pin output line
 					(at 12.7 -8.89 180)
 					(length 2.54)
-					(name "OUT1B"
+					(name "OUT1A"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "21"
+					(number "24"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -29265,14 +29265,14 @@
 				(pin output line
 					(at 12.7 -6.35 180)
 					(length 2.54)
-					(name "OUT1A"
+					(name "OUT1B"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "24"
+					(number "21"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -29283,14 +29283,14 @@
 				(pin output line
 					(at 12.7 -8.89 180)
 					(length 2.54)
-					(name "OUT1B"
+					(name "OUT1A"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "21"
+					(number "24"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -43025,12 +43025,6 @@
 		(uuid "10b40a97-b7c7-439a-9011-908b71c9f82e")
 	)
 	(junction
-		(at 72.39 135.89)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "13752a3d-adc9-461e-9ec6-c1bf71b220cd")
-	)
-	(junction
 		(at 194.31 137.16)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -43149,12 +43143,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "5e0761dc-08ec-46bb-965d-5d8989a92501")
-	)
-	(junction
-		(at 72.39 138.43)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "61a167f0-5556-4c3b-bacd-4c340ff8e21c")
 	)
 	(junction
 		(at 270.51 100.33)
@@ -43844,16 +43832,6 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 135.89) (xy 72.39 138.43)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "25eab39a-13a9-4689-97bf-6539c775ffef")
-	)
-	(wire
-		(pts
 			(xy 73.66 146.05) (xy 73.66 148.59)
 		)
 		(stroke
@@ -44504,7 +44482,7 @@
 	)
 	(wire
 		(pts
-			(xy 71.12 138.43) (xy 72.39 138.43)
+			(xy 71.12 138.43) (xy 73.66 138.43)
 		)
 		(stroke
 			(width 0)
@@ -45134,16 +45112,6 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 138.43) (xy 73.66 138.43)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b1f2264e-8604-406f-85b6-8350fc24d43f")
-	)
-	(wire
-		(pts
 			(xy 93.98 147.32) (xy 93.98 148.59)
 		)
 		(stroke
@@ -45444,7 +45412,7 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 135.89) (xy 71.12 135.89)
+			(xy 71.12 135.89) (xy 76.2 135.89)
 		)
 		(stroke
 			(width 0)
@@ -45811,16 +45779,6 @@
 			(type default)
 		)
 		(uuid "f66fca27-a3ad-4a90-8c26-db14a252f070")
-	)
-	(wire
-		(pts
-			(xy 72.39 135.89) (xy 76.2 135.89)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f82e1cc5-95a1-4b9b-8f7f-0c536664a2a1")
 	)
 	(wire
 		(pts
