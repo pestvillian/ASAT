@@ -42880,26 +42880,6 @@
 		)
 		(uuid 886e20ba-8d71-4316-9c08-047ce6fd91b1)
 	)
-	(text "I_trip = 0.25 / (8*0.075) = 2A"
-		(exclude_from_sim no)
-		(at 201.676 80.518 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "0434a12b-5dbc-4ad8-b863-7bcf11ea5518")
-	)
-	(text "I_trip = Vref / (8*R_sense)"
-		(exclude_from_sim no)
-		(at 28.956 114.554 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "0e5271de-1982-4ee7-9fed-c95165fc9740")
-	)
 	(text "I_trip = Vref / (8*R_sense)"
 		(exclude_from_sim no)
 		(at 102.362 21.59 0)
@@ -42910,25 +42890,15 @@
 		)
 		(uuid "4a27c3bb-fd82-48e8-bb09-41ae9b2a0279")
 	)
-	(text "Vref = 1.47V"
+	(text "Vref <= 2V"
 		(exclude_from_sim no)
-		(at 95.25 26.162 0)
+		(at 94.488 26.162 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 		)
 		(uuid "4e31d256-e16b-44f5-9751-368f8d75f140")
-	)
-	(text "I_trip = Vref / (8*R_sense)"
-		(exclude_from_sim no)
-		(at 199.644 77.978 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "6925bbf9-a8c9-4d0e-b765-299556848f31")
 	)
 	(text "VERTICAL MOTOR"
 		(exclude_from_sim no)
@@ -42941,26 +42911,6 @@
 			)
 		)
 		(uuid "6d6c24c4-6082-40a7-8ebd-0948b5928468")
-	)
-	(text "Vref = 0.386V"
-		(exclude_from_sim no)
-		(at 22.606 119.38 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "8efd0533-7a96-4a53-953d-a3263390abef")
-	)
-	(text "I_trip = .35 / (8*0.075) = 0.64A"
-		(exclude_from_sim no)
-		(at 32.004 116.84 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "905e0034-0609-423a-af3d-485530b9eb21")
 	)
 	(text "AGITATION MOTOR"
 		(exclude_from_sim no)
@@ -42986,16 +42936,6 @@
 		)
 		(uuid "afe47675-138d-413b-8a25-c716274b63ad")
 	)
-	(text "Vref = 0.25V"
-		(exclude_from_sim no)
-		(at 193.04 84.074 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "bbee082a-d224-4b3e-a7db-923ca0741e79")
-	)
 	(text "HORIZONTAL MOTOR"
 		(exclude_from_sim no)
 		(at 203.2 71.628 0)
@@ -43008,9 +42948,9 @@
 		)
 		(uuid "befcdc18-a24a-489b-9225-97cc51da03e5")
 	)
-	(text "I_trip = 1.47 / (8*0.075) = 2.45A"
+	(text "I_trip = 2V / (8*0.075) = 2.5A"
 		(exclude_from_sim no)
-		(at 105.918 23.876 0)
+		(at 104.394 23.876 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -43023,12 +42963,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "10b40a97-b7c7-439a-9011-908b71c9f82e")
-	)
-	(junction
-		(at 72.39 135.89)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "13752a3d-adc9-461e-9ec6-c1bf71b220cd")
 	)
 	(junction
 		(at 194.31 137.16)
@@ -43149,12 +43083,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "5e0761dc-08ec-46bb-965d-5d8989a92501")
-	)
-	(junction
-		(at 72.39 138.43)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "61a167f0-5556-4c3b-bacd-4c340ff8e21c")
 	)
 	(junction
 		(at 270.51 100.33)
@@ -43844,16 +43772,6 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 135.89) (xy 72.39 138.43)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "25eab39a-13a9-4689-97bf-6539c775ffef")
-	)
-	(wire
-		(pts
 			(xy 73.66 146.05) (xy 73.66 148.59)
 		)
 		(stroke
@@ -44504,7 +44422,7 @@
 	)
 	(wire
 		(pts
-			(xy 71.12 138.43) (xy 72.39 138.43)
+			(xy 71.12 138.43) (xy 73.66 138.43)
 		)
 		(stroke
 			(width 0)
@@ -45134,16 +45052,6 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 138.43) (xy 73.66 138.43)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b1f2264e-8604-406f-85b6-8350fc24d43f")
-	)
-	(wire
-		(pts
 			(xy 93.98 147.32) (xy 93.98 148.59)
 		)
 		(stroke
@@ -45444,7 +45352,7 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 135.89) (xy 71.12 135.89)
+			(xy 71.12 135.89) (xy 76.2 135.89)
 		)
 		(stroke
 			(width 0)
@@ -45811,16 +45719,6 @@
 			(type default)
 		)
 		(uuid "f66fca27-a3ad-4a90-8c26-db14a252f070")
-	)
-	(wire
-		(pts
-			(xy 72.39 135.89) (xy 76.2 135.89)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f82e1cc5-95a1-4b9b-8f7f-0c536664a2a1")
 	)
 	(wire
 		(pts
@@ -46816,6 +46714,100 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 245.11 132.08 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "025b3f69-9b2e-4d5d-bda0-63d542e855e6")
+		(property "Reference" "R413"
+			(at 245.364 128.016 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100m"
+			(at 245.11 129.794 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
+			(at 245.11 133.858 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 245.11 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 245.11 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "TA-I Tech"
+			(at 245.11 132.08 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "RL12FTNR100"
+			(at 245.11 132.08 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C188071"
+			(at 245.11 132.08 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f3fa2165-38cd-4505-a074-fd009de36aa3")
+		)
+		(pin "2"
+			(uuid "e2b46fb4-04bb-45ad-8e27-cf3a5b8ac297")
+		)
+		(instances
+			(project "Motor_Controller_Board_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
+					(reference "R413")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 200.66 113.03 0)
 		(unit 1)
@@ -47681,7 +47673,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "24k"
+		(property "Value" "15k"
 			(at 221.742 84.836 0)
 			(effects
 				(font
@@ -47726,7 +47718,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "0603WAF2402T5E"
+		(property "MPN" "0603WAF1502T5E"
 			(at 223.52 83.82 0)
 			(effects
 				(font
@@ -47735,7 +47727,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part Number" "C23352"
+		(property "LCSC Part Number" "C22809"
 			(at 223.52 83.82 0)
 			(effects
 				(font
@@ -48493,6 +48485,100 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 144.78 80.01 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "376087fa-4f2d-4a96-bdff-e30dac368942")
+		(property "Reference" "R405"
+			(at 145.034 82.296 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100m"
+			(at 144.78 84.074 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
+			(at 144.78 81.788 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 144.78 80.01 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 144.78 80.01 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "TA-I Tech"
+			(at 144.78 80.01 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "RL12FTNR100"
+			(at 144.78 80.01 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C188071"
+			(at 144.78 80.01 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1b0a7e77-751d-4fa0-b0c2-478b14c8fa7c")
+		)
+		(pin "2"
+			(uuid "3880f804-e41c-4d11-873a-cf466efddf94")
+		)
+		(instances
+			(project "Motor_Controller_Board_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
+					(reference "R405")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 250.19 137.16 0)
 		(unit 1)
@@ -48561,23 +48647,23 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 245.11 132.08 90)
+		(at 77.47 167.64 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "3b189821-69cd-4e9b-bee9-3456057cf3e3")
-		(property "Reference" "R413"
-			(at 245.364 128.016 90)
+		(uuid "3d7cfbad-d274-4cd8-905b-c94823cec4a0")
+		(property "Reference" "R420"
+			(at 77.724 163.576 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "75m"
-			(at 245.11 129.794 90)
+		(property "Value" "100m"
+			(at 77.47 165.354 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -48585,7 +48671,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
-			(at 245.11 133.858 90)
+			(at 77.47 169.418 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -48594,7 +48680,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 245.11 132.08 0)
+			(at 77.47 167.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -48603,7 +48689,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 245.11 132.08 0)
+			(at 77.47 167.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -48611,8 +48697,8 @@
 				(hide yes)
 			)
 		)
-		(property "Manufacturer" "Ever Ohms Tech"
-			(at 245.11 132.08 90)
+		(property "Manufacturer" "TA-I Tech"
+			(at 77.47 167.64 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -48620,8 +48706,8 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "CR1206FR075P05R"
-			(at 245.11 132.08 90)
+		(property "MPN" "RL12FTNR100"
+			(at 77.47 167.64 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -48629,8 +48715,8 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part Number" "C149663"
-			(at 245.11 132.08 90)
+		(property "LCSC Part Number" "C188071"
+			(at 77.47 167.64 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -48639,15 +48725,15 @@
 			)
 		)
 		(pin "1"
-			(uuid "982b118b-598c-4593-8526-75df7c013472")
+			(uuid "4f121599-ce9d-45da-b7aa-1a60ba22a98e")
 		)
 		(pin "2"
-			(uuid "c5aa889a-c429-41fc-ae0b-3adfbc3d25c3")
+			(uuid "8ec093df-9149-4d9e-87e3-53462a9e8200")
 		)
 		(instances
-			(project "power_supply_v1"
+			(project "Motor_Controller_Board_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "R413")
+					(reference "R420")
 					(unit 1)
 				)
 			)
@@ -49216,7 +49302,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "24k"
+		(property "Value" "15k"
 			(at 122.682 28.956 0)
 			(effects
 				(font
@@ -49261,7 +49347,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "0603WAF2402T5E"
+		(property "MPN" "0603WAF1502T5E"
 			(at 124.46 27.94 0)
 			(effects
 				(font
@@ -49270,7 +49356,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part Number" "C23352"
+		(property "LCSC Part Number" "C22809"
 			(at 124.46 27.94 0)
 			(effects
 				(font
@@ -49937,6 +50023,100 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 245.11 135.89 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "60ae88ce-adee-4603-b670-ad776c69c078")
+		(property "Reference" "R414"
+			(at 245.364 138.176 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100m"
+			(at 245.11 139.954 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
+			(at 245.11 137.668 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 245.11 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 245.11 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "TA-I Tech"
+			(at 245.11 135.89 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "RL12FTNR100"
+			(at 245.11 135.89 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C188071"
+			(at 245.11 135.89 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "312f15ba-2f0e-4054-817e-7f2d65bf24af")
+		)
+		(pin "2"
+			(uuid "6c5bcabf-70f0-4925-af15-d67b27c647d3")
+		)
+		(instances
+			(project "Motor_Controller_Board_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
+					(reference "R414")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C")
 		(at 73.66 118.11 0)
 		(unit 1)
@@ -50027,6 +50207,100 @@
 			(project "Motor_Controller_Board_v1"
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
 					(reference "C418")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 77.47 171.45 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "70938415-7ccd-4621-82a4-1f549aee7ab9")
+		(property "Reference" "R421"
+			(at 77.724 173.736 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100m"
+			(at 77.47 175.514 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
+			(at 77.47 173.228 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 77.47 171.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 77.47 171.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "TA-I Tech"
+			(at 77.47 171.45 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "RL12FTNR100"
+			(at 77.47 171.45 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part Number" "C188071"
+			(at 77.47 171.45 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9f3edfb2-0aab-4ee7-815b-c349cd0648a7")
+		)
+		(pin "2"
+			(uuid "b70ce057-e608-425f-85d0-491659c9f157")
+		)
+		(instances
+			(project "Motor_Controller_Board_v1"
+				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
+					(reference "R421")
 					(unit 1)
 				)
 			)
@@ -50334,7 +50608,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "24k"
+		(property "Value" "15k"
 			(at 54.102 120.396 0)
 			(effects
 				(font
@@ -50379,7 +50653,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "0603WAF2402T5E"
+		(property "MPN" "0603WAF1502T5E"
 			(at 55.88 119.38 0)
 			(effects
 				(font
@@ -50388,7 +50662,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part Number" "C23352"
+		(property "LCSC Part Number" "C22809"
 			(at 55.88 119.38 0)
 			(effects
 				(font
@@ -52687,100 +52961,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 144.78 80.01 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "d11df953-3943-4c40-aa0a-177ba7305364")
-		(property "Reference" "R405"
-			(at 145.034 82.296 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "75m"
-			(at 144.78 84.074 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
-			(at 144.78 81.788 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 144.78 80.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 144.78 80.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Manufacturer" "Ever Ohms Tech"
-			(at 144.78 80.01 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MPN" "CR1206FR075P05R"
-			(at 144.78 80.01 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC Part Number" "C149663"
-			(at 144.78 80.01 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "842f1448-ee98-425f-8bcc-07dadffa6dbf")
-		)
-		(pin "2"
-			(uuid "448af124-d958-4cf7-9b26-e5dd8b0a4fe7")
-		)
-		(instances
-			(project "power_supply_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "R405")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C")
 		(at 106.68 45.72 270)
 		(unit 1)
@@ -53394,100 +53574,6 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 77.47 167.64 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "df23d472-a352-4f54-a29f-98eb1bceb4fe")
-		(property "Reference" "R420"
-			(at 77.724 163.576 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "75m"
-			(at 77.47 165.354 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
-			(at 77.47 169.418 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 77.47 167.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 77.47 167.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Manufacturer" "Ever Ohms Tech"
-			(at 77.47 167.64 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MPN" "CR1206FR075P05R"
-			(at 77.47 167.64 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC Part Number" "C149663"
-			(at 77.47 167.64 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "b1d811c2-c2fd-4715-a989-dc3b661a9785")
-		)
-		(pin "2"
-			(uuid "0c57eacc-7b3d-4f27-bd91-755ab55ec449")
-		)
-		(instances
-			(project "power_supply_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "R420")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
 		(at 144.78 76.2 90)
 		(unit 1)
 		(exclude_from_sim no)
@@ -53503,7 +53589,7 @@
 				)
 			)
 		)
-		(property "Value" "75m"
+		(property "Value" "100m"
 			(at 144.78 73.914 90)
 			(effects
 				(font
@@ -53538,7 +53624,7 @@
 				(hide yes)
 			)
 		)
-		(property "Manufacturer" "Ever Ohms Tech"
+		(property "Manufacturer" "TA-I Tech"
 			(at 144.78 76.2 90)
 			(effects
 				(font
@@ -53547,7 +53633,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "CR1206FR075P05R"
+		(property "MPN" "RL12FTNR100"
 			(at 144.78 76.2 90)
 			(effects
 				(font
@@ -53556,7 +53642,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part Number" "C149663"
+		(property "LCSC Part Number" "C188071"
 			(at 144.78 76.2 90)
 			(effects
 				(font
@@ -53928,194 +54014,6 @@
 			(project ""
 				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
 					(reference "#PWR0406")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 245.11 135.89 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "f1daf2a6-8fec-462d-9b54-f625688c64a7")
-		(property "Reference" "R414"
-			(at 245.364 138.176 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "75m"
-			(at 245.11 139.954 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
-			(at 245.11 137.668 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 245.11 135.89 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 245.11 135.89 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Manufacturer" "Ever Ohms Tech"
-			(at 245.11 135.89 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MPN" "CR1206FR075P05R"
-			(at 245.11 135.89 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC Part Number" "C149663"
-			(at 245.11 135.89 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "300aa5b3-c79d-426e-902c-e2db04a9ae7a")
-		)
-		(pin "2"
-			(uuid "056769ac-3835-4fd2-a5b8-6509a4b9f2a0")
-		)
-		(instances
-			(project "power_supply_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "R414")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 77.47 171.45 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "f4a6aa5e-fb93-41b1-a31a-8036af5c8147")
-		(property "Reference" "R421"
-			(at 77.724 173.736 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "75m"
-			(at 77.47 175.514 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
-			(at 77.47 173.228 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 77.47 171.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 77.47 171.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Manufacturer" "Ever Ohms Tech"
-			(at 77.47 171.45 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MPN" "CR1206FR075P05R"
-			(at 77.47 171.45 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC Part Number" "C149663"
-			(at 77.47 171.45 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "001257f3-1eba-478e-9722-d80e6d36cbcc")
-		)
-		(pin "2"
-			(uuid "13e4bd77-8f55-4350-a92e-e82a95efd54c")
-		)
-		(instances
-			(project "power_supply_v1"
-				(path "/2f03ad95-f17d-4603-9f9b-c868204db81c/de697c7d-15b2-499b-acfa-e9ff24654033"
-					(reference "R421")
 					(unit 1)
 				)
 			)

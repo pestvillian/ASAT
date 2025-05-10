@@ -25,3 +25,5 @@ List of changes to track progress.
 5/8/25. Mishari added bottom +24V plane instead of 2mm trace and was reviewed by team. Changed enable pins to be controlled by esp32. added potentiometer. alex, mishari and Dorjee all reviewed footprints and design. we plan to order tomorrow, will review tonight and tomorrow before ordering.
 
 5/8/25. switched board to horizontal text and cleaned it up.
+
+5/9/25. BOARD HAS BEEN ORDERED. it's in "Motor_Board v5". the gerbers are in "Manufacturing_v2". the BOM and placement files are in "Extras_v2". we changed the sense resistors to 500mW because we know up to 2A per coil instead of 1A. this updated the vref resistor value. hopefully the PCB works, but either way, this was an extreme amount of work and we are all very proud of each other and our collective work!

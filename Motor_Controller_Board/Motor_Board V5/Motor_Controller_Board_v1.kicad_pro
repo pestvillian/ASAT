@@ -504,24 +504,6 @@
         "via_diameter": 0.6,
         "via_drill": 0.3,
         "wire_width": 6
-      },
-      {
-        "name": "+24V",
-        "pcb_color": "rgba(0, 0, 0, 0.000)",
-        "priority": 0,
-        "schematic_color": "rgba(0, 0, 0, 0.000)"
-      },
-      {
-        "name": "H",
-        "pcb_color": "rgba(0, 0, 0, 0.000)",
-        "priority": 1,
-        "schematic_color": "rgba(0, 0, 0, 0.000)"
-      },
-      {
-        "name": "USB",
-        "pcb_color": "rgba(0, 0, 0, 0.000)",
-        "priority": 2,
-        "schematic_color": "rgba(0, 0, 0, 0.000)"
       }
     ],
     "meta": {
@@ -548,7 +530,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "Manufacturing_v2/",
+      "plot": "Mixed_Manufacturing/",
       "pos_files": "Extras_v2/",
       "specctra_dsn": "",
       "step": "",
