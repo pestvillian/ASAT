@@ -34,6 +34,8 @@ const int AGITATION_MOTOR_STEP_CHANNEL = 2;
 const int MOTOR_X_STEP_CHANNEL = 4;
 const int MOTOR_Y_STEP_CHANNEL = 3;
 
+
+AccelStepper stepper(AccelStepper::DRIVER, AGITATION_MOTOR_STEP, AGITATION_MOTOR_DIR);
 ezButton limitSwitchX(4);          // create ezButton object that attach to ESP32 pin GPIO5
 ezButton limitSwitchY(5);          // create ezButton object that attach to ESP32 pin GPIO6
 ezButton limitSwitchAgitation(6);  // create ezButton object that attach to ESP32 pin GPIO7
@@ -152,6 +154,7 @@ void setup() {
   /*Main Test CASE*/
 
   // loop through array of protocolInstructions
+  // autoHome();
   // for (int i = 0; i < size; i++)
   // {
   //   Protocol parsed = parseProtocol(protocolInstructions[i]); // Parse protocol
@@ -185,6 +188,8 @@ void setup() {
   //     break;
 
   //   case MOVING: // moving function not tested yet.
+  //      delay(100);
+  //      homeAgitation();
   //     moveSample(parsed.initialSurfaceTime, parsed.speed, parsed.stopAtSequences, parsed.sequencePauseTime);
   //     Serial.println("Type: Moving");
   //     Serial.print("Initial Surface Time: ");
@@ -215,11 +220,253 @@ void setup() {
   /*WORKS this block FUcking Works. 
   // digitalWrite(AGITATION_MOTOR_DIR, HIGH);
   // ledcWriteTone(AGITATION_MOTOR_STEP,5000);
-  l
-  anybody says shit!!! upload this :*/
-  // autoHome();  //starting point
-  //moveMotorA(HIGH,1,20);// HIGH = DOWN
-  agitateMotors(9, 90, 2, 50);
+  */
+  Serial.println("Hello World");
+  autoHome();
+  agitateMotors(9, 30, 100, 100);
+  moveSample(10, 4, 3, 5);
+  autoHome();
+}
+
+void agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t totalVolume, uint8_t percentDepth) {
+  homeAgitation();
+  ledcDetach(AGITATION_MOTOR_STEP);  // Releases control from PWM
+  stepper.enableOutputs();
+
+  // Convert input values to physical parameters
+  uint16_t agitationFrequency = mapSpeedAgitation(agitateSpeed);  // Frequency in steps/sec
+  float depth_mm = 38.0 * (totalVolume / 100.0);           // Total immersion depth in mm
+  float stroke_mm = depth_mm * (percentDepth / 100.0);     // Agitation stroke depth in mm
+  int stroke_steps = stroke_mm / 0.00625;                  // Convert mm to steps
+
+  // Setup stepper
+  stepper.setMaxSpeed(agitationFrequency);  // High speed target
+  stepper.setAcceleration(500000);          // Very aggressive acceleration
+
+  // Move to initial depth (bottom of stroke)
+  stepper.moveTo(stroke_steps);
+  while (stepper.distanceToGo() != 0) {
+    stepper.run();
+  }
+
+  // Start agitation loop
+  unsigned long startTime = millis();
+  bool movingDown = true;
+
+  // Issue the first movement up
+  stepper.moveTo(stepper.currentPosition() - stroke_steps);
+  movingDown = false;
+  //while the time is less than the time for agitation agitate
+  while (millis() - startTime < (agitateDuration * 1000)) {
+    stepper.run();//makes sure the motor is running
+
+    // If movement finished, reverse direction immediately
+    if (stepper.distanceToGo() == 0) {
+      if (movingDown) {
+        stepper.moveTo(stepper.currentPosition() - stroke_steps);//sends it to the percentage penetration depth
+      } else {
+        stepper.moveTo(stepper.currentPosition() + stroke_steps);
+      }
+      movingDown = !movingDown;//inverts direction
+    }
+  }
+
+  stepper.stop(); //hault
+
+  // Reattach PWM and rehome
+  ledcAttachChannel(AGITATION_MOTOR_STEP, 1000, 8, AGITATION_MOTOR_STEP_CHANNEL);
+  homeAgitation();
+}
+// num1 and num2 are the integer ranges of speed, num3 and num4 are the frequency ranges
+unsigned int mapSpeedAgitation(float value) {
+  return (value - 1) * (55000 - 5000) / (9 - 1) + 5000;
+}
+
+
+
+uint16_t accelerateMotor(uint16_t topSpeed) {  //in frequency
+  //accelerate up to the topspeed
+  uint16_t stepsTraveled = 0;  //keeps track of how many steps we send to the driver
+
+  if (topSpeed <= 10000) {  // st
+    ledcWriteTone(AGITATION_MOTOR_STEP, 1000);
+    delay(1);
+    ledcWriteTone(AGITATION_MOTOR_STEP, 3000);
+    delay(1);
+    ledcWriteTone(AGITATION_MOTOR_STEP, 5000);
+    delay(1);
+    ledcWriteTone(AGITATION_MOTOR_STEP, 7000);
+    delay(1);
+    ledcWriteTone(AGITATION_MOTOR_STEP, 10000);
+    delay(1);
+    stepsTraveled = 26;
+    return stepsTraveled;
+  }
+
+  if (topSpeed <= 20000) {
+    ledcWriteTone(AGITATION_MOTOR_STEP, 1000);
+    delay(1);
+    ledcWriteTone(AGITATION_MOTOR_STEP, 2000);
+    delay(1);
+    ledcWriteTone(AGITATION_MOTOR_STEP, 5000);
+    delay(1);
+    ledcWriteTone(AGITATION_MOTOR_STEP, 10000);
+    delay(1);
+    ledcWriteTone(AGITATION_MOTOR_STEP, 15000);
+    delay(1);
+    ledcWriteTone(AGITATION_MOTOR_STEP, 20000);
+    delay(1);
+    stepsTraveled = 53;
+    return stepsTraveled;
+  }
+}
+
+
+
+
+
+
+
+/**
+  * from here, assume that the combs in question will be clamped with the magnets until the very end
+ * @brief:slowly moves the magnets into the sampletray and transports sample to next well"M742193"
+ * @param   initialSurfaceTime first 3 numbers
+ * @param speed fourth number
+ * @param stopAtSequences fifth number
+ * @param sequencePauseTime sixth number
+ * @retval: none
+ */
+void moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequences, uint8_t sequencePauseTime) {
+  //fully init into the funciton
+  delay(1000);
+  homeAgitation();  // home the agitation motor and wait
+  delay(2000);
+  //we need to know at what hight inside the wells to put the combs
+  //not sure about this block yet
+  // moveMotorY(HIGH, speed, 6);  // put combs at top of liquid
+  // pauseMotors(initialSurfaceTime);
+  //Binding sequence
+  float range = 38;  //total hight of combs in mm
+  if (stopAtSequences == 0) {
+    stopAtSequences = 1;
+  }
+  float pos = range / stopAtSequences;  //number of times you wat to stop
+  //there will be a range of distace the Y motor can travel there can be 9 sequences total.
+  //we take the range and devide it by the number of sequences
+  //the motor should be set to the very top of liquid here
+  //incrementally lower the motor until we hit the final position
+  for (int i = 0; i < stopAtSequences; i++) {
+    moveMotorY(HIGH, speed, pos);     //increment motor
+    delay(sequencePauseTime * 1000);  //hold here for however long specified
+  }
+
+  //moving sequence
+  moveMotorY(LOW, 1, 40);  //after the beads are magnatized, hove the body un slowly
+  delay(2000);             //delay to make sure the liquid stays
+  //above works time for step 2, move to the right and fill the next Well
+  moveMotorX(HIGH, 1, 8.75);  //move to next Well
+  delay(2000);                //wait for smoothness
+  moveMotorY(HIGH, 1, 25);    //position just above the wells
+  //fill other well sequence
+  moveMotorA(HIGH, 2, 16);
+  moveMotorY(LOW, 1, 15);
+}
+
+
+
+
+/**
+ * @brief:runs motor in home direction until a limit switch is hit
+ * @param none
+ * @retval: none
+ */
+void autoHome() {
+  int motorSequence = 0;  //controls sequence of motors homing.
+  Serial.println("HOMEING!!!");
+  delay(200);
+  if (motorSequence == 0) {
+    // Low is Up, High is DOwn
+    digitalWrite(AGITATION_MOTOR_DIR, LOW);      //LOW is the home DIrection
+    ledcWriteTone(AGITATION_MOTOR_STEP, 20000);  // Drive motor
+    // determine if it is pressed
+    uint8_t stateA = digitalRead(6);
+    //if the state of the limit switch is high that means it has been pressed
+    while (1) {
+      stateA = digitalRead(6);
+      if (stateA != 1) {
+        Serial.println("Limit switch is currently Touched");
+        //turn off motor in this event
+        digitalWrite(AGITATION_MOTOR_DIR, HIGH);
+        ledcWriteTone(AGITATION_MOTOR_STEP, 0);  //
+        moveMotorA(HIGH, 8, 2);
+        motorSequence = 1;
+        break;
+      } else {
+        //Serial.println("Limit switch is currently Untouched");
+        continue;
+      }
+    }
+  }
+  if (motorSequence == 1) {
+    //Right is Low, High is Left
+    ledcWriteTone(MOTOR_X_STEP, 800);  // Drive motor
+    digitalWrite(MOTOR_X_DIR, LOW);    //home direction is left = LOW
+    //if the state of the limit switch is high that means it has been pressed
+    while (1) {
+      //the motor should be running the whole time that the limit switch is untouched
+      uint8_t stateX = digitalRead(4);  //check status of limit switch
+      if (stateX != 1) {
+        Serial.println("Limit switch is currently Touched");
+        pixels.setPixelColor(0, 0);  //first light state
+        pixels.show();
+        //turn off motor in this event
+        digitalWrite(MOTOR_X_DIR, HIGH);
+        ledcWriteTone(MOTOR_X_STEP, 0);  //
+        moveMotorX(HIGH, 2, 2);          //nudge motor to the right so it's not on the limit switch
+        motorSequence = 2;
+        break;
+      }
+    }
+  }
+  if (motorSequence == 2) {
+    //Low is Up and High is Down
+    ledcWriteTone(MOTOR_Y_STEP, 800);  // Drive motor
+    digitalWrite(MOTOR_Y_DIR, HIGH);   //home direction is Down = LOW
+
+    uint8_t stateY = digitalRead(5);  //read status of limit switch
+
+    //if the state of the limit switch is high that means it has been pressed
+    while (1) {
+      stateY = digitalRead(5);  //read status of limit switch
+      if (stateY != 1) {
+        Serial.println("Limit switch is currently Touched");
+        //turn off motor in this event
+        digitalWrite(MOTOR_Y_DIR, HIGH);
+        ledcWriteTone(MOTOR_Y_STEP, 0);  //
+
+        moveMotorY(LOW, 4, 3);  //nudge motor to the right so it's not on the limit switch
+
+        break;
+      } else {
+        //Serial.println("Limit switch is currently Untouched");
+        continue;
+      }
+    }
+  }
+
+
+
+  //homing complete begin phase 2
+
+  //move all three axis to there init positions
+
+  moveMotorY(LOW, 4, 37);   // motor y to init position
+  moveMotorX(HIGH, 5, 47);  //motor x to init position
+  //the nudge puts it in the right place to begin with
+  //moveMotorA(HIGH, 4, 2);  //move Agitation Head so that the plastic Combs are just above the test rack
+
+
+  //rest of the homing repositioning sequence goes here:)
 }
 
 /**
@@ -234,11 +481,6 @@ void moveMotorA(int DIR, uint32_t speed, float distance) {  //
   uint16_t stepFrequency = mapSpeedA(speed);          // adjust to control speed (Hz)
   float secondsToRun = (float)steps / stepFrequency;  // time = steps / freq
   uint32_t durationMs = (uint32_t)(secondsToRun * 1000);
-
-  Serial.print("Agitation Frequency");
-  Serial.println(stepFrequency);
-  Serial.print("Agitation moving delay");
-  Serial.println(durationMs);
 
   digitalWrite(AGITATION_MOTOR_DIR, DIR);              // set direction
   ledcWriteTone(AGITATION_MOTOR_STEP, stepFrequency);  // start step pulses
@@ -255,166 +497,18 @@ uint32_t distanceToStepsA(float distance)  // about 8.75mm
 }
 // num1 and num2 are the integer ranges of speed, num3 and num4 are the frequency ranges
 unsigned int mapSpeedA(float value) {
-  return (value - 1) * (15000 - 8000) / (9 - 1) + 8000;
-}
-/**
- * @brief: perform the agitation operation of moving motors up and down very quickly
- * @param agitateSpeed: agitation speed on a scale of 1-9
- * @param agitateDuration: agitation duration given in seconds
- * @param percentDepth: percentage of well volume to be displaced
- * @retval: a useful professor petersen
- */
-void agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t totalVolume, uint8_t percentDepth) {
-  //homeAgitation();
-  // set motor speed
-  int agitationFrequency = mapSpeedA(agitateSpeed);  // newmap
-
-  //int toggleDelay = 1000 / (depth);                // milliseconds per half-cycle (back and forth)
-  uint16_t depth = totalVolume;
-  // setup for changing directions
-  bool DIR = HIGH;                       // init direction
-  unsigned long startTime = millis();    // capture a start time
-  pinMode(AGITATION_MOTOR_DIR, OUTPUT);  // ensure pin is set to output
-
-  while (millis() - startTime < (agitateDuration * 1000)) {
-    digitalWrite(AGITATION_MOTOR_DIR, DIR);                   // set new direction
-    delay(1);                                                 //delay before next iteration
-    ledcWriteTone(AGITATION_MOTOR_STEP, agitationFrequency);  // Drive motor
-    delay(200);                                               //controls depth of penetration
-    ledcWriteTone(AGITATION_MOTOR_STEP, 0);                   // stop motor
-
-    DIR = (DIR == HIGH) ? LOW : HIGH;  // change directions after every toggleDelay iteration
-  }
-  // turn motors off afrer delay is finished
-  ledcWriteTone(AGITATION_MOTOR_STEP, 0);
-}
-
-/**
- * @brief:runs motor in home direction until a limit switch is hit
- * @param none
- * @retval: none
- */
-void autoHome() {
-  int motorSequence = 0;  //controls sequence of motors homing.
-  Serial.println("HOMEING!!!");
-  //home agitation motor
-  if (motorSequence == 0) {
-    digitalWrite(AGITATION_MOTOR_DIR, LOW);
-    ledcWriteTone(AGITATION_MOTOR_STEP, 10000);  // Drive motor
-    // determine if it is pressed
-    uint8_t stateA = digitalRead(6);
-    Serial.print("Limit switch status => ");
-    Serial.println(stateA);
-    pixels.setPixelColor(0, 250);  //third light state
-    pixels.show();
-
-    //if the state of the limit switch is high that means it has been pressed
-    while (1) {
-      stateA = digitalRead(6);
-      if (stateA != 1) {
-        Serial.println("Limit switch is currently Touched");
-        //turn off motor in this event
-        digitalWrite(AGITATION_MOTOR_DIR, HIGH);
-        ledcWriteTone(AGITATION_MOTOR_STEP, 0);  //
-        moveMotorA(HIGH, 8, 16);
-        //light off
-        pixels.setPixelColor(0, 0);  //
-        pixels.show();
-        motorSequence = 1;
-        break;
-      } else {
-        //Serial.println("Limit switch is currently Untouched");
-        continue;
-      }
-    }
-  }
-  // Home MOtor Y
-  if (motorSequence == 1) {
-
-    ledcWriteTone(MOTOR_Y_STEP, 800);  // Drive motor
-    digitalWrite(MOTOR_Y_DIR, HIGH);   //home direction is Down = LOW
-
-    uint8_t stateY = digitalRead(5);  //read status of limit switch
-    Serial.print("Limit switch status => ");
-    Serial.println(stateY);
-    pixels.setPixelColor(0, 150);  //second light state
-    pixels.show();
-    //if the state of the limit switch is high that means it has been pressed
-    while (1) {
-      stateY = digitalRead(5);  //read status of limit switch
-      if (stateY != 1) {
-        Serial.println("Limit switch is currently Touched");
-        //turn off motor in this event
-        digitalWrite(MOTOR_Y_DIR, HIGH);
-        ledcWriteTone(MOTOR_Y_STEP, 0);  //
-        moveMotorY(LOW, 4, 8);           //nudge motor to the right so it's not on the limit switch
-        motorSequence = 2;
-        break;
-      } else {
-        //Serial.println("Limit switch is currently Untouched");
-        continue;
-      }
-    }
-  }
-
-  //homing X
-  if (motorSequence == 2) {
-
-    ledcWriteTone(MOTOR_X_STEP, 800);  // Drive motor
-    digitalWrite(MOTOR_X_DIR, LOW);    //home direction is left = LOW
-
-
-    uint8_t stateX = digitalRead(4);  //check status of limit switch
-    Serial.print("Limit switch status => ");
-    Serial.println(stateX);
-    //if the state of the limit switch is high that means it has been pressed
-
-    while (1) {
-      //the motor should be running the whole time that the limit switch is untouched
-      pixels.setPixelColor(0, 90);  //first light state
-      pixels.show();
-      stateX = digitalRead(4);  //check status of limit switch
-      if (stateX != 1) {
-        Serial.println("Limit switch is currently Touched");
-        pixels.setPixelColor(0, 150);  //first light state
-        pixels.show();
-        //turn off motor in this event
-        digitalWrite(MOTOR_X_DIR, HIGH);
-        ledcWriteTone(MOTOR_X_STEP, 0);  //
-        moveMotorX(HIGH, 2, 2);          //nudge motor to the right so it's not on the limit switch
-
-        break;
-      }
-    }
-  }
-
-
-  //homing complete begin phase 2
-
-  //move all three axis to there init positions
-
-  moveMotorY(LOW, 4, 12);   // motor y to init position
-  moveMotorX(HIGH, 5, 12);  //motor x to init position
-  moveMotorA(HIGH, 4, 4);   //move Agitation Head so that the plastic Combs are just above the test rack
-
-
-  //rest of the homing repositioning sequence goes here:)
+  return (value - 1) * (12000 - 5000) / (9 - 1) + 5000;
 }
 
 void homeAgitation() {
-  int motorSequence = 0;  //controls sequence of motors homing.
-  Serial.println("HOMEING!!!");
-  //home agitation motor
+  int motorSequence = 0;
+  delay(200);
   if (motorSequence == 0) {
-    digitalWrite(AGITATION_MOTOR_DIR, HIGH);
-    ledcWriteTone(AGITATION_MOTOR_STEP, 10000);  // Drive motor
+    // Low is Up, High is DOwn
+    digitalWrite(AGITATION_MOTOR_DIR, LOW);      //LOW is the home DIrection
+    ledcWriteTone(AGITATION_MOTOR_STEP, 20000);  // Drive motor
     // determine if it is pressed
     uint8_t stateA = digitalRead(6);
-    Serial.print("Limit switch status => ");
-    Serial.println(stateA);
-    pixels.setPixelColor(0, 250);  //third light state
-    pixels.show();
-
     //if the state of the limit switch is high that means it has been pressed
     while (1) {
       stateA = digitalRead(6);
@@ -423,10 +517,7 @@ void homeAgitation() {
         //turn off motor in this event
         digitalWrite(AGITATION_MOTOR_DIR, HIGH);
         ledcWriteTone(AGITATION_MOTOR_STEP, 0);  //
-        moveMotorA(LOW, 8, 16);
-        //light off
-        pixels.setPixelColor(0, 0);  //
-        pixels.show();
+        moveMotorA(HIGH, 8, 2);
         motorSequence = 1;
         break;
       } else {
@@ -435,7 +526,6 @@ void homeAgitation() {
       }
     }
   }
-  moveMotorA(LOW, 8, 4);  // home to init position where the combs are just above the tray
 }
 
 
@@ -516,34 +606,6 @@ unsigned int mapSpeedX(float value) {
   return (value - 1) * (1000 - 400) / (9 - 1) + 400;
 }
 
-// /**
-//  * @brief:slowly moves the magnets into the sampletray and transports sample to next well"M742193"
-//  * @param   initialSurfaceTime first 3 numbers
-//  * @param speed fourth number
-//  * @param stopAtSequences fifth number
-//  * @param sequencePauseTime sixth number
-//  * @retval: none
-//  */
-// void moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequences, uint8_t sequencePauseTime)
-// {
-//   homeAgitation();                                     // home the agitation motor and wait
-//   moveMotor(MOTOR_Y_STEP, MOTOR_Y_DIR, LOW, speed, 1); // must determine distance from idle Y value to  where the surface is
-//   pauseMotors(initialSurfaceTime);
-//   // fulltraydepth is about 41mm
-//   uint8_t segs = 41 / stopAtSequences; // franctions of segment distances
-//   // incrementaly lower magnets
-//   for (int i = 0; i < stopAtSequences; i++)
-//   {
-//     moveMotor(MOTOR_Y_STEP, MOTOR_Y_DIR, LOW, speed, segs);
-//     delay(1000 * sequencePauseTime);
-//   }
-
-//   moveMotor(MOTOR_Y_STEP, MOTOR_Y_DIR, HIGH, speed, 4); // back to idle distance
-//   delay(100);                                           // delay for smoothness
-//   moveMotor(MOTOR_X_STEP, MOTOR_X_DIR, HIGH, speed, 1); // must determine distance between wells and relate to rotations
-// }
-
-
 
 /**
  * @brief: Pause the motor for a number of seconds
@@ -551,7 +613,7 @@ unsigned int mapSpeedX(float value) {
  * @retval: none
  */
 void pauseMotors(uint8_t pauseDuration) {
-  homeAgitation();  // home the agitator
+  //homeAgitation();  // home the agitator
   // analogWrite(AGITATION_MOTOR_STEP, 255);  //no pwm signal, use high for debugging
   ledcWriteTone(AGITATION_MOTOR_STEP, 0);
   delay(pauseDuration * 1000);  // convert from seconds to milliseconds for delay function
