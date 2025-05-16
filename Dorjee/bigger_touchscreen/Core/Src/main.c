@@ -44,7 +44,7 @@
 #define NEXT_BUTTON_OFFSET 60 //experimentally determined for UI smoothness
 #define QUEUE_BUTTON_OFFSET 40 //experimentally determined for UI smoothness
 #define PROTOCOL_BUTTON_OFFSET 20
-#define DEBOUNCE_DELAY_MS 20
+#define DEBOUNCE_DELAY_MS 30
 
 /***** USB DEFINITIONS *****/
 #define NULL_CHAR 0
@@ -105,7 +105,7 @@ SRAM_HandleTypeDef hsram1;
 /* USER CODE BEGIN PV */
 
 typedef enum {
-	PAGE_MAIN, PAGE_SELECT, PAGE_QUEUE, PAGE_CONFIRMATION, PAGE_FINISH
+	PAGE_MAIN, PAGE_SELECT, PAGE_QUEUE, PAGE_CONFIRMATION, PAGE_FINISH, PAGE_PROGRESS, PAGE_STOP
 } PageState;
 PageState currentPage = PAGE_MAIN;
 
@@ -132,6 +132,9 @@ Button selectButton = { 110, 110, 100, 40, "Run" };
 Button deleteButton = { 110, 170, 100, 40, "Delete" };
 Button backButton = { 0, 205, 60, 40, "Back" }; //x, y, w, h, label
 Button nextButton = { 260, 205, 60, 40, "Next" };
+Button yesButton = { 100, 80, 120, 40, "Yes" };
+Button noButton = { 100, 140, 120, 40, "No" };
+
 
 /* USER CODE END PV */
 
@@ -158,6 +161,7 @@ uint8_t get_num_protocols_in_sector(uint32_t sector);
 uint8_t get_num_lines_in_protocol(char protocol[MAX_LINES][MAX_LINE_LENGTH]);
 uint8_t getFreeSector(void);
 void transmitProtocol(uint32_t sector, uint32_t offset);
+void deleteProtocol(uint32_t sector, uint32_t offset);
 void queueProtocol(uint32_t sector, uint32_t offset);
 void transmitQueuedProtocols(uint8_t queueSize);
 uint32_t get_sector_address(uint32_t sector);
@@ -168,6 +172,9 @@ uint8_t HandleTouch(void);
 void DrawMainPage(uint8_t page_num);
 void DrawInfoPage(char protocolTitle[MAX_LINE_LENGTH]);
 void DrawConfirmationPage(uint32_t sector, uint32_t offset);
+void DrawProgressPage(void);
+void DrawStopPage(void);
+void SendStopMotorsMessage(void);
 uint8_t handleTouch();
 /* USER CODE END PFP */
 
@@ -240,6 +247,8 @@ void USBH_HID_EventCallback(USBH_HandleTypeDef *phost) { //2.6s for 54 lines
 						qr_code_data[a][b] = '\0';
 					}
 				}
+			} else {
+				DrawQueuePage(queueSize);
 			}
 			__enable_irq();
 			USB_BUSY = 0;
@@ -323,8 +332,9 @@ int main(void)
 		if (touchFlag) {
 			handleTouch();
 			touchFlag = 0;
+			HAL_Delay(100);
 		}
-		HAL_Delay(100);
+		//HAL_Delay(100);
 	}
   /* USER CODE END 3 */
 }
@@ -809,7 +819,43 @@ void DrawQueuePage(uint8_t queueSize) {
 	lcdPrintf(backButton.label);
 }
 
-void DrawPageFinish() {
+void DrawProgressPage(void) {
+	lcdFillRGB(COLOR_WHITE);
+
+	//Draw "Progress" box
+	lcdSetCursor(80, 120);
+	lcdPrintf("Progress Page");
+
+	// Draw "Stop" button
+	lcdDrawRect(backButton.x, backButton.y, backButton.w, backButton.h,
+	COLOR_BLACK);
+	lcdSetCursor(backButton.x + 10, backButton.y + 10);
+	lcdPrintf("Stop");
+}
+
+void DrawStopPage(void) {
+	lcdFillRGB(COLOR_WHITE);
+
+	//display confirmation text
+	lcdSetCursor(100, 10);
+	lcdSetTextFont(&Font20);
+	lcdPrintf("Stop?");
+	lcdSetTextFont(&Font16);
+
+	//Draw "Yes" button
+	lcdDrawRect(yesButton.x, yesButton.y, yesButton.w,
+			yesButton.h, COLOR_BLACK);
+	lcdSetCursor(yesButton.x + 10, yesButton.y + 10);
+	lcdPrintf(yesButton.label);
+
+	//Draw "No" button
+	lcdDrawRect(noButton.x, noButton.y, noButton.w,
+			noButton.h, COLOR_BLACK);
+	lcdSetCursor(noButton.x + 10, noButton.y + 10);
+	lcdPrintf(noButton.label);
+}
+
+void DrawPageFinish(void) {
 	lcdFillRGB(COLOR_WHITE);
 
 	//Draw "Success!" box
@@ -918,8 +964,8 @@ uint8_t handleTouch() {
 				&& y <= (selectButton.y + selectButton.h)) {
 			//transmit protocol and move to finish page
 			transmitProtocol(pageNum, protocol_offset);
-			currentPage = PAGE_FINISH;
-			DrawPageFinish();
+			currentPage = PAGE_PROGRESS;
+			DrawProgressPage();
 		}
 		//delete button
 		if (x >= deleteButton.x && x <= (deleteButton.x + deleteButton.w)
@@ -962,6 +1008,38 @@ uint8_t handleTouch() {
 				&& y <= (confirmButton.y + confirmButton.h)) {
 			//delete protocol and go back to main page
 			deleteProtocol(pageNum, protocol_offset);
+			currentPage = PAGE_MAIN;
+			DrawMainPage(pageNum);
+		}
+		break;
+
+	case PAGE_PROGRESS:
+		//stop button
+		if ((x >= backButton.x) && (x <= backButton.x + backButton.w)
+				&& (y >= backButton.y)
+				&& (y <= backButton.y + backButton.h + BACK_BUTTON_OFFSET)) {
+			//printf("touched\n");
+			currentPage = PAGE_STOP;
+			DrawStopPage();
+		}
+		break;
+
+	case PAGE_STOP:
+		//no button
+		if (x >= noButton.x && x <= (noButton.x + noButton.w)
+				&& y >= noButton.y
+				&& y <= (noButton.y + noButton.h)) {
+			//Send stop signal to ESP32 and go back to main page
+			SendStopMotorsMessage();
+			currentPage = PAGE_PROGRESS;
+			DrawProgressPage();
+		}
+		//yes button
+		if (x >= yesButton.x && x <= (yesButton.x + yesButton.w)
+				&& y >= yesButton.y
+				&& y <= (yesButton.y + yesButton.h)) {
+			//Send stop signal to ESP32 and go back to main page
+			//StopMotors();
 			currentPage = PAGE_MAIN;
 			DrawMainPage(pageNum);
 		}
@@ -1164,9 +1242,9 @@ void transmitProtocol(uint32_t sector, uint32_t offset) {
 		//an alternative to resetting the temp buffer is to only read up to newline
 		memset(output, 0, MAX_LINE_LENGTH); // Sets all elements of buffer to 0
 		if (read_from_flash(output, flash_address + i * MAX_LINE_LENGTH)) {
-			printf("%s", output);
-			//HAL_UART_Transmit(&huart2, (uint8_t*) output, strlen(output),
-			//	HAL_MAX_DELAY);
+			//printf("%s", output);
+			HAL_UART_Transmit(&huart2, (uint8_t*) output, strlen(output),
+				HAL_MAX_DELAY);
 		}
 	}
 }
@@ -1194,9 +1272,9 @@ void queueProtocol(uint32_t sector, uint32_t offset) {
 void transmitQueuedProtocols(uint8_t queueSize) {
 	for (uint8_t i = 0; i < queueSize; i++) {
 		for (uint8_t j = 0; j < MAX_LINES; j++) {
-			printf(queueBuffer[i][j]);
-			//HAL_UART_Transmit(&huart1, (uint8_t*) queueBuffer[i][j],
-			//	strlen(queueBuffer[i][j]), HAL_MAX_DELAY);
+			//printf(queueBuffer[i][j]);
+			HAL_UART_Transmit(&huart2, (uint8_t*) queueBuffer[i][j],
+				strlen(queueBuffer[i][j]), HAL_MAX_DELAY);
 		}
 	}
 }
@@ -1247,6 +1325,11 @@ void deleteProtocol(uint32_t sector, uint32_t offset) {
 		}
 	}
 	HAL_FLASH_Lock();  // Unlock flash for writing
+}
+
+void SendStopMotorsMessage(void) {
+	printf("S\n");
+	HAL_UART_Transmit(&huart2, (uint8_t*) 'S', 1, HAL_MAX_DELAY);
 }
 
 // Function to write a uint32_t number to flash memory
@@ -1332,18 +1415,18 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 		uint32_t current_time = HAL_GetTick(); // ms since startup
 
 		//perform some debouncing for interrupt pin
-		if ((current_time - last_interrupt_time) > 30) {
+		if ((current_time - last_interrupt_time) > DEBOUNCE_DELAY_MS) {
 			last_interrupt_time = current_time;
 
 			//handle the actual interrupt below
 			uint8_t currentTouchedState = HAL_GPIO_ReadPin(T_IRQ_GPIO_Port,
 			T_IRQ_Pin);
-			if (currentTouchedState == 1) {
-				printf("high");
-			}
-			if (currentTouchedState == 0) {
-				printf("low");
-			}
+//			if (currentTouchedState == 1) {
+//				printf("high");
+//			}
+//			if (currentTouchedState == 0) {
+//				printf("low");
+//			}
 			//printf("%d\n", currentTouchedState)
 			if (XPT2046_TouchPressed() && !touchFlag) {
 				touchFlag = 1;
