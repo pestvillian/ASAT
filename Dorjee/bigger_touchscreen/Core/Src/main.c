@@ -105,7 +105,13 @@ SRAM_HandleTypeDef hsram1;
 /* USER CODE BEGIN PV */
 
 typedef enum {
-	PAGE_MAIN, PAGE_SELECT, PAGE_QUEUE, PAGE_CONFIRMATION, PAGE_FINISH, PAGE_PROGRESS, PAGE_STOP
+	PAGE_MAIN,
+	PAGE_SELECT,
+	PAGE_QUEUE,
+	PAGE_CONFIRMATION,
+	PAGE_FINISH,
+	PAGE_PROGRESS,
+	PAGE_STOP
 } PageState;
 PageState currentPage = PAGE_MAIN;
 
@@ -134,7 +140,6 @@ Button backButton = { 0, 205, 60, 40, "Back" }; //x, y, w, h, label
 Button nextButton = { 260, 205, 60, 40, "Next" };
 Button yesButton = { 100, 80, 120, 40, "Yes" };
 Button noButton = { 100, 140, 120, 40, "No" };
-
 
 /* USER CODE END PV */
 
@@ -197,7 +202,7 @@ int i = 0;
 int j = 0;
 static char queueBuffer[MAX_QUEUE_SIZE][MAX_LINES][MAX_LINE_LENGTH];
 static uint8_t queueSize = 0;
-static uint8_t pageNum = 1;
+//static uint8_t pageNum = 1;
 static uint8_t USB_BUSY = 0;
 char qr_code_data[MAX_LINES][MAX_LINE_LENGTH] = { { '\0' } }; //static initializes strings with all null characters
 HID_KEYBD_Info_TypeDef *Keyboard_Info;
@@ -239,8 +244,8 @@ void USBH_HID_EventCallback(USBH_HandleTypeDef *phost) { //2.6s for 54 lines
 				//printf("why\n");
 				storeProtocol(qr_code_data, freeSectorNumber);
 				//go to the page num the new protocol is on
-				pageNum = freeSectorNumber;
-				DrawMainPage(pageNum);
+				page_num = freeSectorNumber;
+				DrawMainPage(page_num);
 				currentPage = PAGE_MAIN;
 				for (int a = 0; a < MAX_LINES; a++) {
 					for (int b = 0; b < MAX_LINE_LENGTH; b++) {
@@ -261,41 +266,40 @@ void USBH_HID_EventCallback(USBH_HandleTypeDef *phost) { //2.6s for 54 lines
 /* USER CODE END 0 */
 
 /**
-  * @brief  The application entry point.
-  * @retval int
-  */
-int main(void)
-{
+ * @brief  The application entry point.
+ * @retval int
+ */
+int main(void) {
 
-  /* USER CODE BEGIN 1 */
+	/* USER CODE BEGIN 1 */
 
 	//printf("Hello\n");
-  /* USER CODE END 1 */
+	/* USER CODE END 1 */
 
-  /* MCU Configuration--------------------------------------------------------*/
+	/* MCU Configuration--------------------------------------------------------*/
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+	HAL_Init();
 
-  /* USER CODE BEGIN Init */
+	/* USER CODE BEGIN Init */
 
-  /* USER CODE END Init */
+	/* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
+	/* Configure the system clock */
+	SystemClock_Config();
 
-  /* USER CODE BEGIN SysInit */
+	/* USER CODE BEGIN SysInit */
 
-  /* USER CODE END SysInit */
+	/* USER CODE END SysInit */
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_FMC_Init();
-  MX_TIM3_Init();
-  MX_SPI4_Init();
-  MX_USB_HOST_Init();
-  MX_USART2_UART_Init();
-  /* USER CODE BEGIN 2 */
+	/* Initialize all configured peripherals */
+	MX_GPIO_Init();
+	MX_FMC_Init();
+	MX_TIM3_Init();
+	MX_SPI4_Init();
+	MX_USB_HOST_Init();
+	MX_USART2_UART_Init();
+	/* USER CODE BEGIN 2 */
 
 //  	erase_sector(1);
 //  	erase_sector(2);
@@ -320,15 +324,15 @@ int main(void)
 	lcdSetOrientation(LCD_ORIENTATION_LANDSCAPE);
 	DrawMainPage(1);
 
-  /* USER CODE END 2 */
+	/* USER CODE END 2 */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+	/* Infinite loop */
+	/* USER CODE BEGIN WHILE */
 	while (1) {
-    /* USER CODE END WHILE */
-    MX_USB_HOST_Process();
+		/* USER CODE END WHILE */
+		MX_USB_HOST_Process();
 
-    /* USER CODE BEGIN 3 */
+		/* USER CODE BEGIN 3 */
 		if (touchFlag) {
 			handleTouch();
 			touchFlag = 0;
@@ -336,297 +340,285 @@ int main(void)
 		}
 		//HAL_Delay(100);
 	}
-  /* USER CODE END 3 */
+	/* USER CODE END 3 */
 }
 
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
-void SystemClock_Config(void)
-{
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+ * @brief System Clock Configuration
+ * @retval None
+ */
+void SystemClock_Config(void) {
+	RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
+	RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
 
-  /** Configure the main internal regulator output voltage
-  */
-  __HAL_RCC_PWR_CLK_ENABLE();
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+	/** Configure the main internal regulator output voltage
+	 */
+	__HAL_RCC_PWR_CLK_ENABLE();
+	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 168;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 7;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
+	/** Initializes the RCC Oscillators according to the specified parameters
+	 * in the RCC_OscInitTypeDef structure.
+	 */
+	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+	RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+	RCC_OscInitStruct.PLL.PLLM = 8;
+	RCC_OscInitStruct.PLL.PLLN = 168;
+	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+	RCC_OscInitStruct.PLL.PLLQ = 7;
+	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
+		Error_Handler();
+	}
 
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+	/** Initializes the CPU, AHB and APB buses clocks
+	 */
+	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+			| RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
-  {
-    Error_Handler();
-  }
+	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
+		Error_Handler();
+	}
 }
 
 /**
-  * @brief SPI4 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_SPI4_Init(void)
-{
+ * @brief SPI4 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_SPI4_Init(void) {
 
-  /* USER CODE BEGIN SPI4_Init 0 */
+	/* USER CODE BEGIN SPI4_Init 0 */
 
-  /* USER CODE END SPI4_Init 0 */
+	/* USER CODE END SPI4_Init 0 */
 
-  /* USER CODE BEGIN SPI4_Init 1 */
+	/* USER CODE BEGIN SPI4_Init 1 */
 
-  /* USER CODE END SPI4_Init 1 */
-  /* SPI4 parameter configuration*/
-  hspi4.Instance = SPI4;
-  hspi4.Init.Mode = SPI_MODE_MASTER;
-  hspi4.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi4.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi4.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi4.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi4.Init.NSS = SPI_NSS_HARD_OUTPUT;
-  hspi4.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
-  hspi4.Init.FirstBit = SPI_FIRSTBIT_MSB;
-  hspi4.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi4.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi4.Init.CRCPolynomial = 10;
-  if (HAL_SPI_Init(&hspi4) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN SPI4_Init 2 */
+	/* USER CODE END SPI4_Init 1 */
+	/* SPI4 parameter configuration*/
+	hspi4.Instance = SPI4;
+	hspi4.Init.Mode = SPI_MODE_MASTER;
+	hspi4.Init.Direction = SPI_DIRECTION_2LINES;
+	hspi4.Init.DataSize = SPI_DATASIZE_8BIT;
+	hspi4.Init.CLKPolarity = SPI_POLARITY_LOW;
+	hspi4.Init.CLKPhase = SPI_PHASE_1EDGE;
+	hspi4.Init.NSS = SPI_NSS_HARD_OUTPUT;
+	hspi4.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
+	hspi4.Init.FirstBit = SPI_FIRSTBIT_MSB;
+	hspi4.Init.TIMode = SPI_TIMODE_DISABLE;
+	hspi4.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+	hspi4.Init.CRCPolynomial = 10;
+	if (HAL_SPI_Init(&hspi4) != HAL_OK) {
+		Error_Handler();
+	}
+	/* USER CODE BEGIN SPI4_Init 2 */
 
-  /* USER CODE END SPI4_Init 2 */
+	/* USER CODE END SPI4_Init 2 */
 
 }
 
 /**
-  * @brief TIM3 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM3_Init(void)
-{
+ * @brief TIM3 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_TIM3_Init(void) {
 
-  /* USER CODE BEGIN TIM3_Init 0 */
+	/* USER CODE BEGIN TIM3_Init 0 */
 
-  /* USER CODE END TIM3_Init 0 */
+	/* USER CODE END TIM3_Init 0 */
 
-  TIM_MasterConfigTypeDef sMasterConfig = {0};
-  TIM_OC_InitTypeDef sConfigOC = {0};
+	TIM_MasterConfigTypeDef sMasterConfig = { 0 };
+	TIM_OC_InitTypeDef sConfigOC = { 0 };
 
-  /* USER CODE BEGIN TIM3_Init 1 */
+	/* USER CODE BEGIN TIM3_Init 1 */
 
-  /* USER CODE END TIM3_Init 1 */
-  htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 168-1;
-  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 100;
-  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_PWM_Init(&htim3) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 0;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM3_Init 2 */
+	/* USER CODE END TIM3_Init 1 */
+	htim3.Instance = TIM3;
+	htim3.Init.Prescaler = 168 - 1;
+	htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+	htim3.Init.Period = 100;
+	htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+	htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+	if (HAL_TIM_PWM_Init(&htim3) != HAL_OK) {
+		Error_Handler();
+	}
+	sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+	sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+	if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig)
+			!= HAL_OK) {
+		Error_Handler();
+	}
+	sConfigOC.OCMode = TIM_OCMODE_PWM1;
+	sConfigOC.Pulse = 0;
+	sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+	if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1)
+			!= HAL_OK) {
+		Error_Handler();
+	}
+	/* USER CODE BEGIN TIM3_Init 2 */
 
-  /* USER CODE END TIM3_Init 2 */
-  HAL_TIM_MspPostInit(&htim3);
+	/* USER CODE END TIM3_Init 2 */
+	HAL_TIM_MspPostInit(&htim3);
 
 }
 
 /**
-  * @brief USART2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_USART2_UART_Init(void)
-{
+ * @brief USART2 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_USART2_UART_Init(void) {
 
-  /* USER CODE BEGIN USART2_Init 0 */
+	/* USER CODE BEGIN USART2_Init 0 */
 
-  /* USER CODE END USART2_Init 0 */
+	/* USER CODE END USART2_Init 0 */
 
-  /* USER CODE BEGIN USART2_Init 1 */
+	/* USER CODE BEGIN USART2_Init 1 */
 
-  /* USER CODE END USART2_Init 1 */
-  huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
-  huart2.Init.WordLength = UART_WORDLENGTH_8B;
-  huart2.Init.StopBits = UART_STOPBITS_1;
-  huart2.Init.Parity = UART_PARITY_NONE;
-  huart2.Init.Mode = UART_MODE_TX_RX;
-  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN USART2_Init 2 */
+	/* USER CODE END USART2_Init 1 */
+	huart2.Instance = USART2;
+	huart2.Init.BaudRate = 115200;
+	huart2.Init.WordLength = UART_WORDLENGTH_8B;
+	huart2.Init.StopBits = UART_STOPBITS_1;
+	huart2.Init.Parity = UART_PARITY_NONE;
+	huart2.Init.Mode = UART_MODE_TX_RX;
+	huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+	if (HAL_UART_Init(&huart2) != HAL_OK) {
+		Error_Handler();
+	}
+	/* USER CODE BEGIN USART2_Init 2 */
 
-  /* USER CODE END USART2_Init 2 */
+	/* USER CODE END USART2_Init 2 */
 
 }
 
 /* FMC initialization function */
-static void MX_FMC_Init(void)
-{
+static void MX_FMC_Init(void) {
 
-  /* USER CODE BEGIN FMC_Init 0 */
+	/* USER CODE BEGIN FMC_Init 0 */
 
-  /* USER CODE END FMC_Init 0 */
+	/* USER CODE END FMC_Init 0 */
 
-  FMC_NORSRAM_TimingTypeDef Timing = {0};
+	FMC_NORSRAM_TimingTypeDef Timing = { 0 };
 
-  /* USER CODE BEGIN FMC_Init 1 */
+	/* USER CODE BEGIN FMC_Init 1 */
 
-  /* USER CODE END FMC_Init 1 */
+	/* USER CODE END FMC_Init 1 */
 
-  /** Perform the SRAM1 memory initialization sequence
-  */
-  hsram1.Instance = FMC_NORSRAM_DEVICE;
-  hsram1.Extended = FMC_NORSRAM_EXTENDED_DEVICE;
-  /* hsram1.Init */
-  hsram1.Init.NSBank = FMC_NORSRAM_BANK1;
-  hsram1.Init.DataAddressMux = FMC_DATA_ADDRESS_MUX_DISABLE;
-  hsram1.Init.MemoryType = FMC_MEMORY_TYPE_SRAM;
-  hsram1.Init.MemoryDataWidth = FMC_NORSRAM_MEM_BUS_WIDTH_16;
-  hsram1.Init.BurstAccessMode = FMC_BURST_ACCESS_MODE_DISABLE;
-  hsram1.Init.WaitSignalPolarity = FMC_WAIT_SIGNAL_POLARITY_LOW;
-  hsram1.Init.WrapMode = FMC_WRAP_MODE_DISABLE;
-  hsram1.Init.WaitSignalActive = FMC_WAIT_TIMING_BEFORE_WS;
-  hsram1.Init.WriteOperation = FMC_WRITE_OPERATION_ENABLE;
-  hsram1.Init.WaitSignal = FMC_WAIT_SIGNAL_DISABLE;
-  hsram1.Init.ExtendedMode = FMC_EXTENDED_MODE_DISABLE;
-  hsram1.Init.AsynchronousWait = FMC_ASYNCHRONOUS_WAIT_DISABLE;
-  hsram1.Init.WriteBurst = FMC_WRITE_BURST_DISABLE;
-  hsram1.Init.ContinuousClock = FMC_CONTINUOUS_CLOCK_SYNC_ONLY;
-  hsram1.Init.PageSize = FMC_PAGE_SIZE_NONE;
-  /* Timing */
-  Timing.AddressSetupTime = 3;
-  Timing.AddressHoldTime = 15;
-  Timing.DataSetupTime = 2;
-  Timing.BusTurnAroundDuration = 2;
-  Timing.CLKDivision = 16;
-  Timing.DataLatency = 17;
-  Timing.AccessMode = FMC_ACCESS_MODE_A;
-  /* ExtTiming */
+	/** Perform the SRAM1 memory initialization sequence
+	 */
+	hsram1.Instance = FMC_NORSRAM_DEVICE;
+	hsram1.Extended = FMC_NORSRAM_EXTENDED_DEVICE;
+	/* hsram1.Init */
+	hsram1.Init.NSBank = FMC_NORSRAM_BANK1;
+	hsram1.Init.DataAddressMux = FMC_DATA_ADDRESS_MUX_DISABLE;
+	hsram1.Init.MemoryType = FMC_MEMORY_TYPE_SRAM;
+	hsram1.Init.MemoryDataWidth = FMC_NORSRAM_MEM_BUS_WIDTH_16;
+	hsram1.Init.BurstAccessMode = FMC_BURST_ACCESS_MODE_DISABLE;
+	hsram1.Init.WaitSignalPolarity = FMC_WAIT_SIGNAL_POLARITY_LOW;
+	hsram1.Init.WrapMode = FMC_WRAP_MODE_DISABLE;
+	hsram1.Init.WaitSignalActive = FMC_WAIT_TIMING_BEFORE_WS;
+	hsram1.Init.WriteOperation = FMC_WRITE_OPERATION_ENABLE;
+	hsram1.Init.WaitSignal = FMC_WAIT_SIGNAL_DISABLE;
+	hsram1.Init.ExtendedMode = FMC_EXTENDED_MODE_DISABLE;
+	hsram1.Init.AsynchronousWait = FMC_ASYNCHRONOUS_WAIT_DISABLE;
+	hsram1.Init.WriteBurst = FMC_WRITE_BURST_DISABLE;
+	hsram1.Init.ContinuousClock = FMC_CONTINUOUS_CLOCK_SYNC_ONLY;
+	hsram1.Init.PageSize = FMC_PAGE_SIZE_NONE;
+	/* Timing */
+	Timing.AddressSetupTime = 3;
+	Timing.AddressHoldTime = 15;
+	Timing.DataSetupTime = 2;
+	Timing.BusTurnAroundDuration = 2;
+	Timing.CLKDivision = 16;
+	Timing.DataLatency = 17;
+	Timing.AccessMode = FMC_ACCESS_MODE_A;
+	/* ExtTiming */
 
-  if (HAL_SRAM_Init(&hsram1, &Timing, NULL) != HAL_OK)
-  {
-    Error_Handler( );
-  }
+	if (HAL_SRAM_Init(&hsram1, &Timing, NULL) != HAL_OK) {
+		Error_Handler();
+	}
 
-  /* USER CODE BEGIN FMC_Init 2 */
+	/* USER CODE BEGIN FMC_Init 2 */
 
-  /* USER CODE END FMC_Init 2 */
+	/* USER CODE END FMC_Init 2 */
 }
 
 /**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_GPIO_Init(void)
-{
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+ * @brief GPIO Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_GPIO_Init(void) {
+	GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+	/* USER CODE BEGIN MX_GPIO_Init_1 */
+	/* USER CODE END MX_GPIO_Init_1 */
 
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOE_CLK_ENABLE();
-  __HAL_RCC_GPIOH_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
+	/* GPIO Ports Clock Enable */
+	__HAL_RCC_GPIOE_CLK_ENABLE();
+	__HAL_RCC_GPIOH_CLK_ENABLE();
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	__HAL_RCC_GPIOD_CLK_ENABLE();
+	__HAL_RCC_GPIOC_CLK_ENABLE();
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, GPIO_PIN_RESET);
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LCD_NRST_GPIO_Port, LCD_NRST_Pin, GPIO_PIN_RESET);
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(LCD_NRST_GPIO_Port, LCD_NRST_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : PB12 PB13 PB14 PB15 */
-  GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-  GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+	/*Configure GPIO pins : PB12 PB13 PB14 PB15 */
+	GPIO_InitStruct.Pin = GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PA9 */
-  GPIO_InitStruct.Pin = GPIO_PIN_9;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+	/*Configure GPIO pin : PA9 */
+	GPIO_InitStruct.Pin = GPIO_PIN_9;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : DEBUG_LED_Pin */
-  GPIO_InitStruct.Pin = DEBUG_LED_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(DEBUG_LED_GPIO_Port, &GPIO_InitStruct);
+	/*Configure GPIO pin : DEBUG_LED_Pin */
+	GPIO_InitStruct.Pin = DEBUG_LED_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(DEBUG_LED_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LCD_NRST_Pin */
-  GPIO_InitStruct.Pin = LCD_NRST_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LCD_NRST_GPIO_Port, &GPIO_InitStruct);
+	/*Configure GPIO pin : LCD_NRST_Pin */
+	GPIO_InitStruct.Pin = LCD_NRST_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(LCD_NRST_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : T_IRQ_Pin */
-  GPIO_InitStruct.Pin = T_IRQ_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(T_IRQ_GPIO_Port, &GPIO_InitStruct);
+	/*Configure GPIO pin : T_IRQ_Pin */
+	GPIO_InitStruct.Pin = T_IRQ_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(T_IRQ_GPIO_Port, &GPIO_InitStruct);
 
-  /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+	/* EXTI interrupt init*/
+	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+	/* USER CODE BEGIN MX_GPIO_Init_2 */
+	/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -709,13 +701,10 @@ void DrawMainPage(uint8_t page_num) {
 	}
 //
 	//draw "Queue" button on page 1
-
-	if (page_num == 1) {
-		lcdDrawRect(queueButton.x, queueButton.y, queueButton.w, queueButton.h,
-		COLOR_BLACK);
-		lcdSetCursor(queueButton.x + 5, queueButton.y + 5);
-		lcdPrintf(queueButton.label);
-	}
+	lcdDrawRect(queueButton.x, queueButton.y, queueButton.w, queueButton.h,
+	COLOR_BLACK);
+	lcdSetCursor(queueButton.x + 5, queueButton.y + 5);
+	lcdPrintf(queueButton.label);
 }
 
 void DrawInfoPage(char protocolTitle[MAX_LINE_LENGTH]) {
@@ -843,14 +832,13 @@ void DrawStopPage(void) {
 	lcdSetTextFont(&Font16);
 
 	//Draw "Yes" button
-	lcdDrawRect(yesButton.x, yesButton.y, yesButton.w,
-			yesButton.h, COLOR_BLACK);
+	lcdDrawRect(yesButton.x, yesButton.y, yesButton.w, yesButton.h,
+	COLOR_BLACK);
 	lcdSetCursor(yesButton.x + 10, yesButton.y + 10);
 	lcdPrintf(yesButton.label);
 
 	//Draw "No" button
-	lcdDrawRect(noButton.x, noButton.y, noButton.w,
-			noButton.h, COLOR_BLACK);
+	lcdDrawRect(noButton.x, noButton.y, noButton.w, noButton.h, COLOR_BLACK);
 	lcdSetCursor(noButton.x + 10, noButton.y + 10);
 	lcdPrintf(noButton.label);
 }
@@ -874,13 +862,13 @@ uint8_t handleTouch() {
 	static uint8_t protocol_offset = 0;
 	uint16_t x = 0, y = 0;
 	if (!XPT2046_TouchGetCoordinates(&x, &y)) {
-		printf("failed\n");
+		//printf("failed\n");
 		return 0;
 	}
 	//map the x coordinate to be left is 0. also slight offset
 	x = (TS_RIGHT - x) - 0;
-	printf("touched\n");
-	printf("%d, %d\n", x, y);
+//	printf("touched\n");
+//	printf("%d, %d\n", x, y);
 
 	switch (currentPage) {
 	case PAGE_MAIN:
@@ -905,8 +893,7 @@ uint8_t handleTouch() {
 		//queue button
 		if (x >= queueButton.x && x <= (queueButton.x + queueButton.w)
 				&& y >= queueButton.y
-				&& y <= (queueButton.y + queueButton.h + QUEUE_BUTTON_OFFSET)
-				&& (page_num == 1)) {
+				&& y <= (queueButton.y + queueButton.h + QUEUE_BUTTON_OFFSET)) {
 			DrawQueuePage(queueSize);
 			currentPage = PAGE_QUEUE;
 		}
@@ -914,7 +901,9 @@ uint8_t handleTouch() {
 		for (int i = 0; i < NUM_BUTTONS; i++) {
 			if ((x >= buttons[i].x) && (x <= buttons[i].x + buttons[i].w)
 					&& (y >= buttons[i].y - PROTOCOL_BUTTON_OFFSET)
-					&& (y <= buttons[i].y + buttons[i].h + PROTOCOL_BUTTON_OFFSET)) {
+					&& (y
+							<= buttons[i].y + buttons[i].h
+									+ PROTOCOL_BUTTON_OFFSET)) {
 				//check which button has been pressed
 				if (i == 0) {
 					protocol_num = 1;
@@ -941,7 +930,7 @@ uint8_t handleTouch() {
 		if (x >= backButton.x && x <= (backButton.x + backButton.w)
 				&& y >= backButton.y && y <= (backButton.y + backButton.h)) {
 			currentPage = PAGE_MAIN;
-			DrawMainPage(pageNum);
+			DrawMainPage(page_num);
 		}
 		//queueSelect button
 		if (x >= queueSelectButton.x
@@ -950,7 +939,8 @@ uint8_t handleTouch() {
 				&& y <= (queueSelectButton.y + queueSelectButton.h)) {
 			//store the protocol in queueBuffer
 			if (queueSize < MAX_QUEUE_SIZE) {
-				queueProtocol(pageNum, protocol_offset);
+
+				queueProtocol(page_num, protocol_offset);
 				queueSize++;
 				currentPage = PAGE_QUEUE;
 				DrawQueuePage(queueSize);
@@ -963,7 +953,7 @@ uint8_t handleTouch() {
 				&& y >= selectButton.y
 				&& y <= (selectButton.y + selectButton.h)) {
 			//transmit protocol and move to finish page
-			transmitProtocol(pageNum, protocol_offset);
+			transmitProtocol(page_num, protocol_offset);
 			currentPage = PAGE_PROGRESS;
 			DrawProgressPage();
 		}
@@ -973,7 +963,7 @@ uint8_t handleTouch() {
 				&& y <= (deleteButton.y + deleteButton.h)) {
 			//move to delete confirmation page
 			currentPage = PAGE_CONFIRMATION;
-			DrawConfirmationPage(pageNum, protocol_offset);
+			DrawConfirmationPage(page_num, protocol_offset);
 		}
 		break;
 
@@ -982,7 +972,7 @@ uint8_t handleTouch() {
 		if (x >= backButton.x && x <= (backButton.x + backButton.w)
 				&& y >= backButton.y && y <= (backButton.y + backButton.h)) {
 			currentPage = PAGE_MAIN;
-			DrawMainPage(pageNum);
+			DrawMainPage(page_num);
 		}
 		//run button
 		if (x >= runButton.x && x <= (runButton.x + runButton.w)
@@ -1007,9 +997,9 @@ uint8_t handleTouch() {
 				&& y >= confirmButton.y
 				&& y <= (confirmButton.y + confirmButton.h)) {
 			//delete protocol and go back to main page
-			deleteProtocol(pageNum, protocol_offset);
+			deleteProtocol(page_num, protocol_offset);
 			currentPage = PAGE_MAIN;
-			DrawMainPage(pageNum);
+			DrawMainPage(page_num);
 		}
 		break;
 
@@ -1026,22 +1016,18 @@ uint8_t handleTouch() {
 
 	case PAGE_STOP:
 		//no button
-		if (x >= noButton.x && x <= (noButton.x + noButton.w)
-				&& y >= noButton.y
+		if (x >= noButton.x && x <= (noButton.x + noButton.w) && y >= noButton.y
 				&& y <= (noButton.y + noButton.h)) {
-			//Send stop signal to ESP32 and go back to main page
-			SendStopMotorsMessage();
 			currentPage = PAGE_PROGRESS;
 			DrawProgressPage();
 		}
 		//yes button
 		if (x >= yesButton.x && x <= (yesButton.x + yesButton.w)
-				&& y >= yesButton.y
-				&& y <= (yesButton.y + yesButton.h)) {
+				&& y >= yesButton.y && y <= (yesButton.y + yesButton.h)) {
 			//Send stop signal to ESP32 and go back to main page
-			//StopMotors();
+			SendStopMotorsMessage();
 			currentPage = PAGE_MAIN;
-			DrawMainPage(pageNum);
+			DrawMainPage(page_num);
 		}
 		break;
 
@@ -1049,7 +1035,7 @@ uint8_t handleTouch() {
 		if (x >= backButton.x && x <= (backButton.x + backButton.w)
 				&& y >= backButton.y && y <= (backButton.y + backButton.h)) {
 			currentPage = PAGE_MAIN;
-			DrawMainPage(pageNum);
+			DrawMainPage(page_num);
 		}
 		break;
 	}
@@ -1242,9 +1228,9 @@ void transmitProtocol(uint32_t sector, uint32_t offset) {
 		//an alternative to resetting the temp buffer is to only read up to newline
 		memset(output, 0, MAX_LINE_LENGTH); // Sets all elements of buffer to 0
 		if (read_from_flash(output, flash_address + i * MAX_LINE_LENGTH)) {
-			//printf("%s", output);
+			printf("%s", output);
 			HAL_UART_Transmit(&huart2, (uint8_t*) output, strlen(output),
-				HAL_MAX_DELAY);
+			HAL_MAX_DELAY);
 		}
 	}
 }
@@ -1256,13 +1242,17 @@ void transmitProtocol(uint32_t sector, uint32_t offset) {
 void queueProtocol(uint32_t sector, uint32_t offset) {
 	char output[MAX_LINE_LENGTH] = { '\0' };
 	uint32_t flash_address = get_sector_address(sector) + offset * PROTOCOL_SIZE;
-
+	uint8_t last_line = 0;
 	for (uint8_t i = 0; i < MAX_LINES; i++) {
 		memset(output, 0, MAX_LINE_LENGTH); // Sets all elements of buffer to 0
 		if (read_from_flash(output, flash_address + i * MAX_LINE_LENGTH)) {
 			strcpy(queueBuffer[queueSize][i], output);
+			last_line = i;
 		}
 	}
+	//dont store the tab operator of protocol for queueing
+	queueBuffer[queueSize][last_line][strlen(queueBuffer[queueSize][last_line])
+			- 1] = NULL_CHAR; //strlen gives the size of string. tab operator is size-1
 }
 
 /**
@@ -1270,13 +1260,25 @@ void queueProtocol(uint32_t sector, uint32_t offset) {
  * @param queueSize:
  */
 void transmitQueuedProtocols(uint8_t queueSize) {
+	//i need to send a filler title
+	printf("FillerTitle\n");
+	HAL_UART_Transmit(&huart2, (uint8_t*) "Filler", strlen("Filler"),
+	HAL_MAX_DELAY);
+
+	//transmit the queued protocols
 	for (uint8_t i = 0; i < queueSize; i++) {
-		for (uint8_t j = 0; j < MAX_LINES; j++) {
-			//printf(queueBuffer[i][j]);
+		for (uint8_t j = 1; j < MAX_LINES; j++) {
+			printf(queueBuffer[i][j]);
 			HAL_UART_Transmit(&huart2, (uint8_t*) queueBuffer[i][j],
-				strlen(queueBuffer[i][j]), HAL_MAX_DELAY);
+					strlen(queueBuffer[i][j]), HAL_MAX_DELAY);
 		}
 	}
+//	//debugging print
+//	for (int a = 0; a < queueSize; a++) {
+//		printf("%s\n", queueBuffer[a]);
+//	}
+	//finish with a tab operator
+	HAL_UART_Transmit(&huart2, (uint8_t*) '\t', 1, HAL_MAX_DELAY);
 }
 
 /**
@@ -1287,8 +1289,9 @@ void transmitQueuedProtocols(uint8_t queueSize) {
  */
 void deleteProtocol(uint32_t sector, uint32_t offset) {
 	//initialize variables
-	int i = 0;  //protocol index
-	int j = 0;  //line index
+	uint8_t new_offset = offset + 1; //have it range from 1-3
+	int i = 0;
+	int j = 0; //indices for moving through flash memory
 	char protocolStorage[MAX_PROTOCOLS_IN_SECTOR][MAX_LINES][MAX_LINE_LENGTH] =
 			{ { { '\0' } } };
 	uint32_t flash_address = get_sector_address(sector);
@@ -1298,34 +1301,81 @@ void deleteProtocol(uint32_t sector, uint32_t offset) {
 	memset(nullLine, 0x00, sizeof(nullLine));
 	uint8_t num_protocols = get_num_protocols_in_sector(sector);
 
+	int a = 0;
+	int b = 0; //separate indices for protocolstorage
+
 	//copy all protocols in sector to local buffer
-	for (i = 0; i < num_protocols; i++) {
-		for (j = 0; j < MAX_LINES; j++) {
-			//get the address for the current line in the current protocol
-			uint32_t temp_address = flash_address + i * PROTOCOL_SIZE
-					+ j * MAX_LINE_LENGTH;
-			//read lines from memory into buffer until you reach garbage
-			read_from_flash(protocolStorage[i][j], temp_address); //only updates protocolStorage if its a valid line from memory
+	for (i = 0; i < MAX_PROTOCOLS_IN_SECTOR; i++) {
+		if (i != offset) {
+			//copy all lines of the protocol into the buffer
+			for (j = 0; j < MAX_LINES; j++) {
+				//get the address for the current line in the current protocol
+				uint32_t temp_address = flash_address + i * PROTOCOL_SIZE
+						+ j * MAX_LINE_LENGTH;
+				//read lines from memory into buffer until you reach garbage
+				read_from_flash(protocolStorage[a][b], temp_address); //only updates protocolStorage if its a valid line from memory
+				b++;
+			}
+			a++;
+			b = 0;
 		}
 	}
 
 	//write existing protocols except the one to be deleted back to flash
 	erase_sector(sector); //erase sector before writing
 	HAL_FLASH_Unlock(); // Unlock flash for writing. note: the erase_sector() unlocks and locks itself
-	for (i = 0; i < num_protocols; i++) {
+	for (i = 0; i < MAX_PROTOCOLS_IN_SECTOR; i++) {
 		for (j = 0; j < MAX_LINES; j++) {
 			//if first character of a line is null from qr scanner or trash from flash, ignore it
 			uint32_t temp_address = flash_address + i * PROTOCOL_SIZE
 					+ j * MAX_LINE_LENGTH;
-			if (i != offset) {
-				//printf("len: %d and data: %s", strlen(protocolStorage[i][j]), protocolStorage[i][j]);
-				write_to_flash(protocolStorage[i][j], temp_address);
-			}
+			write_to_flash(protocolStorage[i][j], temp_address);
 
 		}
 	}
 	HAL_FLASH_Lock();  // Unlock flash for writing
 }
+//void deleteProtocol(uint32_t sector, uint32_t offset) {
+//	//initialize variables
+//	int i = 0;  //protocol index
+//	int j = 0;  //line index
+//	char protocolStorage[MAX_PROTOCOLS_IN_SECTOR][MAX_LINES][MAX_LINE_LENGTH] =
+//			{ { { '\0' } } };
+//	uint32_t flash_address = get_sector_address(sector);
+//	char trashLine[MAX_LINE_LENGTH];
+//	memset(trashLine, 0xFF, sizeof(trashLine));
+//	char nullLine[MAX_LINE_LENGTH];
+//	memset(nullLine, 0x00, sizeof(nullLine));
+//	uint8_t num_protocols = get_num_protocols_in_sector(sector);
+//
+//	//copy all protocols in sector to local buffer
+//	for (i = 0; i < num_protocols; i++) {
+//		for (j = 0; j < MAX_LINES; j++) {
+//			//get the address for the current line in the current protocol
+//			uint32_t temp_address = flash_address + i * PROTOCOL_SIZE
+//					+ j * MAX_LINE_LENGTH;
+//			//read lines from memory into buffer until you reach garbage
+//			read_from_flash(protocolStorage[i][j], temp_address); //only updates protocolStorage if its a valid line from memory
+//		}
+//	}
+//
+//	//write existing protocols except the one to be deleted back to flash
+//	erase_sector(sector); //erase sector before writing
+//	HAL_FLASH_Unlock(); // Unlock flash for writing. note: the erase_sector() unlocks and locks itself
+//	for (i = 0; i < num_protocols; i++) {
+//		for (j = 0; j < MAX_LINES; j++) {
+//			//if first character of a line is null from qr scanner or trash from flash, ignore it
+//			uint32_t temp_address = flash_address + i * PROTOCOL_SIZE
+//					+ j * MAX_LINE_LENGTH;
+//			if (i != offset) {
+//				//printf("len: %d and data: %s", strlen(protocolStorage[i][j]), protocolStorage[i][j]);
+//				write_to_flash(protocolStorage[i][j], temp_address);
+//			}
+//
+//		}
+//	}
+//	HAL_FLASH_Lock();  // Unlock flash for writing
+//}
 
 void SendStopMotorsMessage(void) {
 	printf("S\n");
@@ -1438,17 +1488,16 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 /* USER CODE END 4 */
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
-void Error_Handler(void)
-{
-  /* USER CODE BEGIN Error_Handler_Debug */
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
+void Error_Handler(void) {
+	/* USER CODE BEGIN Error_Handler_Debug */
 	/* User can add his own implementation to report the HAL error return state */
 	__disable_irq();
 	while (1) {
 	}
-  /* USER CODE END Error_Handler_Debug */
+	/* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef  USE_FULL_ASSERT
