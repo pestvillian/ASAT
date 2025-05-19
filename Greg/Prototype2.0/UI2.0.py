@@ -134,7 +134,7 @@ def create_parameter_fields(step_type, entries_frame, entries):
         "Agitation": {
             "labels": ["Volume (µL)", "% of Volume", "Speed", "Duration (s)"],
             "keys": ["volume", "percent_volume", "speed", "duration"],
-            "limits": [1, 2, 1, 2]  # Example: Max digits per field
+            "limits": [3, 3, 1, 2]  # Example: Max digits per field
         },
         "Pausing": {
             "labels": ["Pause Time (s)"],
@@ -173,6 +173,13 @@ def create_parameter_fields(step_type, entries_frame, entries):
 
 
 def add_step(well_name, steps_frame):
+    # Prevent adding another "Moving" step
+    existing_moving = any(stype.get() == "Moving" for stype, _ in wells_data[well_name]["steps"])
+    if existing_moving:
+        messagebox.showwarning("Moving Step Exists", "Only one 'Moving' step is allowed per well.")
+        return
+
+
     step_type = tk.StringVar(value="Agitation")
 
     step_frame = ttk.Frame(steps_frame.scrollable_frame)
@@ -236,6 +243,7 @@ def add_well():
 
     steps_frame = ScrollableFrame(well_frame)
     steps_frame.pack(fill="both", expand=True, pady=10)
+    
 
     ttk.Button(well_frame, text="Add Step", command=lambda: add_step(well_name, steps_frame)).pack(pady=5)
     ttk.Button(well_frame, text="🛑 Delete Well", command=lambda: delete_well(well_name, well_frame)).pack(pady=5)
@@ -258,10 +266,10 @@ def generate_protocol_files():
         for step_type, entries in data["steps"]:
             if step_type.get() == "Agitation":
                 values = [
-                    entries["volume"].get(),
-                    entries["percent_volume"].get(),
                     entries["speed"].get(),
-                    entries["duration"].get()
+                    entries["duration"].get(),
+                    entries["volume"].get(),
+                    entries["percent_volume"].get()
                 ]
                 protocol_string = f"A{''.join(values)}"
             elif step_type.get() == "Pausing":
