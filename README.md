@@ -1,9 +1,11 @@
 **Automated Sample Agitation Transportation System**
 
-We are an Electrical Engineering Capstone group from the University of California, Santa Cruz. Our project aims to redesign an existing blood testing machine 
-for our sponsor Gamze Onuker.
+We are an Electrical Engineering Capstone group from the University of California, Santa Cruz. Our project aims to design a more efficient, more cost-effective solution for medical staff and researchers to process human samples for imaging. 
 
-There are five folders for each group member, specifically Greg and Dorjee have written embedded code for the touchscreen and controlling the motors.
+Here is an overview of the file structure:
+  -Five folders for each group member
+  -"Motor-Controller-Firmware" Firmware files for the motor controller motherboard and touchscreen daughterboard
+  -"Motor-Controller-Board" contains PCB files for the Motor Controller PCB
+  -"motor_tests" has test scripts for controlling the motors
 
-In addition, there is a "Motor Controller PCB" folder where Dorjee, Mishari and Alex designed a custom PCB to control all three stepper motors using an ESP32-C6-Mini and
-power all components through an SMPS and buck regulator.
+Finally, we created a poster to visually explain our project!
