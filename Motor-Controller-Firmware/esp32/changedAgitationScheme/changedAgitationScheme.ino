@@ -141,8 +141,6 @@ void loop() {
 
       //go line by line through tempBuffer and execute the protocol
       for (int a = 1; a < MAX_LINES; a++) {  //skip first line cuz it is the title
-        //send name of protocol step being run
-
         //handle pause
         if (tempBuffer[a][0] == 'P') {
           //Serial.println("Pausing");
@@ -210,7 +208,7 @@ void loop() {
 
 
           //perform the agitation function
-          finishFlag = agitateMotors(agitateSpeed, agitateDuration, totalVolume, pauseDuration, repeat, percentDepth);
+          finishFlag = agitateMotors(agitateSpeed, agitateDuration, totalVolume, percentDepth, pauseDuration, repeat);
         }
       }
 
@@ -237,23 +235,15 @@ void loop() {
  * @param agitateDuration: duration of agitation from 1-?
  * @param totalVolume: irrelevant parameter?
  * @param percentDepth: how far the agitation goes up and down from 0-100
- * @param repeat: how many times agitation happens
  * @retval: 1 if finished, 0 if error
  * @author: Gregory Ziegler
  */
 uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t totalVolume, uint8_t percentDepth, uint8_t pauseDuration, uint8_t repeat) {
 
-  //home agitation motor
   delay(200);
   homeAgitation();
   ledcDetach(AGITATION_MOTOR_STEP);  // Releases control from PWM
   stepper.enableOutputs();
-
-  //check for the touchscreen sending a stop signal
-  if (checkStopMotorsMessage()) {
-    ledcAttachChannel(AGITATION_MOTOR_STEP, 1000, 8, AGITATION_MOTOR_STEP_CHANNEL);
-    return 0;
-  }
 
   // Convert input values to physical parameters
   uint16_t agitationFrequency = mapSpeedAgitation(agitateSpeed);  // Frequency in steps/sec
@@ -281,18 +271,18 @@ uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t to
     stepper.run();
   }
 
-  //idk
   stepper.setMaxSpeed(agitationFrequency);  // High speed target
   stepper.setAcceleration(3000000);         // Very aggressive acceleration
+  // Start timed agitation loop
+  //unsigned long startTime = millis();
+  stepper.moveTo(top);  // First move up
 
   //send uart data
   MySerial.write("B");
   delay(20);
   MySerial.write(agitateDuration);
 
-  //actual agitation begins here. repeat it as many times as necessary
-  //for (uint8_t rep = 0; rep < repeat; rep++) {
-    // Start timed agitation loop
+  for (int rep = 0; rep < repeat; rep++) {
     unsigned long startTime = millis();
     stepper.moveTo(top);  // First move up
     while (millis() - startTime < (agitateDuration * 1000)) {
@@ -309,10 +299,11 @@ uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t to
       }
     }
     //pause motors after agitation
+    //Serial.println(pauseDuration);
     pauseMotors(pauseDuration);
-  //}
+    //stepper.run();
+  }
 
-  //agitation is finished
   stepper.stop();  //hault
   // Reattach PWM and rehome agitation motor
   ledcAttachChannel(AGITATION_MOTOR_STEP, 1000, 8, AGITATION_MOTOR_STEP_CHANNEL);
@@ -378,7 +369,7 @@ uint8_t moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequ
 
 
   //moving sequence
-  moveMotorY(LOW, 1, 45);  //after the beads are magnatized, hove the body un slowly
+  moveMotorY(LOW, 1, 40);  //after the beads are magnatized, hove the body un slowly
   delay(2000);             //delay to make sure the liquid stays
   if (checkStopMotorsMessage()) {
     return 0;
@@ -513,15 +504,11 @@ uint8_t autoHome() {
 
   moveMotorY(LOW, 4, 40);   // motor y to init position
   moveMotorX(HIGH, 5, 55);  //motor x to init position
-                            //the nudge puts it in the right place to begin with
-                            //moveMotorA(HIGH, 4, 2);  //move Agitation Head so that the plastic Combs are just above the test rack
+  //the nudge puts it in the right place to begin with
+  //moveMotorA(HIGH, 4, 2);  //move Agitation Head so that the plastic Combs are just above the test rack
 
   //Serial.println("Homeing Complete!!");
   //rest of the homing repositioning sequence goes here:)
-
-  if (checkStopMotorsMessage()) {
-    return 0;
-  }
   return 1;
 }
 
@@ -674,8 +661,8 @@ unsigned int mapSpeedX(float value) {
  * @author: Gregory Ziegler
  */
 uint8_t pauseMotors(uint8_t pauseDuration) {
-  delay(100);
-  homeAgitation();  // home the agitator
+  //delay(100);
+  //homeAgitation();  // home the agitator
                     //ledcWriteTone(AGITATION_MOTOR_STEP, 0);
   stepper.stop();   //hault
   uint32_t curTime = millis();
