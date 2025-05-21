@@ -2,7 +2,7 @@ Hello, I'm Dorjee. I worked on the touchscreen firmware by myself and the motor 
 
 Here is a breakdown of the file structure for this directory:
 
-	- bigger_touchscreen" contains the stm32cubeide files for the touchscreen PCB working on its own
+	- "bigger_touchscreen" contains the stm32cubeide files for the touchscreen PCB working on its own
 	- "faster_prototype_with_microstepping" contains working firmware for our first prototype that had all three motors moving, but did not have precise motor movements
 	- "MOTOR_SCRIPTS" contains a plethora of motor testing files over the course of the past few months 
 	- "premade_protocol_testing_clean" contains working firmware for moving the motors without the touchscreen
