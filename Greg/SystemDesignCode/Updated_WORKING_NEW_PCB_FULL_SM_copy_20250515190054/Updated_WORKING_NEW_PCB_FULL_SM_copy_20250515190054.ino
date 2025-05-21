@@ -1,225 +1,241 @@
 /************
-4/3/25
+5/15/25
 Gregory Ziegler + Dorjee Tenzing
 Overview:
-Create premade protocolInstructions that consist of three operations: agitate, pause, bind
-Write a state machine that calls existing motor functions with defined inputs and outputs
-IE host a diddy party in each well specified by diddy. Check on the hoes, then go to the next house.
+This program receives protocol instructions from an STM32 microcontroller's touchscreen through UART.
+A state machine parses the UART data and performs three main actions: agitation, moving and pausing.
+IE host a diddy party in each well specified by diddy??? Check on the hoes, then go to the next house.
 *************/
 
+#include <HardwareSerial.h>
 #include <ezButton.h>
 #include <AccelStepper.h>
+
+HardwareSerial MySerial(0);  // Use UART0
 
 #define MAX_LINE_LENGTH 32
 #define MAX_LINES 100
 
+/******************* PIN DEFINITIONS **************/
+
+//agitation
 const int AGITATION_MOTOR_STEP = 19;
 const int AGITATION_MOTOR_DIR = 18;
+const int AGITATION_MOTOR_STEP_CHANNEL = 2;
 
+//horizontal
 const int MOTOR_X_STEP = 5;
 const int MOTOR_X_DIR = 4;
+const int MOTOR_X_STEP_CHANNEL = 4;
 
+//vertical
 const int MOTOR_Y_STEP = 2;  //
 const int MOTOR_Y_DIR = 3;   //
-const int AGITATION_MOTOR_STEP_CHANNEL = 2;
-const int MOTOR_X_STEP_CHANNEL = 4;
 const int MOTOR_Y_STEP_CHANNEL = 3;
 
+//limit switches
 const int AGITATION_SWITCH = 15;
 const int VERTICAL_SWITCH = 6;
 const int HORIZONTAL_SWITCH = 7;
+AccelStepper stepper(AccelStepper::DRIVER, AGITATION_MOTOR_STEP, AGITATION_MOTOR_DIR);
+ezButton limitSwitchY(VERTICAL_SWITCH);           // create ezButton object that attach to ESP32 pin GPIO6
+ezButton limitSwitchX(HORIZONTAL_SWITCH);         // create ezButton object that attach to ESP32 pin GPIO7
+ezButton limitSwitchAgitation(AGITATION_SWITCH);  // create ezButton object that attach to ESP32 pin GPIO15
 
+//motor enable
 const int MOTOR_ENABLE = 22;
 
+/******************* STATE MACHINE SETUP *****************/
 
-AccelStepper stepper(AccelStepper::DRIVER, AGITATION_MOTOR_STEP, AGITATION_MOTOR_DIR);
-ezButton limitSwitchX(HORIZONTAL_SWITCH);         // create ezButton object that attach to ESP32 pin GPIO5
-ezButton limitSwitchY(VERTICAL_SWITCH);           // create ezButton object that attach to ESP32 pin GPIO6
-ezButton limitSwitchAgitation(AGITATION_SWITCH);  // create ezButton object that attach to ESP32 pin GPIO7
+typedef enum {
+  waitingState,
+  runState
+} operationState;
 
-// HardwareSerial mySerial(1);
+operationState currentState = waitingState;
+
+/****************** INITIALIZE FUNCTIONS **************/
+uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t totalVolume, uint8_t percentDepth);
+uint8_t pauseMotors(uint8_t pauseDuration);
+uint8_t moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequences, uint8_t sequencePauseTime);
+
+/************** INITALIZE VARIABLES ****************/
 
 // Initialize the tempBuffer with nulls ('\0')
 char tempBuffer[MAX_LINES][MAX_LINE_LENGTH] = { { '\0' } };
-// memset(tempBuffer, 0, sizeof(tempBuffer));
 uint8_t startFlag = 0;
 uint8_t i = 0;
 uint8_t j = 0;
 
-// types of protocolInstructions
-enum ProtocolType {
-  AGITATION,  // 'B'
-  PAUSING,    // 'P'
-  MOVING,     // 'M'
-  INVALID     // For unknown protocol types
-};
-// Structure to store protocol properties
-struct Protocol {
-  ProtocolType type;
-  uint8_t volume;
-  uint8_t percentVolume;
-  uint8_t speed;
-  uint8_t duration;
-  uint8_t initialSurfaceTime;
-  uint8_t stopAtSequences;
-  uint8_t sequencePauseTime;
-};
+uint8_t finishFlag = 0;
 
-// Protocol Array
-char *protocolInstructions[] = {
-  "B930100050", "P10", "B930100050", "P10", "M010435", "B930100050", "P10"
-};
-
-// global size of protocolInstructions
-int size = sizeof(protocolInstructions) / sizeof(protocolInstructions[0]);  // Get number of elements
-
-
-// Initialize the tempBuffer with nulls ('\0')
 
 void setup() {
-  // Set up UART and GPIO
+  /*********** Set up UART and GPIO ***********/
 
-  digitalWrite(MOTOR_ENABLE, 0);
+  //motor enable
+  pinMode(MOTOR_ENABLE, OUTPUT);
+  digitalWrite(MOTOR_ENABLE, 1);  //keep motors off until touchscreen enables them
 
-  Serial.begin(115200);
+  //hardware UART0
+  //Serial.begin(115200);
+  MySerial.begin(115200);
+
+  //limit switch debouncing
   limitSwitchAgitation.setDebounceTime(50);  // set debounce time of limit switch to 50 milliseconds
   limitSwitchX.setDebounceTime(50);
   limitSwitchY.setDebounceTime(50);
-  pinMode(AGITATION_MOTOR_DIR, OUTPUT);
-  pinMode(MOTOR_Y_DIR, OUTPUT);
-  pinMode(MOTOR_X_DIR, OUTPUT);
-  //limit switch pins set to input
+
+  //limit switches are pulled down. when pressed, they connect to vcc
   pinMode(HORIZONTAL_SWITCH, INPUT_PULLDOWN);
   pinMode(VERTICAL_SWITCH, INPUT_PULLDOWN);
   pinMode(AGITATION_SWITCH, INPUT_PULLDOWN);
 
-  // Setup  Motor Step Signal
+  //motor direction pins are digital outputs
+  pinMode(AGITATION_MOTOR_DIR, OUTPUT);
+  pinMode(MOTOR_Y_DIR, OUTPUT);
+  pinMode(MOTOR_X_DIR, OUTPUT);
+
+  //step signals
   ledcAttachChannel(AGITATION_MOTOR_STEP, 1000, 8, AGITATION_MOTOR_STEP_CHANNEL);
   ledcAttachChannel(MOTOR_X_STEP, 1000, 8, MOTOR_X_STEP_CHANNEL);
   ledcAttachChannel(MOTOR_Y_STEP, 1000, 8, MOTOR_Y_STEP_CHANNEL);
-
-  /** USEFUL FUNCTIONS:
-   * ledcWriteTone(AGITATION_MOTOR_STEP, 1000);
-   * ledcChangeFrequency(AGITATION_MOTOR_DIR, 10, 8);
-   */
-
-  /*********** RUN MAIN TEST ***********/
-  pinMode(MOTOR_ENABLE, OUTPUT);
-  // Fill in tempBuffer with premade protocol
-  strcpy(tempBuffer[0], "P3");
-  strcpy(tempBuffer[1], "A340532");
-  uint8_t i = 0;
-
-  // for (i = 0; i, MAX_LINES; i++) {
-  //   //handle pause operation: P7. Input: Duration
-  //   if (tempBuffer[i][0] == 'P') {
-  //     uint8_t pauseDuration = tempBuffer[i][1] - '0';  //convert from ascii to int
-  //     pauseMotors(pauseDuration);
-  //   }
-
-  //   //handle agitate operation: A74. Inputs: Agitation speed, agitation duration
-  //   if (tempBuffer[i][0] == 'A') {
-  //     uint8_t agitateSpeed = tempBuffer[i][4] - '0';                                         //extract speed
-  //     uint8_t agitateDuration = ((tempBuffer[i][5] - '0') * 10) + (tempBuffer[i][6] - '0');  //extract duration
-  //     uint8_t totalVolume = tempBuffer[i][1] - '0';                                          //extract total volume
-  //     uint8_t percentVolume = ((tempBuffer[i][2] - '0') * 10) + (tempBuffer[i][3] - '0');    //extract percent volumt
-  //     agitateMotors(agitateSpeed, agitateDuration, totalVolume, percentVolume);
-  //   }
-
-  //   //handle bind operation: B7. Inputs: Bind duration
-  //   if (tempBuffer[i][0] == 'B') {
-  //     uint8_t bindDuration = tempBuffer[i][0];
-  //   }
-  // }
-
-
-  // /*Limit Switch Test Case*/
-  //fun
-  //sidequest
-
-
-
-
-  /*WORKS this block FUcking Works. 
-  // digitalWrite(AGITATION_MOTOR_DIR, HIGH);
-  // ledcWriteTone(AGITATION_MOTOR_STEP,5000);
-
-
-
-  /*Test Protocol hard code functions
-    */
-  // Serial.println("Hello World");
-  // autoHome();
-  // agitateMotors(9, 30, 100, 100);
-  // moveSample(010, 4, 3, 5);
-  // autoHome();
-  //homeAgitation();
-  // autoHome();
-  while (1) {
-    runASAT();
-  }
-
-  // autoHome();
-  // agitateMotors(9, 30, 100, 100);
-  // end setup
 }
 
-void runASAT() {
-  /*Main Test CASE*/
+/*
+ *@brief: state machine is either waiting for uart data or moving motors.
+ *@author: Dorjee Tenzing
+*/
+void loop() {
+  //state machine to handle the machine operation
+  switch (currentState) {
+    case waitingState:
+      // fill up tempBuffer with serial data
+      if (MySerial.available()) {
+        // Read the incoming byte
+        char incomingByte = MySerial.read();
+        tempBuffer[i][j] = incomingByte;
+        //Serial.println(incomingByte);
+        j++;
+        //handle newline
+        if (incomingByte == '\n') {
+          //Serial.println("testing new line");
+          tempBuffer[i][j] = '\0';
+          i++;
+          j = 0;
+        }
+        //handle tab operator
+        if (incomingByte == '\t') {
+          tempBuffer[i][j] = '\0';
+          i = 0;
+          j = 0;
+          //turn motors on and go to run state
+          currentState = runState;
+          digitalWrite(MOTOR_ENABLE, 0);
+        }
+      }
+      break;
+    case runState:
+      //auto home first
+      finishFlag = autoHome();
 
-  //loop through array of protocolInstructions
-  autoHome();
-  delay(100);  //small delay before running the SM
-  for (int i = 0; i < size; i++) {
-    Serial.println("looping through Protocol List");
-    Protocol parsed = parseProtocol(protocolInstructions[i]);  // Parse protocol
+      //go line by line through tempBuffer and execute the protocol
+      for (int a = 0; a < MAX_LINES; a++) {  //skip first line cuz it is the title
+        //handle pause
+        if (tempBuffer[a][0] == 'P') {
+          //Serial.println("Pausing");
 
-    // print out list
-    Serial.print("Current Protocol: ");
-    Serial.println(protocolInstructions[i]);
-    // for each parsed protocol print out its information based on type
-    switch (parsed.type) {
-      // call the agitation function
-      case AGITATION:  //diddy party
-        Serial.println("INIT AGITATION");
-        // debug for information correctness
-        Serial.println("Type: Agitation");
-        Serial.print("Volume: ");
-        Serial.println(parsed.volume);
-        Serial.print("Percent Volume: ");
-        Serial.println(parsed.percentVolume);
-        Serial.print("Speed: ");
-        Serial.println(parsed.speed);
-        Serial.print("Duration: ");
-        Serial.println(parsed.duration);
-        agitateMotors(parsed.speed, parsed.duration, parsed.volume, parsed.percentVolume);  // agitate the motors
+          //parse uart pause data
+          uint8_t pauseDuration = (tempBuffer[a][1] - '0');  // Only duration for pausing
 
-        break;
+          //send uart data to tell stm32 which protocol is running
+          MySerial.write("P");
+          delay(20);
+          MySerial.println(tempBuffer[a]);
 
-      case PAUSING:  //let the liquid rest
-        pauseMotors(parsed.duration);
-        Serial.println("Type: Pausing");
-        Serial.print("Duration: ");
-        Serial.println(parsed.duration);
-        break;
+          //perform the pause functon
+          finishFlag = pauseMotors(pauseDuration);
+        }
 
-      case MOVING:  //move sample to next rack
-        moveSample(parsed.initialSurfaceTime, parsed.speed, parsed.stopAtSequences, parsed.sequencePauseTime);
-        Serial.println("Type: Moving");
-        Serial.print("Initial Surface Time: ");
-        Serial.println(parsed.initialSurfaceTime);
-        Serial.print("Speed: ");
-        Serial.println(parsed.speed);
-        Serial.print("Stop at Sequences: ");
-        Serial.println(parsed.stopAtSequences);
-        Serial.print("Sequence Pause Time: ");
-        Serial.println(parsed.sequencePauseTime);
-        break;
-    }
+        //handle moving
+        if (tempBuffer[a][0] == 'M') {
+          //Serial.println("Moving");
+
+          //parse uart moving data
+          uint8_t initialSurfaceTime = ((tempBuffer[a][1] - '0') * 100) + ((tempBuffer[a][2] - '0') * 10) + (tempBuffer[a][3] - '0');  // Initial surface time
+          uint8_t speed = (tempBuffer[a][4] - '0');                                                                                    // Speed
+          uint8_t stopAtSequences = (tempBuffer[a][5] - '0');                                                                          // Stop at sequences
+          uint8_t sequencePauseTime = (tempBuffer[a][6] - '0');                                                                        // Sequence pause time
+
+          //send uart data to tell stm32 which protocol is running
+          MySerial.write("M");
+          delay(20);
+          MySerial.println(tempBuffer[a]);
+
+          //perform the move function
+          finishFlag = moveSample(initialSurfaceTime, speed, stopAtSequences, sequencePauseTime);
+        }
+
+        //handle agitation
+        if (tempBuffer[a][0] == 'B') {
+          //Serial.println("Agitating");
+
+          //parse the agitation uart data
+          uint16_t agitateSpeed = (tempBuffer[a][1] - '0');  //you take the index and subtract by null to get the actual number in the struct
+          uint8_t agitateDuration = ((tempBuffer[a][2] - '0') * 10) + ((tempBuffer[a][3] - '0'));
+          uint8_t totalVolume = ((tempBuffer[a][4] - '0') * 100) + ((tempBuffer[a][5] - '0') * 10) + ((tempBuffer[a][6] - '0'));
+          uint8_t percentDepth = ((tempBuffer[a][7] - '0') * 100) + ((tempBuffer[a][8] - '0') * 10) + ((tempBuffer[a][9] - '0'));
+
+          //send uart data to tell stm32 which protocol is running
+          MySerial.write("B");
+          delay(20);
+          MySerial.println(tempBuffer[a]);
+          // for (int i=1; i<=9; i++) {
+          //   MySerial.write(tempBuffer[a][i]);
+          //   delay(20); //delay time from stm32, MAX_UART_DELAY
+          // }
+          // MySerial.write(tempBuffer[a][1]); //speed
+          // MySerial.write(tempBuffer[a][2]); //duration 1x
+          // MySerial.write(tempBuffer[a][3]); //duration x1
+          // MySerial.write(tempBuffer[a][4]); //volume 1xx
+          // MySerial.write(tempBuffer[a][5]); //volume x1x
+          // MySerial.write(tempBuffer[a][6]); //volume xx1
+          // MySerial.write(tempBuffer[a][7]); //depth 1xx
+          // MySerial.write(tempBuffer[a][8]); //depth x1x
+          // MySerial.write(tempBuffer[a][9]); //depth xx1
+
+
+          //perform the agitation function
+          finishFlag = agitateMotors(agitateSpeed, agitateDuration, totalVolume, percentDepth);
+        }
+      }
+
+      //after protocol finishes, go back to waiting state
+      currentState = waitingState;
+      memset(tempBuffer, 0, sizeof(tempBuffer));
+      //shitty solution to the issue of uart data being sent while motors move
+      while (MySerial.available()) {
+        MySerial.read();
+      }
+
+      //send uart data to tell stm32 protocol is finished
+      if (finishFlag) { //need to go back and change all return values to 0 if error, 1 if finished
+        MySerial.write("D");
+      }
+      break;
   }
 }
 
-void agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t totalVolume, uint8_t percentDepth) {
+/**
+ * @brief: move agitaton motor up and down rapidly
+ * @param agitateSpeed: speed of motor from 1-9
+ * @param agitateDuration: duration of agitation from 1-?
+ * @param totalVolume: irrelevant parameter?
+ * @param percentDepth: how far the agitation goes up and down from 0-100
+ * @retval: 1 if finished, 0 if error
+ * @author: Gregory Ziegler
+ */
+uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t totalVolume, uint8_t percentDepth) {
 
   delay(200);
   homeAgitation();
@@ -258,11 +274,22 @@ void agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t total
   unsigned long startTime = millis();
   stepper.moveTo(top);  // First move up
 
+  //send uart data
+  MySerial.write("B");
+  delay(20);
+  MySerial.write(agitateDuration);
+
   while (millis() - startTime < (agitateDuration * 1000)) {
     stepper.run();                      // run the motor
     if (stepper.distanceToGo() == 0) {  //check if we hit the desired agitation depth
       stepper.moveTo(movingDown ? top : bottom);
       movingDown = !movingDown;
+    }
+
+    //check for the touchscreen sending a stop signal
+    if (checkStopMotorsMessage()) {
+      ledcAttachChannel(AGITATION_MOTOR_STEP, 1000, 8, AGITATION_MOTOR_STEP_CHANNEL);
+      return 0;
     }
   }
 
@@ -270,13 +297,21 @@ void agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t total
   // Reattach PWM and rehome agitation motor
   ledcAttachChannel(AGITATION_MOTOR_STEP, 1000, 8, AGITATION_MOTOR_STEP_CHANNEL);
   homeAgitation();
+  return 1;
 }
-// num1 and num2 are the integer ranges of speed, num3 and num4 are the frequency ranges
+
+/**
+  * from here, assume that the combs in question will be clamped with the magnets until the very end
+ * @brief: maps agitation speed to frequency for motor step signal.
+ * num1 and num2 are the integer ranges of speed, num3 and num4 are the frequency ranges
+ * @param value: speed value from 1-9
+ * @retval: frequency for motor step signal
+ * @author: Gregory Ziegler
+ */
+
 unsigned int mapSpeedAgitation(float value) {
   return (value - 1) * (55000 - 5000) / (9 - 1) + 5000;
 }
-
-
 
 /**
   * from here, assume that the combs in question will be clamped with the magnets until the very end
@@ -285,13 +320,20 @@ unsigned int mapSpeedAgitation(float value) {
  * @param speed fourth number
  * @param stopAtSequences fifth number
  * @param sequencePauseTime sixth number
- * @retval: none
+ * @retval: 1 if finished, 0 if error
+ * @author: Gregory Ziegler
  */
-void moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequences, uint8_t sequencePauseTime) {
+uint8_t moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequences, uint8_t sequencePauseTime) {
   //fully init into the funciton
   delay(1000);
+  if (checkStopMotorsMessage()) {
+    return 0;
+  }
   homeAgitation();  // home the agitation motor and wait
   delay(2000);
+  if (checkStopMotorsMessage()) {
+    return 0;
+  }
   //we need to know at what hight inside the wells to put the combs
   //not sure about this block yet
   // moveMotorY(HIGH, speed, 6);  // put combs at top of liquid
@@ -309,20 +351,34 @@ void moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequenc
   for (int i = 0; i < stopAtSequences; i++) {
     moveMotorY(HIGH, speed, pos);     //increment motor
     delay(sequencePauseTime * 1000);  //hold here for however long specified
+    if (checkStopMotorsMessage()) {
+      return 0;
+    }
   }
+
 
   //moving sequence
   moveMotorY(LOW, 1, 40);  //after the beads are magnatized, hove the body un slowly
   delay(2000);             //delay to make sure the liquid stays
+  if (checkStopMotorsMessage()) {
+    return 0;
+  }
   //above works time for step 2, move to the right and fill the next Well
   moveMotorX(HIGH, 1, 8.75);  //move to next Well
   delay(2000);                //wait for smoothness
-  moveMotorY(HIGH, 1, 25);    //position just above the wells
+  if (checkStopMotorsMessage()) {
+    return 0;
+  }
+  moveMotorY(HIGH, 1, 25);  //position just above the wells
   //fill other well sequence
   moveMotorA(HIGH, 2, 16);
   moveMotorY(LOW, 1, 15);
   delay(initialSurfaceTime);
+  if (checkStopMotorsMessage()) {
+    return 0;
+  }
   homeAgitation();
+  return 1;
 }
 
 
@@ -331,17 +387,24 @@ void moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequenc
 /**
  * @brief:runs motor in home direction until a limit switch is hit
  * @param none
- * @retval: none
+ * @retval: 1 if finished, 0 if error
+ * @author: Gregory Ziegler
  */
-void autoHome() {
+uint8_t autoHome() {
   int motorSequence = 0;  //controls sequence of motors homing.
-  Serial.println("HOMEING!!!");
+  //Serial.println("HOMEING!!!");
   delay(200);
+  if (checkStopMotorsMessage()) {
+    return 0;
+  }
   moveMotorY(LOW, 4, 20);  // motor y to init position
   delay(200);              //allow Y motor to raise out of the way then allow the agitation motor to Home.
+  if (checkStopMotorsMessage()) {
+    return 0;
+  }
   if (motorSequence == 0) {
     // Low is Up, High is DOwn
-    Serial.println("Homing Agitation");
+    //Serial.println("Homing Agitation");
     digitalWrite(AGITATION_MOTOR_DIR, LOW);      //LOW is the home DIrection
     ledcWriteTone(AGITATION_MOTOR_STEP, 20000);  // Drive motor
     // determine if it is pressed
@@ -363,8 +426,11 @@ void autoHome() {
       }
     }
   }
+  if (checkStopMotorsMessage()) {
+    return 0;
+  }
   if (motorSequence == 1) {
-    Serial.println("Homing Y Axis");
+    //Serial.println("Homing Y Axis");
     //Right is Low, High is Left
     ledcWriteTone(MOTOR_X_STEP, 800);  // Drive motor
     digitalWrite(MOTOR_X_DIR, LOW);    //home direction is left = LOW
@@ -372,10 +438,10 @@ void autoHome() {
     while (1) {
       //the motor should be running the whole time that the limit switch is untouched
       uint8_t stateX = digitalRead(HORIZONTAL_SWITCH);  //check status of limit switch
-      Serial.print("Limit switch X => ");
-      Serial.println(stateX);
+      // Serial.print("Limit switch X => ");
+      // Serial.println(stateX);
       if (stateX != 1) {
-        Serial.println("Limit switch is currently Touched");
+        //Serial.println("Limit switch is currently Touched");
 
         //turn off motor in this event
         digitalWrite(MOTOR_X_DIR, HIGH);
@@ -386,8 +452,11 @@ void autoHome() {
       }
     }
   }
+  if (checkStopMotorsMessage()) {
+    return 0;
+  }
   if (motorSequence == 2) {
-    Serial.println("Homing X Axis");
+    //Serial.println("Homing X Axis");
     //Low is Up and High is Down
     ledcWriteTone(MOTOR_Y_STEP, 800);  // Drive motor
     digitalWrite(MOTOR_Y_DIR, HIGH);   //home direction is Down = LOW
@@ -398,7 +467,7 @@ void autoHome() {
     while (1) {
       stateY = digitalRead(VERTICAL_SWITCH);  //read status of limit switch
       if (stateY != 1) {
-        Serial.println("Limit switch is currently Touched");
+        //Serial.println("Limit switch is currently Touched");
         //turn off motor in this event
         digitalWrite(MOTOR_Y_DIR, HIGH);
         ledcWriteTone(MOTOR_Y_STEP, 0);  //
@@ -412,6 +481,9 @@ void autoHome() {
       }
     }
   }
+  if (checkStopMotorsMessage()) {
+    return 0;
+  }
 
 
 
@@ -424,8 +496,9 @@ void autoHome() {
   //the nudge puts it in the right place to begin with
   //moveMotorA(HIGH, 4, 2);  //move Agitation Head so that the plastic Combs are just above the test rack
 
-  Serial.println("Homeing Complete!!");
+  //Serial.println("Homeing Complete!!");
   //rest of the homing repositioning sequence goes here:)
+  return 1;
 }
 
 /**
@@ -433,6 +506,7 @@ void autoHome() {
  * note this particular motor driver is quarter microsteped.
  * @param distance
  * @retval: none
+ * @author: Gregory Ziegler
  */
 void moveMotorA(int DIR, uint32_t speed, float distance) {  //
   // convert distance to steps. for now i'm keeping it in number of revolutions
@@ -471,10 +545,10 @@ void homeAgitation() {
     //if the state of the limit switch is high that means it has been pressed
     while (1) {
       stateA = digitalRead(AGITATION_SWITCH);
-      Serial.print("LIMIT SWITCH VALUE => ");
-      Serial.println(stateA);
+      // Serial.print("LIMIT SWITCH VALUE => ");
+      // Serial.println(stateA);
       if (stateA != 1) {
-        Serial.println("Limit switch is currently Touched");
+        //Serial.println("Limit switch is currently Touched");
         //turn off motor in this event
         digitalWrite(AGITATION_MOTOR_DIR, HIGH);
         ledcWriteTone(AGITATION_MOTOR_STEP, 0);  //
@@ -491,14 +565,12 @@ void homeAgitation() {
 }
 
 
-
-
-
 /**
  * @brief: take in a distance and move the gantry head that amount
  * note this particular motor driver is quarter microsteped.
  * @param distance
  * @retval: none
+ * @author: Gregory Ziegler
  */
 void moveMotorY(int DIR, uint32_t speed, float distance) {  // 1 step is 1.8 degrees
   // convert distance to steps. for now i'm keeping it in number of revolutions
@@ -530,6 +602,7 @@ unsigned int mapSpeedY(float value) {
  * note this particular motor driver is quarter microsteped.
  * @param distance
  * @retval: none
+ * @author: Gregory Ziegler
  */
 void moveMotorX(int DIR, uint32_t speed, float distance) {  // 1 step is 1.8 degrees
   // convert distance to steps. for now i'm keeping it in number of revolutions
@@ -551,6 +624,7 @@ void moveMotorX(int DIR, uint32_t speed, float distance) {  // 1 step is 1.8 deg
 
   ledcWriteTone(MOTOR_X_STEP, 0);  // stop step pulses
 }
+
 // angle (degrees) = (arc length / radius) * (180 / π)
 uint32_t distanceToStepsX(float distance)  // about 8.75mm
 {
@@ -572,13 +646,21 @@ unsigned int mapSpeedX(float value) {
 /**
  * @brief: Pause the motor for a number of seconds
  * @param pauseDuration: pause duration in seconds
- * @retval: none
+ * @retval: 1 if finished, 0 if error
+ * @author: Gregory Ziegler
  */
-void pauseMotors(uint8_t pauseDuration) {
+uint8_t pauseMotors(uint8_t pauseDuration) {
   delay(100);
   homeAgitation();  // home the agitator
-  ledcWriteTone(AGITATION_MOTOR_STEP, 0);
-  delay(pauseDuration * 1000);  // convert from seconds to milliseconds for delay function
+                    //ledcWriteTone(AGITATION_MOTOR_STEP, 0);
+  stepper.stop();   //hault
+  uint32_t curTime = millis();
+  while ((millis() - curTime) < (pauseDuration * 1000)) {
+    if (checkStopMotorsMessage()) {
+      return 0;
+    }
+  }
+  return 1;
 }
 
 
@@ -603,59 +685,18 @@ unsigned int mapDepth(float value1, float value2) {
   return (unsigned int)finalValue;
 }
 
-/**
- * @brief: iterate through the array and extract all information
- * @param char *protocol : pause duration in seconds
- * @retval: none
- */
-Protocol parseProtocol(char *protocol) {
-  Protocol parsed;  // object of protocol struct with the elements of all protocolInstructions contained
-  parsed.type = getProtocolType(protocol);
-  // for each type extract its respective information
-  switch (parsed.type) {
-    case AGITATION:                        //"B930100100"
-      parsed.speed = (protocol[1] - '0');  //you take the index and subtract by null to get the actual number in the struct
-      parsed.duration = ((protocol[2] - '0') * 10) + ((protocol[3] - '0'));
-      parsed.volume = ((protocol[4] - '0') * 100) + ((protocol[5] - '0') * 10) + ((protocol[6] - '0'));
-      parsed.percentVolume = ((protocol[7] - '0') * 100) + ((protocol[8] - '0') * 10) + ((protocol[9] - '0'));
-      break;
-
-    case PAUSING:
-      parsed.duration = (protocol[1] - '0');  // Only duration for pausing
-      break;
-
-    case MOVING:
-      parsed.initialSurfaceTime = ((protocol[1] - '0') * 100) + ((protocol[2] - '0') * 10) + (protocol[3] - '0');  // Initial surface time
-      parsed.speed = (protocol[4] - '0');                                                                          // Speed
-      parsed.stopAtSequences = (protocol[5] - '0');                                                                // Stop at sequences
-      parsed.sequencePauseTime = (protocol[6] - '0');                                                              // Sequence pause time
-      break;
+//return 1 if there is a message, else return 0
+uint8_t checkStopMotorsMessage(void) {
+  //if touchscreen sends a stop signal, abandon this protocol
+  if (MySerial.available()) {
+    char testByte = MySerial.read();
+    if (testByte == 'S') {
+      //turn motors off and go back to waiting state
+      digitalWrite(MOTOR_ENABLE, 1);
+      currentState = waitingState;
+      memset(tempBuffer, 0, sizeof(tempBuffer));
+      return 1;
+    }
   }
-
-  return parsed;
-}
-
-// Function to determine protocol type
-ProtocolType getProtocolType(char *protocol) {
-  // based on the first character of the protocolInstructions you can see what type of protocol it is
-  switch (protocol[0]) {  // Check the first character
-    case 'B':
-      return AGITATION;
-      break;
-    case 'P':
-      return PAUSING;
-      break;
-    case 'M':
-      return MOVING;
-      break;
-    default:
-      Serial.print("Error: Invalid protocol type '");
-      Serial.print(protocol[0]);
-      Serial.println("'");
-      return INVALID;
-      break;
-  }
-}
-// unused
-void loop() {
+  return 0;
 }
