@@ -1,5 +1,5 @@
 import kivy
-from kivy.app import App
+from kivy.app import App # main App
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
