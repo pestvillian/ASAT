@@ -1,0 +1,6 @@
+Well 1
+  Step: Agitation
+    speed: 2
+    duration: 32
+    volume: 431
+    percent_volume: 124
