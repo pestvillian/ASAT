@@ -284,6 +284,7 @@ uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t to
 
   for (int rep = 0; rep < repeat; rep++) {
     unsigned long startTime = millis();
+    movingDown = false;
     stepper.moveTo(top);  // First move up
     while (millis() - startTime < (agitateDuration * 1000)) {
       stepper.run();                      // run the motor
