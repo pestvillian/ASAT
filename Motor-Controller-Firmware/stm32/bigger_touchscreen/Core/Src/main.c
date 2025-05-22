@@ -96,6 +96,7 @@
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi4;
 
+TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 
 UART_HandleTypeDef huart2;
@@ -150,6 +151,7 @@ static void MX_FMC_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_SPI4_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_TIM2_Init(void);
 void MX_USB_HOST_Process(void);
 
 /* USER CODE BEGIN PFP */
@@ -177,7 +179,7 @@ uint8_t HandleTouch(void);
 void DrawMainPage(uint8_t page_num);
 void DrawInfoPage(char protocolTitle[MAX_LINE_LENGTH]);
 void DrawConfirmationPage(uint32_t sector, uint32_t offset);
-void DrawProgressPage(uint8_t, char *rx_data);
+void DrawProgressPage(char protocolTitle[20], uint8_t rx_byte, char *rx_data);
 void DrawStopPage(void);
 void SendStopMotorsMessage(void);
 uint8_t handleTouch();
@@ -191,6 +193,8 @@ int _write(int file, char *ptr, int len) {
 	}
 	return len;
 }
+
+volatile protocolTimer = 0; //volatile because it is changed in interrupt?
 
 //UART variables
 uint8_t rx_byte;
@@ -308,7 +312,10 @@ int main(void)
   MX_SPI4_Init();
   MX_USB_HOST_Init();
   MX_USART2_UART_Init();
+  MX_TIM2_Init();
+
   /* USER CODE BEGIN 2 */
+
 
 //  	erase_sector(1);
 //  	erase_sector(2);
@@ -356,19 +363,19 @@ int main(void)
 					//HAL_UART_Receive(&huart2, (uint8_t*) rx_bind, sizeof(rx_bind), 1000);
 					//DrawProgressPage(rx_byte, rx_bind);
 					HAL_UART_Receive(&huart2, (uint8_t*) rx_data, sizeof(rx_data), 100);
-					DrawProgressPage(rx_byte, rx_data);
+					DrawProgressPage("FILL", rx_byte, rx_data);
 				}
 				if (rx_byte == 'M') {
 					//HAL_UART_Receive(&huart2, (uint8_t*) rx_move, sizeof(rx_move), HAL_MAX_DELAY);
 					//DrawProgressPage(rx_byte, rx_move);
 					HAL_UART_Receive(&huart2, (uint8_t*) rx_data, sizeof(rx_data), 100);
-					DrawProgressPage(rx_byte, rx_data);
+					DrawProgressPage("FILL", rx_byte, rx_data);
 				}
 				if (rx_byte == 'P' ) {
 					//HAL_UART_Receive(&huart2, (uint8_t*) rx_pause, sizeof(rx_pause), HAL_MAX_DELAY);
 					//DrawProgressPage(rx_byte, rx_pause);
 					HAL_UART_Receive(&huart2, (uint8_t*) rx_data, sizeof(rx_data), 100);
-					DrawProgressPage(rx_byte, rx_data);
+					DrawProgressPage("FILL", rx_byte, rx_data);
 				}
 
 				//protocol finishes
@@ -468,6 +475,51 @@ static void MX_SPI4_Init(void)
   /* USER CODE BEGIN SPI4_Init 2 */
 
   /* USER CODE END SPI4_Init 2 */
+
+}
+
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 8400-1;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 10000;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
 
 }
 
@@ -764,6 +816,11 @@ void DrawMainPage(uint8_t page_num) {
 	lcdPrintf(queueButton.label);
 }
 
+/**
+ * @brief: Draw select page with run, delete and queue buttons
+ * @param: protocolTitle: title of the protocol to be displayed
+ * @retval: none
+ */
 void DrawInfoPage(char protocolTitle[MAX_LINE_LENGTH]) {
 	lcdFillRGB(COLOR_WHITE);
 	//Display protocol name at top of screen
@@ -797,6 +854,12 @@ void DrawInfoPage(char protocolTitle[MAX_LINE_LENGTH]) {
 	lcdPrintf(backButton.label);
 }
 
+/**
+ * @brief: Confirmation page to delete a protocol
+ * @param: sector: which sector in flash memory the protocol exists
+ * @param: offset: which section of the sector the protocol exists
+ * @retval: none
+ */
 void DrawConfirmationPage(uint32_t sector, uint32_t offset) {
 	lcdFillRGB(COLOR_WHITE);
 
@@ -821,6 +884,11 @@ void DrawConfirmationPage(uint32_t sector, uint32_t offset) {
 	lcdPrintf(backButton.label);
 }
 
+/**
+ * @brief: Queue page has up to 10 protocols lined up
+ * @param: queueSize: number of protocols in the queue
+ * @retval: none
+ */
 void DrawQueuePage(uint8_t queueSize) {
 	lcdFillRGB(COLOR_WHITE);
 	char pageTitle[20] = "";
@@ -865,12 +933,19 @@ void DrawQueuePage(uint8_t queueSize) {
 	lcdPrintf(backButton.label);
 }
 
-void DrawProgressPage(uint8_t rx_byte, char *rx_data) {
+/**
+ * @brief: Draw progress page during motor operation
+ * @param: protocolTitle: display protocol being run
+ * @param: rx_byte: current motor movement type
+ * @param: rx_data: current motor movement info
+ * @retval: none
+ */
+void DrawProgressPage(char protocolTitle[20], uint8_t rx_byte, char *rx_data) {
 	lcdFillRGB(COLOR_WHITE);
 
-	//Draw "Progress" box
+	//protocol title
 	lcdSetCursor(80, 10);
-	lcdPrintf("Progress Page");
+	lcdPrintf(protocolTitle);
 
 	//bind
 	if (rx_byte == 'B') {
@@ -947,6 +1022,12 @@ void DrawProgressPage(uint8_t rx_byte, char *rx_data) {
 		lcdSetCursor(60, 110);
 		lcdPrintf(sequencePause);
 	}
+
+	//time remaining in protocol
+	char protocolTimeRemaining[25] = "";
+	sprintf(protocolTimeRemaining, "Remaining Time: %d", protocolTimer);
+	lcdSetCursor(60, 130);
+	lcdPrintf(protocolTimeRemaining);
 
 	// Draw "Stop" button
 	lcdDrawRect(backButton.x, backButton.y, backButton.w, backButton.h,
@@ -1088,7 +1169,11 @@ uint8_t handleTouch() {
 			//transmit protocol and move to finish page
 			transmitProtocol(page_num, protocol_offset);
 			currentPage = PAGE_PROGRESS;
-			DrawProgressPage(rx_byte, rx_data);
+			protocolTimer = 30; //change this to the actual value dorjee
+			DrawProgressPage("FILL", rx_byte, rx_data);
+
+			//start timer 2 interrupt for protocol timer count down
+			HAL_TIM_Base_Start_IT(&htim2); //triggers every second
 		}
 		//delete button
 		if (x >= deleteButton.x && x <= (deleteButton.x + deleteButton.w)
@@ -1114,7 +1199,7 @@ uint8_t handleTouch() {
 			transmitQueuedProtocols(queueSize);
 			queueSize = 0;
 			currentPage = PAGE_PROGRESS;
-			DrawProgressPage(rx_byte, rx_data);
+			DrawProgressPage("FILL", rx_byte, rx_data);
 		}
 		break;
 
@@ -1152,6 +1237,9 @@ uint8_t handleTouch() {
 			    //go to success page
 				currentPage = PAGE_FINISH;
 				DrawPageFinish();
+
+				//stop the interrupt
+				HAL_TIM_Base_Stop_IT(&htim2);
 			}
 		}
 		break;
@@ -1161,7 +1249,7 @@ uint8_t handleTouch() {
 		if (x >= noButton.x && x <= (noButton.x + noButton.w) && y >= noButton.y
 				&& y <= (noButton.y + noButton.h)) {
 			currentPage = PAGE_PROGRESS;
-			DrawProgressPage(rx_byte, rx_data);
+			DrawProgressPage("FILL", rx_byte, rx_data);
 		}
 		//yes button
 		if (x >= yesButton.x && x <= (yesButton.x + yesButton.w)
@@ -1170,6 +1258,9 @@ uint8_t handleTouch() {
 			SendStopMotorsMessage();
 			currentPage = PAGE_MAIN;
 			DrawMainPage(page_num);
+
+			//stop the interrupt
+			HAL_TIM_Base_Stop_IT(&htim2);
 		}
 		break;
 
@@ -1626,6 +1717,22 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 			}
 		}
 	}
+}
+
+// This is called every time the timer overflows (i.e., when the interrupt triggers)
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if (htim->Instance == TIM2)
+    {
+        // Your code here — for example:
+    	if (protocolTimer > 0) {
+    		protocolTimer--;
+    	}
+    	if (currentPage == PAGE_PROGRESS) {
+        	DrawProgressPage("Fill", rx_byte, rx_data);
+    	}
+
+    }
 }
 
 /* USER CODE END 4 */
