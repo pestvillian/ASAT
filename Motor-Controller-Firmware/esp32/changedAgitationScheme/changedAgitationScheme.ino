@@ -55,7 +55,7 @@ typedef enum {
 operationState currentState = waitingState;
 
 /****************** INITIALIZE FUNCTIONS **************/
-uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t totalVolume, uint8_t percentDepth, uint8_t pauseDuration, uint8_t repeat);
+uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t mixPosition, uint8_t mixScope, uint8_t pauseDuration, uint8_t repeat);
 uint8_t pauseMotors(uint8_t pauseDuration);
 uint8_t moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequences, uint8_t sequencePauseTime);
 
@@ -78,7 +78,7 @@ void setup() {
   digitalWrite(MOTOR_ENABLE, 1);  //keep motors off until touchscreen enables them
 
   //hardware UART0
-  //Serial.begin(115200);
+  Serial.begin(115200);
   MySerial.begin(115200);
 
   //limit switch debouncing
@@ -127,6 +127,7 @@ void loop() {
         //handle tab operator
         if (incomingByte == '\t') {
           tempBuffer[i][j] = '\0';
+          //for (int rep; rep < )
           i = 0;
           j = 0;
           //turn motors on and go to run state
@@ -136,8 +137,15 @@ void loop() {
       }
       break;
     case runState:
+      //send the protocol name to the touchscreen so it can display the name
+      // MySerial.write("T");
+      // delay(20);
+      // MySerial.println(tempBuffer[0]);
+
+
       //auto home first
       finishFlag = autoHome();
+
 
       //go line by line through tempBuffer and execute the protocol
       for (int a = 1; a < MAX_LINES; a++) {  //skip first line cuz it is the title
@@ -180,13 +188,19 @@ void loop() {
         if (tempBuffer[a][0] == 'B') {
           //Serial.println("Agitating");
 
+          Serial.println(tempBuffer[a]);
+
           //parse the agitation uart data
           uint16_t agitateSpeed = (tempBuffer[a][1] - '0');  //you take the index and subtract by null to get the actual number in the struct
           uint8_t agitateDuration = ((tempBuffer[a][2] - '0') * 10) + ((tempBuffer[a][3] - '0'));
+          Serial.print("Agitate Duration: ");
+          Serial.println(agitateDuration);
           uint8_t totalVolume = ((tempBuffer[a][4] - '0') * 100) + ((tempBuffer[a][5] - '0') * 10) + ((tempBuffer[a][6] - '0'));
           uint8_t percentDepth = ((tempBuffer[a][7] - '0') * 100) + ((tempBuffer[a][8] - '0') * 10) + ((tempBuffer[a][9] - '0'));
-          uint8_t pauseDuration = tempBuffer[a][10] - '0';
-          uint8_t repeat = tempBuffer[a][11] - '0';
+          uint8_t pauseDuration = ((tempBuffer[a][10] - '0') * 10) + (tempBuffer[a][11] - '0');
+          Serial.print("Pause Duration: ");
+          Serial.println(pauseDuration);
+          uint8_t repeat = ((tempBuffer[a][12] - '0') * 10) + (tempBuffer[a][13] - '0');
 
           //send uart data to tell stm32 which protocol is running
           MySerial.write("B");
@@ -245,25 +259,34 @@ uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t to
   ledcDetach(AGITATION_MOTOR_STEP);  // Releases control from PWM
   stepper.enableOutputs();
 
+  Serial.println(stepper.currentPosition());
+  if (stepper.currentPosition() != 0) {
+    stepper.setCurrentPosition(0);
+  }
+
   // Convert input values to physical parameters
   uint16_t agitationFrequency = mapSpeedAgitation(agitateSpeed);  // Frequency in steps/sec
   float depth_mm = 38.0 * (totalVolume / 100.0);                  // Total immersion depth in mm
-  float stroke_mm = depth_mm * (percentDepth / 100.0);            // Agitation stroke depth in mm
-  uint32_t stroke_steps = stroke_mm / 0.00625;                    // Convert mm to steps
+  uint32_t init_depth = depth_mm / 0.00625;
+
+  float stroke_mm = depth_mm - (depth_mm * (percentDepth / 100.0));  // Agitation stroke depth in mm
+  uint32_t stroke_steps = stroke_mm / 0.00625;                       // Convert mm to steps
+
+
 
   // Setup stepper
   stepper.setMaxSpeed(20000);        // initial slow speed for positioning
   stepper.setAcceleration(3000000);  // Very aggressive acceleration
   // Define positions
-  long top = 6;  // Home = 0
-  long bottom = stroke_steps;
+  long top = stroke_steps;  // Home = 0
+  long bottom = init_depth;
   bool movingDown = false;
 
-  // Move to top first
-  stepper.moveTo(top);
-  while (stepper.distanceToGo() != 0) {
-    stepper.run();
-  }
+  Serial.print("Top: ");
+  Serial.println(top);
+  Serial.print("Bottom: ");
+  Serial.println(bottom);
+
 
   // Move to bottom second
   stepper.moveTo(bottom);
@@ -275,7 +298,7 @@ uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t to
   stepper.setAcceleration(3000000);         // Very aggressive acceleration
   // Start timed agitation loop
   //unsigned long startTime = millis();
-  stepper.moveTo(top);  // First move up
+  //stepper.moveTo(top);  // First move up
 
   //send uart data
   MySerial.write("B");
@@ -301,9 +324,17 @@ uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t to
     }
     //pause motors after agitation
     //Serial.println(pauseDuration);
+    stepper.moveTo(top);
+    while (stepper.distanceToGo() != 0) {
+      stepper.run();
+    }
+    movingDown = true;
     pauseMotors(pauseDuration);
     //stepper.run();
   }
+
+  //home agitation
+  //homeAgitation();
 
   stepper.stop();  //hault
   // Reattach PWM and rehome agitation motor
@@ -322,7 +353,7 @@ uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t to
  */
 
 unsigned int mapSpeedAgitation(float value) {
-  return (value - 1) * (55000 - 5000) / (9 - 1) + 5000;
+  return (value - 1) * (55000 - 20000) / (9 - 1) + 20000;
 }
 
 /**
@@ -370,7 +401,7 @@ uint8_t moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequ
 
 
   //moving sequence
-  moveMotorY(LOW, 1, 40);  //after the beads are magnatized, hove the body un slowly
+  moveMotorY(LOW, 1, 45);  //after the beads are magnatized, hove the body up slowly
   delay(2000);             //delay to make sure the liquid stays
   if (checkStopMotorsMessage()) {
     return 0;
@@ -384,7 +415,7 @@ uint8_t moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequ
   moveMotorY(HIGH, 1, 25);  //position just above the wells
   //fill other well sequence
   moveMotorA(HIGH, 2, 16);
-  moveMotorY(LOW, 1, 15);
+  moveMotorY(LOW, 1, 25);
   delay(initialSurfaceTime);
   if (checkStopMotorsMessage()) {
     return 0;
@@ -409,7 +440,7 @@ uint8_t autoHome() {
   if (checkStopMotorsMessage()) {
     return 0;
   }
-  moveMotorY(LOW, 4, 20);  // motor y to init position
+  moveMotorY(LOW, 4, 50);  // motor y to init position
   delay(200);              //allow Y motor to raise out of the way then allow the agitation motor to Home.
   if (checkStopMotorsMessage()) {
     return 0;
@@ -504,7 +535,7 @@ uint8_t autoHome() {
   //move all three axis to there init positions
 
   moveMotorY(LOW, 4, 40);   // motor y to init position
-  moveMotorX(HIGH, 5, 55);  //motor x to init position
+  moveMotorX(HIGH, 5, 58);  //motor x to init position
   //the nudge puts it in the right place to begin with
   //moveMotorA(HIGH, 4, 2);  //move Agitation Head so that the plastic Combs are just above the test rack
 
@@ -624,10 +655,10 @@ void moveMotorX(int DIR, uint32_t speed, float distance) {  // 1 step is 1.8 deg
   uint32_t durationMs = (uint32_t)(secondsToRun * 1000);
 
 
-  Serial.print("Frequency => ");
-  Serial.println(stepFrequency);
-  Serial.print("delay => ");
-  Serial.println(durationMs);
+  // Serial.print("Frequency => ");
+  // Serial.println(stepFrequency);
+  // Serial.print("delay => ");
+  // Serial.println(durationMs);
 
   digitalWrite(MOTOR_X_DIR, DIR);              // set direction
   ledcWriteTone(MOTOR_X_STEP, stepFrequency);  // start step pulses
@@ -664,8 +695,8 @@ unsigned int mapSpeedX(float value) {
 uint8_t pauseMotors(uint8_t pauseDuration) {
   //delay(100);
   //homeAgitation();  // home the agitator
-                    //ledcWriteTone(AGITATION_MOTOR_STEP, 0);
-  stepper.stop();   //hault
+  //ledcWriteTone(AGITATION_MOTOR_STEP, 0);
+  stepper.stop();  //hault
   uint32_t curTime = millis();
   while ((millis() - curTime) < (pauseDuration * 1000)) {
     if (checkStopMotorsMessage()) {
