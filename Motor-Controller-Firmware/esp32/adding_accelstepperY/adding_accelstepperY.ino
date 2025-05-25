@@ -10,8 +10,6 @@
 * - Parsing the UART data and to perform either agitation or magnetization
 *************/
 
-//note: ALWAYS AUTOHOME AGITATION MOTOR BEFORE EXCUTING A FUNCTION
-
 /*************** library inclusions and macro definitions***************/
 #include <HardwareSerial.h>
 #include <ezButton.h>
@@ -23,11 +21,6 @@ HardwareSerial MySerial(0);  // Use UART0
 #define MAX_LINES 100
 #define PWM_RESOLUTION 8
 #define LIMIT_SWITCH_DEBOUNCE_TIME 50
-
-//experimental locations on the ASATS machine
-#define HORIZONTAL_ABOVE_TEST_TRAY_LOCATION 57
-#define VERTICAL_ABOVE_TEST_TRAY_LOCATION 43
-#define HEIGHT_OF_TEST_TUBE 38
 
 /******************* PIN DEFINITIONS **************/
 
@@ -59,6 +52,7 @@ const int MOTOR_ENABLE = 22;
 
 //accelstepper instantiation
 AccelStepper stepper(AccelStepper::DRIVER, AGITATION_MOTOR_STEP, AGITATION_MOTOR_DIR);
+AccelStepper stepperY(AccelStepper::DRIVER, MOTOR_Y_STEP, MOTOR_Y_DIR);
 
 /******************* STATE MACHINE SETUP *****************/
 typedef enum {
@@ -69,7 +63,6 @@ typedef enum {
 operationState currentState = waitingState;
 
 /****************** INITIALIZE FUNCTIONS **************/
-uint8_t autoHome(void);
 uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t mixPosition, uint8_t mixScope, uint8_t pauseDuration, uint8_t repeat);
 uint8_t pauseMotors(uint8_t pauseDuration);
 uint8_t moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequences, uint8_t sequencePauseTime);
@@ -80,7 +73,7 @@ char tempBuffer[MAX_LINES][MAX_LINE_LENGTH] = { { '\0' } };  // Initialize the t
 uint8_t startFlag = 0;
 uint8_t i = 0;
 uint8_t j = 0;
-uint8_t finishFlag = 1;
+uint8_t finishFlag = 0;
 
 
 void setup() {
@@ -158,17 +151,7 @@ void loop() {
 
       //auto home first
       finishFlag = autoHome();
-      //if autohome didnt finish, go back to the waiting state
-      if (!finishFlag) {
-        //after protocol finishes, go back to waiting state
-        currentState = waitingState;
-        memset(tempBuffer, 0, sizeof(tempBuffer));
-        //shitty solution to the issue of uart data being sent while motors move
-        while (MySerial.available()) {
-          MySerial.read();
-        }
-        break;
-      }
+
 
       //go line by line through tempBuffer and execute the protocol
       for (int a = 1; a < MAX_LINES; a++) {  //skip first line cuz it is the title
@@ -271,8 +254,8 @@ uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t to
   uint16_t agitationFrequency = mapSpeedAgitation(agitateSpeed);  // Frequency in steps/sec
 
   //convert input volume and depth into corresponding values in real life units of mm
-  float depth_mm = (float)HEIGHT_OF_TEST_TUBE * (totalVolume / 100.0);  //bottom of agitation relative to absolute zero
-  float stroke_mm = depth_mm - (depth_mm * (percentDepth / 100.0));     //top of agitation relative to bottom
+  float depth_mm = 38.0 * (totalVolume / 100.0);                     //bottom of agitation relative to absolute zero
+  float stroke_mm = depth_mm - (depth_mm * (percentDepth / 100.0));  //top of agitation relative to bottom
 
   //convert mm values to steps
   uint32_t init_depth = depth_mm / 0.00625;     //bottom of agitation relative to absolute zero in steps
@@ -306,11 +289,6 @@ uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t to
 
   //begin agitation loop
   for (uint8_t rep = 0; rep < repeat; rep++) {
-    MySerial.write("R");
-    delay(20);
-    uint8_t repeatSendVal = rep + 1;
-    MySerial.print(repeatSendVal);
-
     unsigned long startTime = millis();  //get time
     movingDown = false;                  //always start agitation by going up
     stepper.moveTo(top);                 //First move up ????
@@ -366,7 +344,7 @@ unsigned int mapSpeedAgitation(float value) {
  * @param stopAtSequences fifth number
  * @param sequencePauseTime sixth number
  * @retval: 1 if finished, 0 if error
- * @author: Code written by Gregory Ziegler
+ * @author: Code written by Gregory Ziegler, reviewed and commented by Dorjee Tenzing
  */
 uint8_t moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequences, uint8_t sequencePauseTime) {
   //fully init into the funciton
@@ -379,16 +357,24 @@ uint8_t moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequ
   if (checkStopMotorsMessage()) {
     return 0;
   }
-  //if user inputs 0 stops, switch it to 1
+  //we need to know at what height inside the wells to put the combs
+  //not sure about this block yet
+  // moveMotorY(HIGH, speed, 6);  // put combs at top of liquid
+  // pauseMotors(initialSurfaceTime);
+  //Binding sequence
   float range = 38;  //total hight of combs in mm
   if (stopAtSequences == 0) {
     stopAtSequences = 1;
   }
-  //the positions to stop at is determined by the number of stops
-  //float pos = range / stopAtSequences;
-  uint8_t pos = range / stopAtSequences;
-  for (int i = 0; i < stopAtSequences; i++) {
-    moveMotorY(HIGH, speed, pos);     //increment motor
+  float pos = range / stopAtSequences;  //number of times you wat to stop
+  //there will be a range of distace the Y motor can travel there can be 9 sequences total.
+  //we take the range and devide it by the number of sequences
+  //the motor should be set to the very top of liquid here
+  //incrementally lower the motor until we hit the final position
+
+  for (int i = 1; i <= stopAtSequences; i++) {
+    //move the motor sequentially down
+    moveMotorY(HIGH, speed, pos * i);
     delay(sequencePauseTime * 1000);  //hold here for however long specified
     if (checkStopMotorsMessage()) {
       return 0;
@@ -397,35 +383,46 @@ uint8_t moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequ
 
 
   //moving sequence
-  moveMotorY(LOW, 1, pos * stopAtSequences);
-  //moveMotorY(LOW, 1, range);  //after the beads are magnatized, hove the body up slowly
-  delay(2000);                //delay to make sure the liquid stays
+  //moveMotorY(LOW, 1, 45);  //after the beads are magnatized, hove the body up slowly
+  moveStepperY(0);  //replace line above
+  delay(2000);      //delay to make sure the liquid stays
   if (checkStopMotorsMessage()) {
     return 0;
   }
-  homeAgitation();
   //above works time for step 2, move to the right and fill the next Well
-  moveMotorX(HIGH, 1, 9);  //move to next Well
+  moveMotorX(HIGH, 1, 8.75);  //move to next Well
   delay(2000);                //wait for smoothness
   if (checkStopMotorsMessage()) {
     return 0;
   }
 
-  //greg what are these movements for?
-  moveMotorY(HIGH, 1, 25);  //position just above the wells
-  //fill other well sequence
-  moveMotorA(HIGH, 2, 16);
-  moveMotorY(LOW, 1, 25);
-  homeAgitation(); //should we add agitation home? idk whats going on
+  //Dorjee: i have no idea what's going on below here. i know we need to shift wells, but idk why its going up and down so much
 
+  //moveMotorY(HIGH, 1, 25);  //position just above the wells. greg ur highs and lows are backwards
+  moveStepperY(20);  //replace line above
+
+  //fill other well sequence
+  moveMotorA(HIGH, 2, 16);  //greg how does this work. why does agitation go high and then low, shouldnt it be low and then high
+  //moveMotorY(LOW, 1, 25);
+  moveStepperY(0);  //replace line above
   delay(initialSurfaceTime);
   if (checkStopMotorsMessage()) {
     return 0;
   }
   //homeAgitation(); //i dont think we need this
+
+  ledcAttachChannel(MOTOR_Y_STEP, 1000, PWM_RESOLUTION, AGITATION_MOTOR_STEP_CHANNEL);
   return 1;
 }
 
+void moveStepperY(float distance_mm) {
+  uint32_t steps = distanceToStepsY(distance_mm);
+
+  stepperY.moveTo(steps);
+  while (stepperY.distanceToGo() != 0) {
+    stepperY.run();
+  }
+}
 
 
 
@@ -435,19 +432,18 @@ uint8_t moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequ
  * @retval: 1 if finished, 0 if error
  * @author: Gregory Ziegler
  */
-uint8_t autoHome(void) {
+uint8_t autoHome() {
   int motorSequence = 0;  //controls sequence of motors homing.
-  delay(200);             //greg why delay here
+  //Serial.println("HOMEING!!!");
+  delay(200);
   if (checkStopMotorsMessage()) {
     return 0;
   }
-  //move y motor up in case it last left off in the test tray
-  moveMotorY(LOW, 4, HEIGHT_OF_TEST_TUBE + 5);
-  delay(200);  //greg why delay here, doesnt the moveMotorY function already handle movement
+  moveMotorY(LOW, 4, 50);  // motor y to init position
+  delay(200);              //allow Y motor to raise out of the way then allow the agitation motor to Home.
   if (checkStopMotorsMessage()) {
     return 0;
   }
-  //greg what does this block of code below do. i think i see the vision now, but ill talk to u aboout it
   if (motorSequence == 0) {
     // Low is Up, High is DOwn
     //Serial.println("Homing Agitation");
@@ -537,14 +533,17 @@ uint8_t autoHome(void) {
 
   //move all three axis to there init positions
 
-  moveMotorY(LOW, 4, VERTICAL_ABOVE_TEST_TRAY_LOCATION);     // motor y to init position
-  moveMotorX(HIGH, 5, HORIZONTAL_ABOVE_TEST_TRAY_LOCATION);  //motor x to init position
+  moveMotorY(LOW, 4, 40);   // motor y to init position
+  moveMotorX(HIGH, 5, 58);  //motor x to init position
+                            //the nudge puts it in the right place to begin with
+                            //moveMotorA(HIGH, 4, 2);  //move Agitation Head so that the plastic Combs are just above the test rack
 
-  homeAgitation();
+  //Serial.println("Homeing Complete!!");
+  //rest of the homing repositioning sequence goes here:)
 
-  if (checkStopMotorsMessage()) {
-    return 0;
-  }
+  //accelstepperY initialization
+  stepperY.setCurrentPosition(0);  // Set home position
+
   return 1;
 }
 
@@ -622,23 +621,36 @@ void homeAgitation() {
 void moveMotorY(int DIR, uint32_t speed, float distance) {  // 1 step is 1.8 degrees
   // convert distance to steps. for now i'm keeping it in number of revolutions
   uint32_t steps = distanceToStepsY(distance);
-  uint16_t stepFrequency = mapSpeedY(speed);          // adjust to control speed (Hz)
-  float secondsToRun = (float)steps / stepFrequency;  // time = steps / freq
-  uint32_t durationMs = (uint32_t)(secondsToRun * 1000);
+  uint16_t stepFrequency = mapSpeedY(speed);  // adjust to control speed (Hz)
 
-  digitalWrite(MOTOR_Y_DIR, DIR);              // set direction
-  ledcWriteTone(MOTOR_Y_STEP, stepFrequency);  // start step pulses
+  //move the motor to the specified distance at the specified speed
+  ledcDetach(MOTOR_Y_STEP);
+  stepperY.setMaxSpeed(stepFrequency);
+  //stepperY.setSpeed(stepFrequency);
 
-  delay(durationMs);  // run long enough to cover desired steps
+  stepperY.moveTo(steps);
+  while (stepperY.distanceToGo() != 0) {
+    stepperY.run();
+  }
 
-  ledcWriteTone(MOTOR_Y_STEP, 0);  // stop step pulses
+  // float secondsToRun = (float)steps / stepFrequency;  // time = steps / freq
+  // uint32_t durationMs = (uint32_t)(secondsToRun * 1000);
+
+  // digitalWrite(MOTOR_Y_DIR, DIR);              // set direction
+  // ledcWriteTone(MOTOR_Y_STEP, stepFrequency);  // start step pulses
+
+  // delay(durationMs);  // run long enough to cover desired steps
+
+  // ledcWriteTone(MOTOR_Y_STEP, 0);  // stop step pulses
 }
+
 // angle (degrees) = (arc length / radius) * (180 / π)
 uint32_t distanceToStepsY(float distance)  // about 8.75mm
 {
   //return distance * 200;
   return (uint32_t)(distance * (200.0 / 8.0) + 0.5f);
 }
+
 // num1 and num2 are the integer ranges of speed, num3 and num4 are the frequency ranges
 unsigned int mapSpeedY(float value) {
   return (value - 1) * (1000 - 400) / (9 - 1) + 400;

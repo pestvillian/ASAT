@@ -76,7 +76,7 @@
 #define PROTOCOL_SIZE 6000
 #define MAX_LINES 200
 #define MAX_LINE_LENGTH 32 //for linear movement it wont be more than 32 chars
-#define MAX_TITLE_SIZE 12  //you can 10 chars, but also we need newline and null
+#define MAX_TITLE_SIZE 14  //you can 10 chars, but also we need newline and null
 
 /******** LCD DISPLAY DEFINITIONS ********/
 #define BUTTON_WIDTH 160
@@ -180,6 +180,7 @@ void DrawMainPage(uint8_t page_num);
 void DrawInfoPage(char protocolTitle[MAX_LINE_LENGTH]);
 void DrawConfirmationPage(uint32_t sector, uint32_t offset);
 void DrawProgressPage(char protocolTitle[20], uint8_t rx_byte, char *rx_data);
+uint32_t ConvertCharsToInt(char x, char y, char z);
 void DrawStopPage(void);
 void SendStopMotorsMessage(void);
 uint8_t handleTouch();
@@ -198,12 +199,13 @@ volatile protocolTimer = 0; //volatile because it is changed in interrupt?
 
 //UART variables
 uint8_t rx_byte;
-char rx_bind[10];
+char rx_bind[20];
 char rx_pause[3];
 char rx_move[7];
-char rx_data[10];
+char rx_data[20];
+char currentProtocolTitle[20];
 
-
+volatile uint8_t currentRepeatNum = 1;
 volatile uint32_t last_interrupt_time = 0;
 static bool prevTouchedState = 1; //pretty sure it starts high
 uint8_t count = 0;
@@ -358,22 +360,35 @@ int main(void)
 			//when protocol finishes naturally, it will send a done signal
 
 			if (HAL_UART_Receive(&huart2, &rx_byte, 1, 0) == HAL_OK) {
+				//protocol starts, get the protocl title
+				if (rx_byte == 'T') {
+					HAL_UART_Receive(&huart2, (uint8_t*) currentProtocolTitle, sizeof(currentProtocolTitle), 100);
+					DrawProgressPage("FILL", rx_byte, rx_data);
+				}
+				//repeat update
+				if (rx_byte == 'R') {
+					char repeatUpdate[2];
+					HAL_UART_Receive(&huart2, (uint8_t*) repeatUpdate, sizeof(repeatUpdate), 100);
+					currentRepeatNum = atoi(repeatUpdate);
+					printf("%d\n", currentRepeatNum);
+					//repeat
+					char repeat[20] = "";
+					uint32_t repeatInt = ConvertCharsToInt('0', rx_data[12], rx_data[13]);
+					//sprintf(repeat, "Repeat: %c%c", rx_data[11], rx_data[12]);
+					sprintf(repeat, "Repeat: %d/%d", currentRepeatNum, repeatInt);
+					lcdSetCursor(10, 150);
+					lcdPrintf(repeat);
+				}
 				//protocol starts, update progress screen
 				if (rx_byte == 'B') {
-					//HAL_UART_Receive(&huart2, (uint8_t*) rx_bind, sizeof(rx_bind), 1000);
-					//DrawProgressPage(rx_byte, rx_bind);
 					HAL_UART_Receive(&huart2, (uint8_t*) rx_data, sizeof(rx_data), 100);
 					DrawProgressPage("FILL", rx_byte, rx_data);
 				}
 				if (rx_byte == 'M') {
-					//HAL_UART_Receive(&huart2, (uint8_t*) rx_move, sizeof(rx_move), HAL_MAX_DELAY);
-					//DrawProgressPage(rx_byte, rx_move);
 					HAL_UART_Receive(&huart2, (uint8_t*) rx_data, sizeof(rx_data), 100);
 					DrawProgressPage("FILL", rx_byte, rx_data);
 				}
 				if (rx_byte == 'P' ) {
-					//HAL_UART_Receive(&huart2, (uint8_t*) rx_pause, sizeof(rx_pause), HAL_MAX_DELAY);
-					//DrawProgressPage(rx_byte, rx_pause);
 					HAL_UART_Receive(&huart2, (uint8_t*) rx_data, sizeof(rx_data), 100);
 					DrawProgressPage("FILL", rx_byte, rx_data);
 				}
@@ -944,38 +959,57 @@ void DrawProgressPage(char protocolTitle[20], uint8_t rx_byte, char *rx_data) {
 	lcdFillRGB(COLOR_WHITE);
 
 	//protocol title
-	lcdSetCursor(80, 10);
-	lcdPrintf(protocolTitle);
+	lcdSetCursor(100, 10);
+	lcdPrintf(currentProtocolTitle);
 
 	//bind
 	if (rx_byte == 'B') {
 		//protocol type
 		char protocolType[20] = "";
 		sprintf(protocolType, "Bind");
-		lcdSetCursor(60, 30);
-		lcdSetTextFont(&Font20);
-		lcdPrintf(protocolType);
+		lcdSetCursor(10, 30);
 		lcdSetTextFont(&Font16);
+		lcdPrintf(protocolType);
+		//lcdSetTextFont(&Font16);
 		//speed
 		char speed[20] = "";
 		sprintf(speed, "Speed: %c", rx_data[1]);
-		lcdSetCursor(60, 50);
+		lcdSetCursor(10, 50);
 		lcdPrintf(speed);
 		//duration
 		char duration[20] = "";
-		sprintf(duration, "Duration: %c%c", rx_data[2], rx_data[3]);
-		lcdSetCursor(60, 70);
+		uint32_t durationInt = ConvertCharsToInt('0', rx_data[2], rx_data[3]);
+		//sprintf(duration, "Duration: %c%c", rx_data[2], rx_data[3]);
+		sprintf(duration, "Duration: %d", durationInt);
+		lcdSetCursor(10, 70);
 		lcdPrintf(duration);
 		//volume
 		char volume[20] = "";
-		sprintf(volume, "Volume: %c%c%c", rx_data[4], rx_data[5], rx_data[6]);
-		lcdSetCursor(60, 90);
+		uint32_t volumeInt = ConvertCharsToInt(rx_data[4], rx_data[5], rx_data[6]);
+		//sprintf(volume, "Volume: %c%c%c", rx_data[4], rx_data[5], rx_data[6]);
+		sprintf(volume, "Volume: %d", volumeInt);
+		lcdSetCursor(10, 90);
 		lcdPrintf(volume);
 		//depth
 		char depth[20] = "";
-		sprintf(depth, "Depth: %c%c%c", rx_data[7], rx_data[8], rx_data[9]);
-		lcdSetCursor(60, 110);
+		uint32_t depthInt = ConvertCharsToInt(rx_data[7], rx_data[8], rx_data[9]);
+		//sprintf(depth, "Depth: %c%c%c", rx_data[7], rx_data[8], rx_data[9]);
+		sprintf(depth, "Depth: %d", depthInt);
+		lcdSetCursor(10, 110);
 		lcdPrintf(depth);
+		//pauseDuration
+		char pauseDuration[20] = "";
+		uint32_t pauseInt = ConvertCharsToInt('0', rx_data[10], rx_data[11]);
+		sprintf(pauseDuration, "PauseDuration: %d", pauseInt);
+		lcdSetCursor(10, 130);
+		lcdPrintf(pauseDuration);
+		//repeat
+		char repeat[20] = "";
+		uint32_t repeatInt = ConvertCharsToInt('0', rx_data[12], rx_data[13]);
+		//sprintf(repeat, "Repeat: %c%c", rx_data[11], rx_data[12]);
+		sprintf(repeat, "Repeat: %d/%d", currentRepeatNum, repeatInt);
+		lcdSetCursor(10, 150);
+		lcdPrintf(repeat);
 	}
 
 	//pause
@@ -1024,16 +1058,42 @@ void DrawProgressPage(char protocolTitle[20], uint8_t rx_byte, char *rx_data) {
 	}
 
 	//time remaining in protocol
-	char protocolTimeRemaining[25] = "";
-	sprintf(protocolTimeRemaining, "Remaining Time: %d", protocolTimer);
-	lcdSetCursor(60, 130);
-	lcdPrintf(protocolTimeRemaining);
+//	char protocolTimeRemaining[25] = "";
+//	sprintf(protocolTimeRemaining, "Remaining Time: %d", protocolTimer);
+//	lcdSetCursor(60, 130);
+//	lcdPrintf(protocolTimeRemaining);
+	DrawCountdownTime();
 
 	// Draw "Stop" button
 	lcdDrawRect(backButton.x, backButton.y, backButton.w, backButton.h,
 	COLOR_BLACK);
 	lcdSetCursor(backButton.x + 10, backButton.y + 10);
 	lcdPrintf("Stop");
+}
+
+//dont want to update the whole progress page, just the countdown timer
+void DrawCountdownTime (void) {
+	//time remaining in protocol
+	uint8_t minutes = protocolTimer / 60;
+	uint8_t seconds = protocolTimer % 60;
+	char protocolTimeRemaining[25] = "";
+	sprintf(protocolTimeRemaining, "Remaining Time: %d:%d", minutes, seconds);
+	protocolTimeRemaining[strlen(protocolTimeRemaining)] = NULL_CHAR;
+	lcdSetCursor(10, 170);
+	lcdPrintf(protocolTimeRemaining);
+}
+
+/**
+ * @brief: Take in multiple chars and convert them into an integer
+ * @example: '3' '4' '8' gets converted to an integer value of 348
+ * @param: x: 100's place of the digit
+ * @param: y: 10's place of the digit
+ * @param: z: 1's place of the digit
+ * @retval: converted integer
+ */
+uint32_t ConvertCharsToInt(char x, char y, char z) {
+	uint32_t returnVal = ((x - '0') * 100) + ((y - '0') * 10) + (z - '0');
+	return returnVal;
 }
 
 void DrawStopPage(void) {
@@ -1169,7 +1229,9 @@ uint8_t handleTouch() {
 			//transmit protocol and move to finish page
 			transmitProtocol(page_num, protocol_offset);
 			currentPage = PAGE_PROGRESS;
-			protocolTimer = 30; //change this to the actual value dorjee
+			protocolTimer = 5999; //change this to the actual value dorjee
+			uint32_t flash_address = get_sector_address(page_num) + protocol_offset * PROTOCOL_SIZE;
+			read_from_flash(currentProtocolTitle, flash_address);
 			DrawProgressPage("FILL", rx_byte, rx_data);
 
 			//start timer 2 interrupt for protocol timer count down
@@ -1729,7 +1791,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     		protocolTimer--;
     	}
     	if (currentPage == PAGE_PROGRESS) {
-        	DrawProgressPage("Fill", rx_byte, rx_data);
+    		DrawCountdownTime();
+        	//DrawProgressPage("Fill", rx_byte, rx_data);
     	}
 
     }
