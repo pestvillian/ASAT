@@ -14,6 +14,9 @@ from kivy.uix.anchorlayout import AnchorLayout
 import qrcode
 import os
 
+hiddenimports=['win32timezone'] # for pyinstaller crashing
+
+
 # ----------------------------- #
 # Custom TextInput with Char Limit and Keyboard Handling
 # ----------------------------- #
@@ -25,6 +28,7 @@ class LimitedInput(TextInput):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.multiline = False
+        self.bind(focus=self.on_focus_change)  # Bind focus to detect when user leaves the field
 
     def insert_text(self, substring, from_undo=False):
         s = ''.join([c for c in substring if c.isdigit()])
@@ -42,7 +46,14 @@ class LimitedInput(TextInput):
         return super().keyboard_on_key_down(window, keycode, text, modifiers)
 
     def on_shift_enter(self):
-        pass  # Custom event to be handled by parent
+        pass
+
+    def on_focus_change(self, instance, focused):
+        if not focused:
+            # Field was exited, apply zero-padding if needed
+            if self.text.isdigit() and len(self.text) < self.max_chars:
+                self.text = self.text.zfill(self.max_chars)
+
 
 
 # ----------------------------- #
