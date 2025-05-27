@@ -395,7 +395,11 @@ class MyGridLayout(BoxLayout):
         self.container.add_widget(well)
 
     def submit(self, *args):
+        #extract the file name and the file path from the text input boxes
         name = self.name_input.text.strip()
+        path_input = self.path_input.text.strip()
+        slash = "/"
+        pname = path_input + slash + name 
         if not name:
             return
 
@@ -415,14 +419,14 @@ class MyGridLayout(BoxLayout):
             # if hasattr(well, 'moving_step') and (len(self.wells) == 1 or i < len(self.wells) - 1):
             #     full_protocol.append(well.moving_step.get_moving_data())
 
-
+        
         full_text = "\n".join(full_protocol)
-        with open(name + ".txt", "w") as file:
+        with open(pname+ ".txt", "w") as file:
             file.write(full_text)
         file.close()
 
         qr = qrcode.make(full_text)
-        qr.save(f"{name}_QR.png")
+        qr.save(f"{pname}_QR.png")
 
 
 # ----------------------------- #
