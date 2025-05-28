@@ -431,7 +431,7 @@ class MyGridLayout(BoxLayout):
             #     full_protocol.append(well.moving_step.get_moving_data())
 
         
-        full_text = "\n".join(full_protocol)
+        full_text = "\r\n".join(full_protocol)
         with open(pname+ ".txt", "w") as file:
             file.write(full_text)
         file.close()
