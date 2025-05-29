@@ -7,8 +7,15 @@ from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.graphics import Color, Rectangle
+from kivy.uix.popup import Popup
+from kivy.uix.filechooser import FileChooserListView
+from kivy.uix.anchorlayout import AnchorLayout
+
 import qrcode
 import os
+
+hiddenimports=['win32timezone'] # for pyinstaller crashing
+
 
 # ----------------------------- #
 # Custom TextInput with Char Limit and Keyboard Handling
@@ -21,6 +28,7 @@ class LimitedInput(TextInput):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.multiline = False
+        self.bind(focus=self.on_focus_change)  # Bind focus to detect when user leaves the field
 
     def insert_text(self, substring, from_undo=False):
         s = ''.join([c for c in substring if c.isdigit()])
@@ -38,7 +46,14 @@ class LimitedInput(TextInput):
         return super().keyboard_on_key_down(window, keycode, text, modifiers)
 
     def on_shift_enter(self):
-        pass  # Custom event to be handled by parent
+        pass
+
+    def on_focus_change(self, instance, focused):
+        if not focused:
+            # Field was exited, apply zero-padding if needed
+            if self.text.isdigit() and len(self.text) < self.max_chars:
+                self.text = self.text.zfill(self.max_chars)
+
 
 
 # ----------------------------- #
@@ -167,18 +182,22 @@ class MovingStep(BoxLayout):
         self.controller = controller  # <-- Add this line
 
         self.orientation = 'vertical'
+
         self.size_hint_y = None
         self.height = 200
         self.inputs = {}
 
 
         grid = GridLayout( cols=2, size_hint_y=None, height=160)
-        self.add_widget(Label( text=f"Moving Step for Well {well_number}", size_hint_y=None, height=10))
+        self.add_widget(Label(text=f"Moving Step for Well {well_number}", size_hint_y=None, height=20))
+        self.add_widget(BoxLayout(size_hint_y=20, height=60))  # Adds visual spacing below the label
+
 
         def add_input(label_text, max_chars):
             grid.add_widget(Label(text=label_text, size_hint_y = 40, height=20))
   
             ti = LimitedInput(hint_text="###" if max_chars == 3 else "#", multiline=False)
+
             ti.max_chars = max_chars
             grid.add_widget(ti)
             self.inputs[label_text] = ti
@@ -202,6 +221,8 @@ class MovingStep(BoxLayout):
         button_bar.add_widget(copy_btn)
         button_bar.add_widget(paste_btn)
         self.add_widget(button_bar)
+        
+        
         
     def get_data_dict(self):
         return {key: ti.text for key, ti in self.inputs.items()}
@@ -229,6 +250,16 @@ class MovingStep(BoxLayout):
 class MyGridLayout(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        
+        # Directory selector
+        dir_layout = BoxLayout(size_hint=(1, 0.1))
+        self.path_input = TextInput(hint_text="Save Directory", readonly=True)
+        browse_btn = Button(text="Browse", size_hint_x=0.3)
+        browse_btn.bind(on_press=self.open_file_chooser)
+        dir_layout.add_widget(self.path_input)
+        dir_layout.add_widget(browse_btn)
+        self.add_widget(dir_layout)
+
         self.orientation = 'vertical'
         self.wells = []
         self.clipboard = None
@@ -272,6 +303,32 @@ class MyGridLayout(BoxLayout):
             separator.bind(pos=lambda w, p: setattr(self.rect, 'pos', p))
 
         self.container.add_widget(separator)
+        
+    def open_file_chooser(self, instance):
+        content = BoxLayout(orientation='vertical')
+        filechooser = FileChooserListView(path=os.getcwd(), dirselect=True)
+        content.add_widget(filechooser)
+
+        buttons = BoxLayout(size_hint_y=None, height=40)
+        select_btn = Button(text="Select")
+        cancel_btn = Button(text="Cancel")
+        buttons.add_widget(select_btn)
+        buttons.add_widget(cancel_btn)
+        content.add_widget(buttons)
+
+        popup = Popup(title="Select Directory", content=content,
+                    size_hint=(0.9, 0.9), auto_dismiss=False)
+
+        def select_path(instance):
+            if filechooser.selection:
+                self.path_input.text = filechooser.selection[0]
+            popup.dismiss()
+
+        select_btn.bind(on_press=select_path)
+        cancel_btn.bind(on_press=popup.dismiss)
+
+        popup.open()
+
         
     
     def clipboard_paste_well(self, well_block):
@@ -349,7 +406,11 @@ class MyGridLayout(BoxLayout):
         self.container.add_widget(well)
 
     def submit(self, *args):
+        #extract the file name and the file path from the text input boxes
         name = self.name_input.text.strip()
+        path_input = self.path_input.text.strip()
+        slash = "/"
+        pname = path_input + slash + name 
         if not name:
             return
 
@@ -369,14 +430,14 @@ class MyGridLayout(BoxLayout):
             # if hasattr(well, 'moving_step') and (len(self.wells) == 1 or i < len(self.wells) - 1):
             #     full_protocol.append(well.moving_step.get_moving_data())
 
-
-        full_text = "\n".join(full_protocol)
-        with open(name + ".txt", "w") as file:
+        
+        full_text = "\r\n".join(full_protocol)
+        with open(pname+ ".txt", "w") as file:
             file.write(full_text)
         file.close()
 
         qr = qrcode.make(full_text)
-        qr.save(f"{name}_QR.png")
+        qr.save(f"{pname}_QR.png")
 
 
 # ----------------------------- #
@@ -462,6 +523,18 @@ class WellBlock(BoxLayout):
             step.update_labels()
         if hasattr(self, "moving_step"):
             self.moving_step.update_label(self.well_number)
+
+    def get_next_step(self, current_step):
+        idx = self.steps.index(current_step)
+        if idx < len(self.steps) - 1:
+            return self.steps[idx + 1]
+        return None
+
+    def get_previous_step(self, current_step):
+        idx = self.steps.index(current_step)
+        if idx > 0:
+            return self.steps[idx - 1]
+        return None
 
 
     def delete_step(self, step_widget):
