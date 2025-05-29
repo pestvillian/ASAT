@@ -25,9 +25,9 @@ HardwareSerial MySerial(0);  // Use UART0
 #define LIMIT_SWITCH_DEBOUNCE_TIME 50
 
 //experimental locations on the ASATS machine
-#define HORIZONTAL_ABOVE_TEST_TRAY_LOCATION 57
-#define VERTICAL_ABOVE_TEST_TRAY_LOCATION 43
-#define HEIGHT_OF_TEST_TUBE 38
+#define HORIZONTAL_ABOVE_TEST_TRAY_LOCATION 55
+#define VERTICAL_ABOVE_TEST_TRAY_LOCATION 38 //43 -> 37 on 5/28/25
+#define HEIGHT_OF_TEST_TUBE 40 //38 -> 44 on 5/28/25
 
 /******************* PIN DEFINITIONS **************/
 
@@ -341,7 +341,7 @@ uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t to
   stepper.stop();  //hault
   // Reattach PWM and rehome agitation motor
   ledcAttachChannel(AGITATION_MOTOR_STEP, 1000, PWM_RESOLUTION, AGITATION_MOTOR_STEP_CHANNEL);
-  homeAgitation();
+  homeAgitation(); //
   return 1;
 }
 
@@ -374,19 +374,18 @@ uint8_t moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequ
   if (checkStopMotorsMessage()) {
     return 0;
   }
-  homeAgitation();  // home the agitation motor and wait
-  delay(2000);
-  if (checkStopMotorsMessage()) {
-    return 0;
-  }
+  //homeAgitation();  // home the agitation motor and wait
+  //delay(2000);
+  // if (checkStopMotorsMessage()) {
+  //   return 0;
+  // }
   //if user inputs 0 stops, switch it to 1
-  float range = 38;  //total hight of combs in mm
   if (stopAtSequences == 0) {
     stopAtSequences = 1;
   }
   //the positions to stop at is determined by the number of stops
   //float pos = range / stopAtSequences;
-  uint8_t pos = range / stopAtSequences;
+  uint8_t pos = floor(HEIGHT_OF_TEST_TUBE / stopAtSequences);
   for (int i = 0; i < stopAtSequences; i++) {
     moveMotorY(HIGH, speed, pos);     //increment motor
     delay(sequencePauseTime * 1000);  //hold here for however long specified
@@ -412,17 +411,16 @@ uint8_t moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequ
   }
 
   //greg what are these movements for?
-  moveMotorY(HIGH, 1, 25);  //position just above the wells
+  moveMotorY(HIGH, 1, 20);  //position just above the wells
   //fill other well sequence
   moveMotorA(HIGH, 2, 16);
-  moveMotorY(LOW, 1, 25);
+  moveMotorY(LOW, 1, 20);
   homeAgitation(); //should we add agitation home? idk whats going on
 
   delay(initialSurfaceTime);
   if (checkStopMotorsMessage()) {
     return 0;
   }
-  //homeAgitation(); //i dont think we need this
   return 1;
 }
 
@@ -441,13 +439,13 @@ uint8_t autoHome(void) {
   if (checkStopMotorsMessage()) {
     return 0;
   }
-  //move y motor up in case it last left off in the test tray
+  /****** move y motor up in case it last left off in the test tray ******/
   moveMotorY(LOW, 4, HEIGHT_OF_TEST_TUBE + 5);
   delay(200);  //greg why delay here, doesnt the moveMotorY function already handle movement
   if (checkStopMotorsMessage()) {
     return 0;
   }
-  //greg what does this block of code below do. i think i see the vision now, but ill talk to u aboout it
+  /********** AGITATION MOTOR HOMING **************/
   if (motorSequence == 0) {
     // Low is Up, High is DOwn
     //Serial.println("Homing Agitation");
@@ -462,8 +460,8 @@ uint8_t autoHome(void) {
 
         //turn off motor in this event
         digitalWrite(AGITATION_MOTOR_DIR, HIGH);
-        ledcWriteTone(AGITATION_MOTOR_STEP, 0);  //
-        moveMotorA(HIGH, 8, 2);
+        ledcWriteTone(AGITATION_MOTOR_STEP, 0);  
+        moveMotorA(HIGH, 8, 2); //nudge
         motorSequence = 1;
         break;
       } else {
@@ -475,6 +473,8 @@ uint8_t autoHome(void) {
   if (checkStopMotorsMessage()) {
     return 0;
   }
+
+  /********** Move Motor Left **************/
   if (motorSequence == 1) {
     //Serial.println("Homing Y Axis");
     //Right is Low, High is Left
@@ -501,11 +501,13 @@ uint8_t autoHome(void) {
   if (checkStopMotorsMessage()) {
     return 0;
   }
+
+  /************ Move Motor Down ************/
   if (motorSequence == 2) {
     //Serial.println("Homing X Axis");
     //Low is Up and High is Down
     ledcWriteTone(MOTOR_Y_STEP, 800);  // Drive motor
-    digitalWrite(MOTOR_Y_DIR, HIGH);   //home direction is Down = LOW
+    digitalWrite(MOTOR_Y_DIR, HIGH);   //home direction is Down = High
 
     uint8_t stateY = digitalRead(VERTICAL_SWITCH);  //read status of limit switch
 
@@ -608,7 +610,7 @@ void homeAgitation() {
       }
     }
   }
-  moveMotorA(HIGH, 2, 6);  //this should be the agitation Motor's 0 point.
+  //moveMotorA(HIGH, 2, 6);  //this should be the agitation Motor's 0 point.
 }
 
 

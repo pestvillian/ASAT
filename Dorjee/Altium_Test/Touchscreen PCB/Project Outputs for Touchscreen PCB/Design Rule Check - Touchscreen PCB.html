@@ -1,0 +1,540 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html">
+<style type="text/css">
+		h1, h2, h3, h4, h5, h6 {
+			font-family : segoe ui;
+			color : black;
+			background-color : #EDE7D9;
+			padding: 0.3em;
+		}
+
+		h1 {
+			font-size: 1.2em;
+		}		
+
+		h2 {
+			font-size: 1.2em;
+		}
+
+		body {
+			font-family : segoe ui;
+		}
+
+		td, th {
+			padding: 0.5em;
+			text-align : left;
+			width: 10em;
+		}
+		th {
+			background-color : #EEEEEE;
+
+		}
+		th.column1, td.column1 {
+			text-align: left;
+			width : auto;
+		}
+		table {
+			width : 100%;
+			font-size: 0.9em;
+		}
+
+		.DRC_summary_header {
+			padding-bottom : 0.1em;
+			border : 0px solid black;
+			width: 100%;
+			align: left;
+		}
+
+		.DRC_summary_header_col1,
+		.DRC_summary_header_col2, 
+		.DRC_summary_header_col3 {
+			color : black;
+			font-size:100%;
+			padding : 0em;
+			padding-top : 0.2em;
+			padding-bottom 0.2em;
+			border : 0px solid black;
+			vertical-align: top;
+			text-align: left;
+		}
+
+		.DRC_summary_header_col1 {
+			font-weight: bold;
+			width: 9em;
+		}
+
+		.DRC_summary_header_col2 {
+			width: 0.1em;
+		
+		}
+
+		.DRC_summary_header_col3 {
+			width : auto;
+		}
+
+		.header_holder {
+		    Width = 100%;
+		    border = 0px solid green;
+		    padding = 0;
+		}
+
+
+		.front_matter, .front_matter_column1, .front_matter_column2, .front_matter_column3
+		{
+			left : 0;
+			top : 0;
+			padding: 0em;
+			padding-top : 0.1em;
+			border : 0px solid black;
+			width : 100%;
+			vertical-align: top;
+			text-align: left;
+		}
+
+		.front_matter_column1 {
+			width : 8em;
+			font-weight: bold;
+		}
+
+		.front_matter_column2 {
+			width: 0.1em;
+		}
+
+		.front_matter_column3 {
+			width : auto;
+		}
+
+		.total_column1, .total_column {
+			font-weight : bold;
+		}
+		.total_column1 {
+			text-align : left;
+		}
+		.warning, .error {
+			color : red;
+			font-weight : bold;
+		}
+		tr.onmouseout_odd {
+			background-color : #white;
+		}
+		tr.onmouseout_even { 
+			background-color : #FAFAFA;
+		}
+		tr.onmouseover_odd, tr.onmouseover_even { 
+			background-color : #EEEEEE;
+		} 
+		a:link, a:visited, .q a:link,.q a:active,.q {
+			color: #21489e; 
+		}
+		a:link.callback, a:visited.callback { 
+			color: #21489e;
+		}
+		a:link.customize, a:visited.customize {
+			color: #C0C0C0;
+			position: absolute; 
+			right: 10px;
+		}	
+		p.contents_level1 {
+			font-weight : bold;
+			font-size : 110%;
+			margin : 0.5em;
+		}
+		p.contents_level2 {
+			position : relative;
+			left : 20px;
+			margin : 0.5em;
+		}
+	</style><script type="text/javascript">
+		function coordToMils(coord) {
+			var number = coord / 10000;
+			
+			if (number != number.toFixed(3))
+				number = number.toFixed(3);
+
+			return number + 'mil'
+		}
+
+		function coordToMM(coord) {
+			var number = 0.0254 * coord / 10000;
+			
+			if (number != number.toFixed(4))
+				number = number.toFixed(4);
+			
+			return number + 'mm'
+		}
+	
+		function convertCoord(coordNode, units) {
+			for (var i = 0; i < coordNode.childNodes.length; i++) {
+				coordNode.removeChild(coordNode.childNodes[i]);
+			}
+
+			var coord = coordNode.getAttribute('value');
+			if (coord != null) {
+				if (units == 'mm') {
+					textNode = document.createTextNode(coordToMM(coord));
+					coordNode.appendChild(textNode);
+				} else if (units == 'mil') {
+					textNode = document.createTextNode(coordToMils(coord));		
+					coordNode.appendChild(textNode);	
+				}
+			}
+		}
+	
+		function convertUnits(unitNode, units) {
+			for (var i = 0; i < unitNode.childNodes.length; i++) {
+				unitNode.removeChild(unitNode.childNodes[i]);		
+			}
+		
+			textNode = document.createTextNode(units); 
+			unitNode.appendChild(textNode);
+		}
+	
+		function changeUnits(radio_input, units) {
+			if (radio_input.checked) {
+			
+				var elements = document.getElementsByName('coordinate');
+				if (elements) {
+					for (var i = 0; i < elements.length; i++) {
+						convertCoord(elements[i], units);
+					}
+				}
+	
+				var elements = document.getElementsByName('units');
+				if (elements) {
+					for (var i = 0; i < elements.length; i++) {
+						convertUnits(elements[i], units);
+					}
+				}
+			}
+		}
+	</script><title>Design Rule Verification Report</title>
+</head>
+<body onload=""><img ALT="Altium" src="
+			file://C:\Users\Public\Documents\Altium\AD25\Templates\AD_logo.png
+		"><h1>Design Rule Verification Report</h1>
+<table class="header_holder">
+<td class="column1">
+<table class="front_matter">
+<tr class="front_matter">
+<td class="front_matter_column1">Date:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3">5/28/2025</td>
+</tr>
+<tr class="front_matter">
+<td class="front_matter_column1">Time:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3">3:16:17 AM</td>
+</tr>
+<tr class="front_matter">
+<td class="front_matter_column1">Elapsed Time:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3">00:00:00</td>
+</tr>
+<tr class="front_matter">
+<td class="front_matter_column1">Filename:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3"><a href="file:///C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc" class="file"><acronym title="C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc">C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc</acronym></a></td>
+</tr>
+</table>
+</td>
+<td class="column2">
+<table class="DRC_summary_header">
+<tr>
+<td class="DRC_summary_header_col1">Warnings:</td>
+<td class="DRC_summary_header_col2"></td>
+<td class="DRC_summary_header_col3">0</td></tr>
+<tr>
+<td class="DRC_summary_header_col1">Rule Violations:</td>
+<td class="DRC_summary_header_col2"></td>
+<td class="DRC_summary_header_col3" style="color : red">64</td></tr>
+</table>
+</td>
+</table><a name="IDOIJSRBAYXTRE3CG3DAUCXXJ2G1FIBADW0G5DCPQTRN0MIZQYFBB"><h2>Summary</h2></a><table>
+<tr>
+<th class="column1">Warnings</th>
+<th class="column2">Count</th>
+</tr>
+<tr>
+<td style="font-weight : bold; text-align : right" class="column1">Total</td>
+<td style="font-weight : bold" class="column2">0</td>
+</tr>
+</table><br><table>
+<tr>
+<th class="column1">Rule Violations</th>
+<th class="column2">Count</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDGCGCLJX1ZZAYCJB3R04YIX3CDEV33NMZ3ZS3OO53IW4BL20MRSL">Clearance Constraint (Gap=0.2mm) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDSTP4ZI3AIZ2QLXCCV1DF4MF5IFUO4IRIQXOXDKHOV02NYPEIXE">Short-Circuit Constraint (Allowed=No) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#ID25YO4E5TDJCCEIVHBINPMJXY2LLXCEKWSFSBYOIM0OLLHHKR4LHI">Un-Routed Net Constraint ( (All) )</a></td>
+<td class="column2">9</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#ID5QUZPGHMDI5BNAZQJ1AXFRMIREOWLPHEGKRR1BH50KF3COC0N5DE">Modified Polygon (Allow modified: No), (Allow shelved: No)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDDOEAR24R234IPY35TR1GP4GEJBCACZFNXISV3PDSTYALATK4QVSJ">Width Constraint (Min=0.2mm) (Max=1mm) (Preferred=0.3mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDOLIHGOQERFLHGHFBO0FFZE331O2UCONLUYJDWJFLXCBSTC3XUYBH">Routing Topology Rule(Topology=Shortest) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDB5BLII0CUOLZGK4QHSNH5PYFCMR4PSBWDL1UWEEVFAMUVR0BEKFK">Power Plane Connect Rule(Relief Connect )(Expansion=0.508mm) (Conductor Width=0.254mm) (Air Gap=0.254mm) (Entries=4) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDTOC4ZU3LKIKOOKBJQHB2YQEG3M0XQ0AINR553PN5UUKYPQ4YX2GL">Hole Size Constraint (Min=0.025mm) (Max=2.54mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDGEFX1VAJERZPIRIWTOF0T2A2HNV5QN53SBPVJUKNTIL5NH300STL">Hole To Hole Clearance (Gap=0.254mm) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDN53QWRQW1YVTCT50HI4XAC13PDV51ZQ4THPSYPLBOIO5LVUV4JPJ">Minimum Solder Mask Sliver (Gap=0.254mm) (All),(All)</a></td>
+<td class="column2">45</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#ID3BOB5FURAWLICTJMBMDKB1U44IMMKLO22VLRK2NB3OK1LD0HMCQG">Silk To Solder Mask (Clearance=0.254mm) (IsPad),(All)</a></td>
+<td class="column2">5</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDVAIJENKLF5QIFEHUT31M5MJ44OEDBPA2YND0HYJV1LXVGMRS31YL">Silk to Silk (Clearance=0.254mm) (All),(All)</a></td>
+<td class="column2">1</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDTEOEMTAT0T354QX4DSUWXQJZGOVJYRK3VVXEIOQBWCLPEXGN2PO">Net Antennae (Tolerance=0mm) (All)</a></td>
+<td class="column2">4</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDSYO50VVT3CHNK5FLYU0COITGMGC22GQWPOTOAO3HOTOBFWDQUPO">Height Constraint (Min=0mm) (Max=25.4mm) (Prefered=12.7mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr>
+<td style="font-weight : bold; text-align : right" class="column1">Total</td>
+<td style="font-weight : bold" class="column2">64</td>
+</tr>
+</table><br><a name="ID25YO4E5TDJCCEIVHBINPMJXY2LLXCEKWSFSBYOIM0OLLHHKR4LHI"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="rule">Un-Routed Net Constraint ( (All) )</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1795.006mil|Location2.X=2075.851mil|Location1.Y=2563.908mil|Location2.Y=3010.89mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1795.006mil|Location2.X=2075.851mil|Location1.Y=2563.908mil|Location2.Y=3010.89mil|Absolute=True">Un-Routed Net Constraint: Net GND Between Pad P4-2(46.47mm,66mm) on Multi-Layer And Pad J3-1(51.65mm,75.4mm) on Multi-Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1963.375mil|Location2.X=2075.851mil|Location1.Y=2459.641mil|Location2.Y=3207.74mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1963.375mil|Location2.X=2075.851mil|Location1.Y=2459.641mil|Location2.Y=3207.74mil|Absolute=True">Un-Routed Net Constraint: Net +24V Between Pad Q1-2(50.795mm,63.4mm) on Multi-Layer And Pad J3-2(51.65mm,80.4mm) on Multi-Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1411.542mil|Location2.X=1764.029mil|Location1.Y=2563.908mil|Location2.Y=2632.932mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1411.542mil|Location2.X=1764.029mil|Location1.Y=2563.908mil|Location2.Y=2632.932mil|Absolute=True">Un-Routed Net Constraint: Net FAN_PWR Between Pad P5-1(36.73mm,66mm) on Multi-Layer And Pad P4-1(43.93mm,66mm) on Multi-Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1695.006mil|Location2.X=2036.21mil|Location1.Y=2359.641mil|Location2.Y=2632.932mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1695.006mil|Location2.X=2036.21mil|Location1.Y=2359.641mil|Location2.Y=2632.932mil|Absolute=True">Un-Routed Net Constraint: Net FAN_PWR Between Pad P4-1(43.93mm,66mm) on Multi-Layer And Pad Q1-3(50.795mm,60.86mm) on Multi-Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1511.542mil|Location2.X=1864.029mil|Location1.Y=2563.908mil|Location2.Y=2632.932mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1511.542mil|Location2.X=1864.029mil|Location1.Y=2563.908mil|Location2.Y=2632.932mil|Absolute=True">Un-Routed Net Constraint: Net GND Between Pad P5-2(39.27mm,66mm) on Multi-Layer And Pad P4-2(46.47mm,66mm) on Multi-Layer </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1795.006mil|Location2.X=2722.504mil|Location1.Y=2371.984mil|Location2.Y=2632.932mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1795.006mil|Location2.X=2722.504mil|Location1.Y=2371.984mil|Location2.Y=2632.932mil|Absolute=True">Un-Routed Net Constraint: Net GND Between Pad P4-2(46.47mm,66mm) on Multi-Layer And Via (68.7mm,60.7mm) from L1 (Signal) to L2 (Ground) </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1963.375mil|Location2.X=3606.795mil|Location1.Y=2559.641mil|Location2.Y=2909.945mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1963.375mil|Location2.X=3606.795mil|Location1.Y=2559.641mil|Location2.Y=2909.945mil|Absolute=True">Un-Routed Net Constraint: Net FAN_EN Between Pad Q1-1(50.795mm,65.94mm) on Multi-Layer And Pad U2-34(91.361mm,72.911mm) on L1 (Signal) </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3955.118mil|Location2.X=4174.803mil|Location1.Y=2880.315mil|Location2.Y=3080.315mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3955.118mil|Location2.X=4174.803mil|Location1.Y=2880.315mil|Location2.Y=3080.315mil|Absolute=True">Un-Routed Net Constraint: Net FMC_D10 Between Via (103mm,75.7mm) from L1 (Signal) to L2 (Ground) And Track (103.5mm,75.7mm)(111.268mm,75.7mm) on L1 (Signal) </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3990.551mil|Location2.X=4210.236mil|Location1.Y=2844.882mil|Location2.Y=3044.882mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3990.551mil|Location2.X=4210.236mil|Location1.Y=2844.882mil|Location2.Y=3044.882mil|Absolute=True">Un-Routed Net Constraint: Net FMC_D11 Between Via (103.9mm,74.8mm) from L1 (Signal) to L2 (Ground) And Track (104.4mm,74.8mm)(113.42mm,74.8mm) on L1 (Signal) </acronym></a><br></td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br><a name="IDN53QWRQW1YVTCT50HI4XAC13PDV51ZQ4THPSYPLBOIO5LVUV4JPJ"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="rule">Minimum Solder Mask Sliver (Gap=0.254mm) (All),(All)</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3277.84mil|Location2.X=3289.09mil|Location1.Y=3229.611mil|Location2.Y=3240.861mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3277.84mil|Location2.X=3289.09mil|Location1.Y=3229.611mil|Location2.Y=3240.861mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad C10-1(82.9mm,81.9mm) on L1 (Signal) And Pad C10-2(83.9mm,81.9mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2754.218mil|Location2.X=2765.468mil|Location1.Y=3942.21mil|Location2.Y=3953.46mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2754.218mil|Location2.X=2765.468mil|Location1.Y=3942.21mil|Location2.Y=3953.46mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad C1-1(69.6mm,100mm) on L1 (Signal) And Pad C1-2(70.6mm,100mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2715.832mil|Location2.X=2727.082mil|Location1.Y=3931.383mil|Location2.Y=3942.633mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2715.832mil|Location2.X=2727.082mil|Location1.Y=3931.383mil|Location2.Y=3942.633mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.147mm &lt; 0.254mm) Between Pad C1-1(69.6mm,100mm) on L1 (Signal) And Via (68.6mm,100mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.147mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3282.761mil|Location2.X=3294.011mil|Location1.Y=3033.745mil|Location2.Y=3044.995mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3282.761mil|Location2.X=3294.011mil|Location1.Y=3033.745mil|Location2.Y=3044.995mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad C11-1(83.8mm,76.7mm) on L1 (Signal) And Pad C11-2(83.8mm,77.7mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3302.446mil|Location2.X=3313.696mil|Location1.Y=2993.391mil|Location2.Y=3004.641mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3302.446mil|Location2.X=3313.696mil|Location1.Y=2993.391mil|Location2.Y=3004.641mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.247mm &lt; 0.254mm) Between Pad C11-1(83.8mm,76.7mm) on L1 (Signal) And Pad C15-2(83.8mm,75.6mm) on L1 (Signal) [Top Solder] Mask Sliver [0.247mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4034.729mil|Location2.X=4045.979mil|Location1.Y=2864.454mil|Location2.Y=2875.704mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4034.729mil|Location2.X=4045.979mil|Location1.Y=2864.454mil|Location2.Y=2875.704mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad C12-1(102.9mm,72.4mm) on L1 (Signal) And Pad C12-2(102.9mm,73.4mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4065.241mil|Location2.X=4076.491mil|Location1.Y=2844.769mil|Location2.Y=2856.019mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4065.241mil|Location2.X=4076.491mil|Location1.Y=2844.769mil|Location2.Y=2856.019mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.097mm &lt; 0.254mm) Between Pad C12-1(102.9mm,72.4mm) on L1 (Signal) And Via (103.9mm,72.4mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.097mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3273.903mil|Location2.X=3285.153mil|Location1.Y=2908.745mil|Location2.Y=2919.995mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3273.903mil|Location2.X=3285.153mil|Location1.Y=2908.745mil|Location2.Y=2919.995mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad C14-1(83.8mm,74.3mm) on L1 (Signal) And Pad C14-2(82.8mm,74.3mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3235.517mil|Location2.X=3246.767mil|Location1.Y=2919.572mil|Location2.Y=2930.822mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3235.517mil|Location2.X=3246.767mil|Location1.Y=2919.572mil|Location2.Y=2930.822mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.147mm &lt; 0.254mm) Between Pad C14-2(82.8mm,74.3mm) on L1 (Signal) And Via (81.8mm,74.3mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.147mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3273.903mil|Location2.X=3285.153mil|Location1.Y=2981.58mil|Location2.Y=2992.83mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3273.903mil|Location2.X=3285.153mil|Location1.Y=2981.58mil|Location2.Y=2992.83mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad C15-1(82.8mm,75.6mm) on L1 (Signal) And Pad C15-2(83.8mm,75.6mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3151.855mil|Location2.X=3163.105mil|Location1.Y=3278.824mil|Location2.Y=3290.074mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3151.855mil|Location2.X=3163.105mil|Location1.Y=3278.824mil|Location2.Y=3290.074mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad C16-1(80.7mm,83.7mm) on L1 (Signal) And Pad C16-2(79.7mm,83.7mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3171.54mil|Location2.X=3182.79mil|Location1.Y=3309.336mil|Location2.Y=3320.586mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3171.54mil|Location2.X=3182.79mil|Location1.Y=3309.336mil|Location2.Y=3320.586mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.097mm &lt; 0.254mm) Between Pad C16-1(80.7mm,83.7mm) on L1 (Signal) And Via (80.7mm,84.7mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.097mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3151.855mil|Location2.X=3163.105mil|Location1.Y=3087.879mil|Location2.Y=3099.129mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3151.855mil|Location2.X=3163.105mil|Location1.Y=3087.879mil|Location2.Y=3099.129mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad C17-1(79.7mm,78.3mm) on L1 (Signal) And Pad C17-2(80.7mm,78.3mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3111.501mil|Location2.X=3122.751mil|Location1.Y=3077.052mil|Location2.Y=3088.302mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3111.501mil|Location2.X=3122.751mil|Location1.Y=3077.052mil|Location2.Y=3088.302mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.247mm &lt; 0.254mm) Between Pad C17-1(79.7mm,78.3mm) on L1 (Signal) And Via (78.6mm,78.3mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.247mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3966.816mil|Location2.X=3978.066mil|Location1.Y=2781.777mil|Location2.Y=2793.027mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3966.816mil|Location2.X=3978.066mil|Location1.Y=2781.777mil|Location2.Y=2793.027mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.097mm &lt; 0.254mm) Between Pad C19-1(100.35mm,70.8mm) on L1 (Signal) And Via (101.4mm,70.8mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.097mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3076.068mil|Location2.X=3087.318mil|Location1.Y=2313.273mil|Location2.Y=2324.523mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3076.068mil|Location2.X=3087.318mil|Location1.Y=2313.273mil|Location2.Y=2324.523mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad C20-1(78mm,59.4mm) on L1 (Signal) And Pad C20-2(78mm,58.4mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3065.241mil|Location2.X=3076.491mil|Location1.Y=2351.658mil|Location2.Y=2362.908mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3065.241mil|Location2.X=3076.491mil|Location1.Y=2351.658mil|Location2.Y=2362.908mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.147mm &lt; 0.254mm) Between Pad C20-1(78mm,59.4mm) on L1 (Signal) And Via (78mm,60.4mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.147mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2701.068mil|Location2.X=2712.318mil|Location1.Y=3864.454mil|Location2.Y=3875.704mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2701.068mil|Location2.X=2712.318mil|Location1.Y=3864.454mil|Location2.Y=3875.704mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad C2-1(69.35mm,98.3mm) on L1 (Signal) And Via (68.2mm,98.3mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3379.217mil|Location2.X=3390.467mil|Location1.Y=3809.336mil|Location2.Y=3820.586mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3379.217mil|Location2.X=3390.467mil|Location1.Y=3809.336mil|Location2.Y=3820.586mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.147mm &lt; 0.254mm) Between Pad C21-1(85.3mm,96.85mm) on L1 (Signal) And Via (86.5mm,96.9mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.147mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3053.43mil|Location2.X=3064.68mil|Location1.Y=3630.064mil|Location2.Y=3641.314mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3053.43mil|Location2.X=3064.68mil|Location1.Y=3630.064mil|Location2.Y=3641.314mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.204mm &lt; 0.254mm) Between Pad C4-1(77.7mm,91.443mm) on L1 (Signal) And Via (77.7mm,92.9mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.204mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3421.608mil|Location2.X=3432.858mil|Location1.Y=2699.265mil|Location2.Y=2711.241mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3421.608mil|Location2.X=3432.858mil|Location1.Y=2699.265mil|Location2.Y=2711.241mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.207mm &lt; 0.254mm) Between Pad C5-1(87.6mm,69.3mm) on L1 (Signal) And Via (86.6mm,68.4mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.207mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3399.887mil|Location2.X=3411.137mil|Location1.Y=3530.792mil|Location2.Y=3542.042mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3399.887mil|Location2.X=3411.137mil|Location1.Y=3530.792mil|Location2.Y=3542.042mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad C6-1(87mm,90.1mm) on L1 (Signal) And Pad C6-2(86mm,90.1mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3440.241mil|Location2.X=3451.491mil|Location1.Y=3541.619mil|Location2.Y=3552.869mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3440.241mil|Location2.X=3451.491mil|Location1.Y=3541.619mil|Location2.Y=3552.869mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.247mm &lt; 0.254mm) Between Pad C6-1(87mm,90.1mm) on L1 (Signal) And Via (88.1mm,90.1mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.247mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3277.84mil|Location2.X=3289.09mil|Location1.Y=3284.729mil|Location2.Y=3295.979mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3277.84mil|Location2.X=3289.09mil|Location1.Y=3284.729mil|Location2.Y=3295.979mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad C7-1(82.9mm,83.3mm) on L1 (Signal) And Pad C7-2(83.9mm,83.3mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3239.451mil|Location2.X=3250.701mil|Location1.Y=3285.047mil|Location2.Y=3296.297mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3239.451mil|Location2.X=3250.701mil|Location1.Y=3285.047mil|Location2.Y=3296.297mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.147mm &lt; 0.254mm) Between Pad C7-1(82.9mm,83.3mm) on L1 (Signal) And Via (81.9mm,83.6mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.147mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3482.564mil|Location2.X=3493.814mil|Location1.Y=2792.603mil|Location2.Y=2803.853mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3482.564mil|Location2.X=3493.814mil|Location1.Y=2792.603mil|Location2.Y=2803.853mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad C8-1(88.1mm,70.8mm) on L1 (Signal) And Pad C8-2(89.1mm,70.8mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4034.729mil|Location2.X=4045.979mil|Location1.Y=3439.257mil|Location2.Y=3450.507mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4034.729mil|Location2.X=4045.979mil|Location1.Y=3439.257mil|Location2.Y=3450.507mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad C9-1(102.9mm,87mm) on L1 (Signal) And Pad C9-2(102.9mm,88mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3768.883mil|Location2.X=3780.133mil|Location1.Y=3958.942mil|Location2.Y=3970.192mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3768.883mil|Location2.X=3780.133mil|Location1.Y=3958.942mil|Location2.Y=3970.192mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.242mm &lt; 0.254mm) Between Pad D4-1(97.235mm,100.2mm) on L1 (Signal) And Via (95.3mm,100.7mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.242mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4087.879mil|Location2.X=4099.129mil|Location1.Y=4057.367mil|Location2.Y=4068.617mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4087.879mil|Location2.X=4099.129mil|Location1.Y=4057.367mil|Location2.Y=4068.617mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.2mm &lt; 0.254mm) Between Pad J2-1(104.3mm,103.89mm) on L1 (Signal) And Pad J2-2(103.65mm,103.89mm) on L1 (Signal) [Top Solder] Mask Sliver [0.2mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4114.454mil|Location2.X=4125.704mil|Location1.Y=4111.698mil|Location2.Y=4122.948mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4114.454mil|Location2.X=4125.704mil|Location1.Y=4111.698mil|Location2.Y=4122.948mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.25mm &lt; 0.254mm) Between Pad J2-1(104.3mm,103.89mm) on L1 (Signal) And Pad J2-6(105.488mm,103.975mm) on L1 (Signal) [Top Solder] Mask Sliver [0.25mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4062.288mil|Location2.X=4073.538mil|Location1.Y=4111.698mil|Location2.Y=4122.948mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4062.288mil|Location2.X=4073.538mil|Location1.Y=4111.698mil|Location2.Y=4122.948mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.2mm &lt; 0.254mm) Between Pad J2-2(103.65mm,103.89mm) on L1 (Signal) And Pad J2-3(103mm,103.89mm) on L1 (Signal) [Top Solder] Mask Sliver [0.2mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4036.698mil|Location2.X=4047.948mil|Location1.Y=4057.367mil|Location2.Y=4068.617mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4036.698mil|Location2.X=4047.948mil|Location1.Y=4057.367mil|Location2.Y=4068.617mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.2mm &lt; 0.254mm) Between Pad J2-3(103mm,103.89mm) on L1 (Signal) And Pad J2-4(102.35mm,103.89mm) on L1 (Signal) [Top Solder] Mask Sliver [0.2mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4011.107mil|Location2.X=4022.357mil|Location1.Y=4111.698mil|Location2.Y=4122.948mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4011.107mil|Location2.X=4022.357mil|Location1.Y=4111.698mil|Location2.Y=4122.948mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.2mm &lt; 0.254mm) Between Pad J2-4(102.35mm,103.89mm) on L1 (Signal) And Pad J2-5(101.7mm,103.89mm) on L1 (Signal) [Top Solder] Mask Sliver [0.2mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3984.532mil|Location2.X=3995.782mil|Location1.Y=4057.367mil|Location2.Y=4068.617mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3984.532mil|Location2.X=3995.782mil|Location1.Y=4057.367mil|Location2.Y=4068.617mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.25mm &lt; 0.254mm) Between Pad J2-5(101.7mm,103.89mm) on L1 (Signal) And Pad J2-7(100.512mm,103.975mm) on L1 (Signal) [Top Solder] Mask Sliver [0.25mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2678.43mil|Location2.X=2689.68mil|Location1.Y=3640.044mil|Location2.Y=3651.294mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2678.43mil|Location2.X=2689.68mil|Location1.Y=3640.044mil|Location2.Y=3651.294mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad R1-1(67.9mm,93.1mm) on L1 (Signal) And Pad R1-2(67.9mm,92.1mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2667.603mil|Location2.X=2678.853mil|Location1.Y=3678.43mil|Location2.Y=3689.68mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2667.603mil|Location2.X=2678.853mil|Location1.Y=3678.43mil|Location2.Y=3689.68mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.147mm &lt; 0.254mm) Between Pad R1-1(67.9mm,93.1mm) on L1 (Signal) And Via (67.9mm,94.1mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.147mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2754.218mil|Location2.X=2765.468mil|Location1.Y=2627.249mil|Location2.Y=2638.499mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2754.218mil|Location2.X=2765.468mil|Location1.Y=2627.249mil|Location2.Y=2638.499mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad R2-1(69.6mm,66.6mm) on L1 (Signal) And Pad R2-2(70.6mm,66.6mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2754.218mil|Location2.X=2765.468mil|Location1.Y=2725.674mil|Location2.Y=2736.924mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2754.218mil|Location2.X=2765.468mil|Location1.Y=2725.674mil|Location2.Y=2736.924mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad R3-1(69.6mm,69.1mm) on L1 (Signal) And Pad R3-2(70.6mm,69.1mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3682.367mil|Location2.X=3693.617mil|Location1.Y=3710.91mil|Location2.Y=3722.16mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3682.367mil|Location2.X=3693.617mil|Location1.Y=3710.91mil|Location2.Y=3722.16mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad R4-1(93.4mm,94.9mm) on L1 (Signal) And Pad R4-2(93.4mm,93.9mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3693.472mil|Location2.X=3704.722mil|Location1.Y=3740.883mil|Location2.Y=3754.405mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3693.472mil|Location2.X=3704.722mil|Location1.Y=3740.883mil|Location2.Y=3754.405mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.241mm &lt; 0.254mm) Between Pad R4-1(93.4mm,94.9mm) on L1 (Signal) And Via (94.5mm,95.4mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.241mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3097.722mil|Location2.X=3108.972mil|Location1.Y=3868.391mil|Location2.Y=3879.641mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3097.722mil|Location2.X=3108.972mil|Location1.Y=3868.391mil|Location2.Y=3879.641mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad R5-1(79.1mm,97.9mm) on L1 (Signal) And Pad R5-2(79.1mm,98.9mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3333.942mil|Location2.X=3345.192mil|Location1.Y=3884.139mil|Location2.Y=3895.389mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3333.942mil|Location2.X=3345.192mil|Location1.Y=3884.139mil|Location2.Y=3895.389mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad R6-1(85.1mm,98.3mm) on L1 (Signal) And Pad R6-2(85.1mm,99.3mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3037.682mil|Location2.X=3048.932mil|Location1.Y=3887.091mil|Location2.Y=3898.341mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3037.682mil|Location2.X=3048.932mil|Location1.Y=3887.091mil|Location2.Y=3898.341mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.197mm &lt; 0.254mm) Between Pad R7-1(76.8mm,98.6mm) on L1 (Signal) And Pad R7-2(77.8mm,98.6mm) on L1 (Signal) [Top Solder] Mask Sliver [0.197mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2982.564mil|Location2.X=2993.814mil|Location1.Y=2403.332mil|Location2.Y=2414.582mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2982.564mil|Location2.X=2993.814mil|Location1.Y=2403.332mil|Location2.Y=2414.582mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.122mm &lt; 0.254mm) Between Pad SW1-C(75.9mm,60.65mm) on L1 (Signal) And Via (75.9mm,61.7mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.122mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2719.769mil|Location2.X=2731.019mil|Location1.Y=2384.139mil|Location2.Y=2395.389mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2719.769mil|Location2.X=2731.019mil|Location1.Y=2384.139mil|Location2.Y=2395.389mil|Absolute=True">Minimum Solder Mask Sliver Constraint: (0.147mm &lt; 0.254mm) Between Pad SW1-D(69.9mm,60.65mm) on L1 (Signal) And Via (68.7mm,60.7mm) from L1 (Signal) to L2 (Ground) [Top Solder] Mask Sliver [0.147mm]</acronym></a><br></td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br><a name="ID3BOB5FURAWLICTJMBMDKB1U44IMMKLO22VLRK2NB3OK1LD0HMCQG"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="rule">Silk To Solder Mask (Clearance=0.254mm) (IsPad),(All)</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3118.292mil|Location2.X=3129.542mil|Location1.Y=3274.547mil|Location2.Y=3286.545mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3118.292mil|Location2.X=3129.542mil|Location1.Y=3274.547mil|Location2.Y=3286.545mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.162mm &lt; 0.254mm) Between Pad C16-2(79.7mm,83.7mm) on L1 (Signal) And Track (78.307mm,83.231mm)(79.2mm,83.231mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0.162mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3428.028mil|Location2.X=3440.747mil|Location1.Y=2744.674mil|Location2.Y=2755.924mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3428.028mil|Location2.X=3440.747mil|Location1.Y=2744.674mil|Location2.Y=2755.924mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.158mm &lt; 0.254mm) Between Pad C5-1(87.6mm,69.3mm) on L1 (Signal) And Text "C8" (84.83mm,70.038mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0.158mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2643.979mil|Location2.X=2655.229mil|Location1.Y=3571.147mil|Location2.Y=3582.397mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2643.979mil|Location2.X=2655.229mil|Location1.Y=3571.147mil|Location2.Y=3582.397mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad D1-K(67.9mm,90.55mm) on L1 (Signal) And Track (67.1mm,90.6mm)(67.1mm,91.3mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0.2mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2651.855mil|Location2.X=2663.105mil|Location1.Y=3580.007mil|Location2.Y=3591.257mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2651.855mil|Location2.X=2663.105mil|Location1.Y=3580.007mil|Location2.Y=3591.257mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.25mm &lt; 0.254mm) Between Pad D1-K(67.9mm,90.55mm) on L1 (Signal) And Track (67.1mm,91.3mm)(68.7mm,91.3mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0.25mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2691.228mil|Location2.X=2702.478mil|Location1.Y=3571.147mil|Location2.Y=3582.397mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2691.228mil|Location2.X=2702.478mil|Location1.Y=3571.147mil|Location2.Y=3582.397mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.2mm &lt; 0.254mm) Between Pad D1-K(67.9mm,90.55mm) on L1 (Signal) And Track (68.7mm,90.6mm)(68.7mm,91.3mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0.2mm]</acronym></a><br></td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br><a name="IDVAIJENKLF5QIFEHUT31M5MJ44OEDBPA2YND0HYJV1LXVGMRS31YL"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="rule">Silk to Silk (Clearance=0.254mm) (All),(All)</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3359.9mil|Location2.X=3371.15mil|Location1.Y=3643.981mil|Location2.Y=3655.231mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=3359.9mil|Location2.X=3371.15mil|Location1.Y=3643.981mil|Location2.Y=3655.231mil|Absolute=True">Silk To Silk Clearance Constraint: (0.222mm &lt; 0.254mm) Between Text "C21" (82.323mm,92.938mm) on Top Overlay And Text "C6" (85.23mm,90.938mm) on Top Overlay Silk Text to Silk Clearance [0.222mm]</acronym></a><br></td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br><a name="IDTEOEMTAT0T354QX4DSUWXQJZGOVJYRK3VVXEIOQBWCLPEXGN2PO"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="rule">Net Antennae (Tolerance=0mm) (All)</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4067.366mil|Location2.X=4088.641mil|Location1.Y=2972.878mil|Location2.Y=3003.261mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4067.366mil|Location2.X=4088.641mil|Location1.Y=2972.878mil|Location2.Y=3003.261mil|Absolute=True">Net Antennae: Track (103.5mm,75.7mm)(111.268mm,75.7mm) on L1 (Signal) </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4102.799mil|Location2.X=4124.074mil|Location1.Y=2937.445mil|Location2.Y=2967.828mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4102.799mil|Location2.X=4124.074mil|Location1.Y=2937.445mil|Location2.Y=2967.828mil|Absolute=True">Net Antennae: Track (104.4mm,74.8mm)(113.42mm,74.8mm) on L1 (Signal) </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4069.272mil|Location2.X=4120.681mil|Location1.Y=2923.602mil|Location2.Y=3004.301mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4069.272mil|Location2.X=4120.681mil|Location1.Y=2923.602mil|Location2.Y=3004.301mil|Absolute=True">Net Antennae: Via (103.9mm,74.8mm) from L1 (Signal) to L2 (Ground) </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4033.839mil|Location2.X=4085.247mil|Location1.Y=3218.878mil|Location2.Y=3299.577mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\Dtenz\OneDrive\Desktop\Capstone\ASAT\Dorjee\Altium_Test\Touchscreen PCB\Touchscreen PCB.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=4033.839mil|Location2.X=4085.247mil|Location1.Y=3218.878mil|Location2.Y=3299.577mil|Absolute=True">Net Antennae: Via (103mm,82.3mm) from L1 (Signal) to L2 (Ground) </acronym></a><br></td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br></body>
+</html>
