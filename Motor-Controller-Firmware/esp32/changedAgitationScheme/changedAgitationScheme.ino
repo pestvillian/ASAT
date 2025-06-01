@@ -26,8 +26,8 @@ HardwareSerial MySerial(0);  // Use UART0
 
 //experimental locations on the ASATS machine
 #define HORIZONTAL_ABOVE_TEST_TRAY_LOCATION 55
-#define VERTICAL_ABOVE_TEST_TRAY_LOCATION 38 //43 -> 37 on 5/28/25
-#define HEIGHT_OF_TEST_TUBE 40 //38 -> 44 on 5/28/25
+#define VERTICAL_ABOVE_TEST_TRAY_LOCATION 38  //43 -> 37 on 5/28/25
+#define HEIGHT_OF_TEST_TUBE 39                //38 -> 44 on 5/28/25
 
 /******************* PIN DEFINITIONS **************/
 
@@ -306,10 +306,12 @@ uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t to
 
   //begin agitation loop
   for (uint8_t rep = 0; rep < repeat; rep++) {
-    MySerial.write("R");
-    delay(20);
-    uint8_t repeatSendVal = rep + 1;
-    MySerial.print(repeatSendVal);
+    if (rep > 0) {
+      MySerial.write("R");
+      delay(20);
+      uint8_t repeatSendVal = rep + 1;
+      MySerial.print(repeatSendVal);
+    }
 
     unsigned long startTime = millis();  //get time
     movingDown = false;                  //always start agitation by going up
@@ -341,7 +343,7 @@ uint8_t agitateMotors(uint16_t agitateSpeed, uint8_t agitateDuration, uint8_t to
   stepper.stop();  //hault
   // Reattach PWM and rehome agitation motor
   ledcAttachChannel(AGITATION_MOTOR_STEP, 1000, PWM_RESOLUTION, AGITATION_MOTOR_STEP_CHANNEL);
-  homeAgitation(); //
+  homeAgitation();  //
   return 1;
 }
 
@@ -398,14 +400,14 @@ uint8_t moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequ
   //moving sequence
   moveMotorY(LOW, 1, pos * stopAtSequences);
   //moveMotorY(LOW, 1, range);  //after the beads are magnatized, hove the body up slowly
-  delay(2000);                //delay to make sure the liquid stays
+  delay(2000);  //delay to make sure the liquid stays
   if (checkStopMotorsMessage()) {
     return 0;
   }
   homeAgitation();
   //above works time for step 2, move to the right and fill the next Well
   moveMotorX(HIGH, 1, 9);  //move to next Well
-  delay(2000);                //wait for smoothness
+  delay(2000);             //wait for smoothness
   if (checkStopMotorsMessage()) {
     return 0;
   }
@@ -415,7 +417,7 @@ uint8_t moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequ
   //fill other well sequence
   moveMotorA(HIGH, 2, 16);
   moveMotorY(LOW, 1, 20);
-  homeAgitation(); //should we add agitation home? idk whats going on
+  homeAgitation();  //should we add agitation home? idk whats going on
 
   delay(initialSurfaceTime);
   if (checkStopMotorsMessage()) {
@@ -460,8 +462,8 @@ uint8_t autoHome(void) {
 
         //turn off motor in this event
         digitalWrite(AGITATION_MOTOR_DIR, HIGH);
-        ledcWriteTone(AGITATION_MOTOR_STEP, 0);  
-        moveMotorA(HIGH, 8, 2); //nudge
+        ledcWriteTone(AGITATION_MOTOR_STEP, 0);
+        moveMotorA(HIGH, 8, 2);  //nudge
         motorSequence = 1;
         break;
       } else {

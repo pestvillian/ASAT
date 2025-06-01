@@ -973,7 +973,10 @@ void DrawProgressPage(char protocolTitle[20], uint8_t rx_byte, char *rx_data) {
 		//lcdSetTextFont(&Font16);
 		//speed
 		char speed[20] = "";
-		sprintf(speed, "Speed: %c", rx_data[1]);
+		printf("start test\n");
+		uint32_t speedInt = ConvertCharsToInt('0', '0', rx_data[1]);
+		sprintf(speed, "Speed: %d", speedInt);
+		//printf("%d\n", speedInt);
 		lcdSetCursor(10, 50);
 		lcdPrintf(speed);
 		//duration
@@ -1037,22 +1040,23 @@ void DrawProgressPage(char protocolTitle[20], uint8_t rx_byte, char *rx_data) {
 		lcdSetTextFont(&Font16);
 		//init surface time
 		char initTime[20] = "";
-		sprintf(initTime, "Init Time: %c%c%c", rx_data[1], rx_data[2], rx_data[3]);
+		uint32_t initTimeInt = ConvertCharsToInt(rx_data[1], rx_data[2], rx_data[3]);
+		sprintf(initTime, "Init Time: %d", initTimeInt);
 		lcdSetCursor(60, 50);
 		lcdPrintf(initTime);
 		//speed
 		char speed[20] = "";
-		sprintf(speed, "Speed: %c", rx_data[4]);
+		sprintf(speed, "Speed: %d", ConvertCharsToInt('0', '0', rx_data[4]));
 		lcdSetCursor(60, 70);
 		lcdPrintf(speed);
 		//Stop at Sequences
 		char stopNumber[20] = "";
-		sprintf(stopNumber, "Stop Number: %c", rx_data[5]);
+		sprintf(stopNumber, "Stop Number: %d", ConvertCharsToInt('0', '0', rx_data[5]));
 		lcdSetCursor(60, 90);
 		lcdPrintf(stopNumber);
 		//Sequence Pause Time
 		char sequencePause[20] = "";
-		sprintf(sequencePause, "Sequence Pause: %c", rx_data[6]);
+		sprintf(sequencePause, "Sequence Pause: %d", ConvertCharsToInt('0', '0', rx_data[6]));
 		lcdSetCursor(60, 110);
 		lcdPrintf(sequencePause);
 	}
@@ -1062,6 +1066,7 @@ void DrawProgressPage(char protocolTitle[20], uint8_t rx_byte, char *rx_data) {
 //	sprintf(protocolTimeRemaining, "Remaining Time: %d", protocolTimer);
 //	lcdSetCursor(60, 130);
 //	lcdPrintf(protocolTimeRemaining);
+	lcdSetCursor(10, 170);
 	DrawCountdownTime();
 
 	// Draw "Stop" button
@@ -1077,7 +1082,13 @@ void DrawCountdownTime (void) {
 	uint8_t minutes = protocolTimer / 60;
 	uint8_t seconds = protocolTimer % 60;
 	char protocolTimeRemaining[25] = "";
-	sprintf(protocolTimeRemaining, "Remaining Time: %d:%d", minutes, seconds);
+	if (seconds < 10) {
+		memset(protocolTimeRemaining, 0, 25); // Sets all elements of buffer to 0
+		sprintf(protocolTimeRemaining, "Remaining Time: %d:0%d", minutes, seconds);
+	} else {
+		memset(protocolTimeRemaining, 0, 25); // Sets all elements of buffer to 0
+		sprintf(protocolTimeRemaining, "Remaining Time: %d:%d", minutes, seconds);
+	}
 	protocolTimeRemaining[strlen(protocolTimeRemaining)] = NULL_CHAR;
 	lcdSetCursor(10, 170);
 	lcdPrintf(protocolTimeRemaining);
@@ -1791,6 +1802,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     		protocolTimer--;
     	}
     	if (currentPage == PAGE_PROGRESS) {
+    		lcdSetCursor(10, 170);
     		DrawCountdownTime();
         	//DrawProgressPage("Fill", rx_byte, rx_data);
     	}
