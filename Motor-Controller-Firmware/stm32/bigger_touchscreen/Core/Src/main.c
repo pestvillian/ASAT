@@ -112,6 +112,7 @@ typedef enum {
 	PAGE_CONFIRMATION,
 	PAGE_FINISH,
 	PAGE_PROGRESS,
+	PAGE_PROTOCOL_INFO,
 	PAGE_STOP
 } PageState;
 PageState currentPage = PAGE_MAIN;
@@ -141,6 +142,7 @@ Button backButton = { 0, 205, 60, 40, "Back" }; //x, y, w, h, label
 Button nextButton = { 260, 205, 60, 40, "Next" };
 Button yesButton = { 100, 80, 120, 40, "Yes" };
 Button noButton = { 100, 140, 120, 40, "No" };
+Button protocolInfoButton = {240, 0, 80, 30, "Info" };
 
 /* USER CODE END PV */
 
@@ -178,6 +180,7 @@ void Touch_Init(void);
 uint8_t HandleTouch(void);
 void DrawMainPage(uint8_t page_num);
 void DrawInfoPage(char protocolTitle[MAX_LINE_LENGTH]);
+void DrawProtocolInfoPage(uint32_t sector, uint32_t offset);
 void DrawConfirmationPage(uint32_t sector, uint32_t offset);
 void DrawProgressPage(char protocolTitle[20], uint8_t rx_byte, char *rx_data);
 uint32_t ConvertCharsToInt(char x, char y, char z);
@@ -362,6 +365,7 @@ int main(void)
 			if (HAL_UART_Receive(&huart2, &rx_byte, 1, 0) == HAL_OK) {
 				//protocol starts, get the protocl title
 				if (rx_byte == 'T') {
+					memset(currentProtocolTitle, 0, MAX_LINE_LENGTH);
 					HAL_UART_Receive(&huart2, (uint8_t*) currentProtocolTitle, sizeof(currentProtocolTitle), 100);
 					DrawProgressPage("FILL", rx_byte, rx_data);
 				}
@@ -381,6 +385,7 @@ int main(void)
 				}
 				//protocol starts, update progress screen
 				if (rx_byte == 'B') {
+					currentRepeatNum = 1;
 					HAL_UART_Receive(&huart2, (uint8_t*) rx_data, sizeof(rx_data), 100);
 					DrawProgressPage("FILL", rx_byte, rx_data);
 				}
@@ -862,6 +867,12 @@ void DrawInfoPage(char protocolTitle[MAX_LINE_LENGTH]) {
 	lcdSetCursor(deleteButton.x + 10, deleteButton.y + 10);
 	lcdPrintf(deleteButton.label);
 
+	// Draw "Info" button
+	lcdDrawRect(protocolInfoButton.x, protocolInfoButton.y, protocolInfoButton.w, protocolInfoButton.h,
+	COLOR_BLACK);
+	lcdSetCursor(protocolInfoButton.x + 10, protocolInfoButton.y + 10);
+	lcdPrintf(protocolInfoButton.label);
+
 	// Draw "Back" button
 	lcdDrawRect(backButton.x, backButton.y, backButton.w, backButton.h,
 	COLOR_BLACK);
@@ -936,10 +947,12 @@ void DrawQueuePage(uint8_t queueSize) {
 	}
 
 	//Draw "Run" button
-	lcdDrawRect(runButton.x, runButton.y, runButton.w, runButton.h,
-	COLOR_BLACK);
-	lcdSetCursor(runButton.x + 10, runButton.y + 10);
-	lcdPrintf(runButton.label);
+	if (queueSize > 0) {
+		lcdDrawRect(runButton.x, runButton.y, runButton.w, runButton.h,
+		COLOR_BLACK);
+		lcdSetCursor(runButton.x + 10, runButton.y + 10);
+		lcdPrintf(runButton.label);
+	}
 
 	// Draw "Back" button
 	lcdDrawRect(backButton.x, backButton.y, backButton.w, backButton.h,
@@ -1107,6 +1120,133 @@ uint32_t ConvertCharsToInt(char x, char y, char z) {
 	return returnVal;
 }
 
+/**
+ * @brief: Draw progress page during motor operation
+ * @param: protocolTitle: display protocol being run
+ * @param: rx_byte: current motor movement type
+ * @param: rx_data: current motor movement info
+ * @retval: none
+ */
+void DrawProtocolInfoPage(uint32_t page_num, uint32_t offset) {
+	lcdFillRGB(COLOR_WHITE);
+
+	//protocol title
+	lcdSetCursor(100, 10);
+	char protocolTitle[20] = "";
+	uint32_t current_flash_address = get_sector_address(page_num) + offset * PROTOCOL_SIZE;
+	read_from_flash(protocolTitle, current_flash_address);
+	lcdPrintf(protocolTitle);
+
+	//get the next protocol line
+	current_flash_address += MAX_LINE_LENGTH;
+	//read_from_flash()
+
+//	//bind
+//	if (rx_byte == 'B') {
+//		//protocol type
+//		char protocolType[20] = "";
+//		sprintf(protocolType, "Bind");
+//		lcdSetCursor(10, 30);
+//		lcdSetTextFont(&Font16);
+//		lcdPrintf(protocolType);
+//		//lcdSetTextFont(&Font16);
+//		//speed
+//		char speed[20] = "";
+//		printf("start test\n");
+//		uint32_t speedInt = ConvertCharsToInt('0', '0', rx_data[1]);
+//		sprintf(speed, "Speed: %d", speedInt);
+//		//printf("%d\n", speedInt);
+//		lcdSetCursor(10, 50);
+//		lcdPrintf(speed);
+//		//duration
+//		char duration[20] = "";
+//		uint32_t durationInt = ConvertCharsToInt('0', rx_data[2], rx_data[3]);
+//		//sprintf(duration, "Duration: %c%c", rx_data[2], rx_data[3]);
+//		sprintf(duration, "Duration: %d", durationInt);
+//		lcdSetCursor(10, 70);
+//		lcdPrintf(duration);
+//		//volume
+//		char volume[20] = "";
+//		uint32_t volumeInt = ConvertCharsToInt(rx_data[4], rx_data[5], rx_data[6]);
+//		//sprintf(volume, "Volume: %c%c%c", rx_data[4], rx_data[5], rx_data[6]);
+//		sprintf(volume, "Volume: %d", volumeInt);
+//		lcdSetCursor(10, 90);
+//		lcdPrintf(volume);
+//		//depth
+//		char depth[20] = "";
+//		uint32_t depthInt = ConvertCharsToInt(rx_data[7], rx_data[8], rx_data[9]);
+//		//sprintf(depth, "Depth: %c%c%c", rx_data[7], rx_data[8], rx_data[9]);
+//		sprintf(depth, "Depth: %d", depthInt);
+//		lcdSetCursor(10, 110);
+//		lcdPrintf(depth);
+//		//pauseDuration
+//		char pauseDuration[20] = "";
+//		uint32_t pauseInt = ConvertCharsToInt('0', rx_data[10], rx_data[11]);
+//		sprintf(pauseDuration, "PauseDuration: %d", pauseInt);
+//		lcdSetCursor(10, 130);
+//		lcdPrintf(pauseDuration);
+//		//repeat
+//		char repeat[20] = "";
+//		uint32_t repeatInt = ConvertCharsToInt('0', rx_data[12], rx_data[13]);
+//		//sprintf(repeat, "Repeat: %c%c", rx_data[11], rx_data[12]);
+//		sprintf(repeat, "Repeat: %d/%d", currentRepeatNum, repeatInt);
+//		lcdSetCursor(10, 150);
+//		lcdPrintf(repeat);
+//	}
+//
+//	//pause
+//	if (rx_byte == 'P') {
+//		char protocolType[20] = "";
+//		sprintf(protocolType, "Pause");
+//		lcdSetCursor(60, 30);
+//		lcdSetTextFont(&Font20);
+//		lcdPrintf(protocolType);
+//		lcdSetTextFont(&Font16);
+//		//duration
+//		char duration[20] = "";
+//		sprintf(duration, "Duration: %c", rx_data[1]);
+//		lcdSetCursor(60, 50);
+//		lcdPrintf(duration);
+//	}
+//
+//	//move
+//	if (rx_byte == 'M') {
+//		char protocolType[20] = "";
+//		sprintf(protocolType, "Magnetize");
+//		lcdSetCursor(60, 30);
+//		lcdSetTextFont(&Font20);
+//		lcdPrintf(protocolType);
+//		lcdSetTextFont(&Font16);
+//		//init surface time
+//		char initTime[20] = "";
+//		uint32_t initTimeInt = ConvertCharsToInt(rx_data[1], rx_data[2], rx_data[3]);
+//		sprintf(initTime, "Init Time: %d", initTimeInt);
+//		lcdSetCursor(60, 50);
+//		lcdPrintf(initTime);
+//		//speed
+//		char speed[20] = "";
+//		sprintf(speed, "Speed: %d", ConvertCharsToInt('0', '0', rx_data[4]));
+//		lcdSetCursor(60, 70);
+//		lcdPrintf(speed);
+//		//Stop at Sequences
+//		char stopNumber[20] = "";
+//		sprintf(stopNumber, "Stop Number: %d", ConvertCharsToInt('0', '0', rx_data[5]));
+//		lcdSetCursor(60, 90);
+//		lcdPrintf(stopNumber);
+//		//Sequence Pause Time
+//		char sequencePause[20] = "";
+//		sprintf(sequencePause, "Sequence Pause: %d", ConvertCharsToInt('0', '0', rx_data[6]));
+//		lcdSetCursor(60, 110);
+//		lcdPrintf(sequencePause);
+//	}
+
+	// Draw "Back" button
+	lcdDrawRect(backButton.x, backButton.y, backButton.w, backButton.h,
+	COLOR_BLACK);
+	lcdSetCursor(backButton.x + 10, backButton.y + 10);
+	lcdPrintf(backButton.label);
+}
+
 void DrawStopPage(void) {
 	lcdFillRGB(COLOR_WHITE);
 
@@ -1248,6 +1388,14 @@ uint8_t handleTouch() {
 			//start timer 2 interrupt for protocol timer count down
 			HAL_TIM_Base_Start_IT(&htim2); //triggers every second
 		}
+		//info button
+		if (x >= protocolInfoButton.x && x <= (protocolInfoButton.x + protocolInfoButton.w)
+				&& y >= protocolInfoButton.y
+				&& y <= (protocolInfoButton.y + protocolInfoButton.h)) {
+			//move to delete confirmation page
+			currentPage = PAGE_PROTOCOL_INFO;
+			DrawProtocolInfoPage(page_num, protocol_offset);
+		}
 		//delete button
 		if (x >= deleteButton.x && x <= (deleteButton.x + deleteButton.w)
 				&& y >= deleteButton.y
@@ -1267,7 +1415,8 @@ uint8_t handleTouch() {
 		}
 		//run button
 		if (x >= runButton.x && x <= (runButton.x + runButton.w)
-				&& y >= runButton.y && y <= (runButton.y + runButton.h)) {
+				&& y >= runButton.y && y <= (runButton.y + runButton.h)
+				&& (queueSize > 0)) {
 			//handle queue functionality here dorjee
 			transmitQueuedProtocols(queueSize);
 			queueSize = 0;
@@ -1334,6 +1483,15 @@ uint8_t handleTouch() {
 
 			//stop the interrupt
 			HAL_TIM_Base_Stop_IT(&htim2);
+		}
+		break;
+
+	case PAGE_PROTOCOL_INFO:
+		//back button
+		if (x >= backButton.x && x <= (backButton.x + backButton.w)
+				&& y >= backButton.y && y <= (backButton.y + backButton.h)) {
+			currentPage = PAGE_SELECT;
+			DrawInfoPage(buttons[i].label);
 		}
 		break;
 
