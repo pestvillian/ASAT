@@ -22,10 +22,10 @@ HardwareSerial MySerial(0);  // Use UART0
 #define MAX_LINE_LENGTH 32
 #define MAX_LINES 100
 #define PWM_RESOLUTION 8
-#define LIMIT_SWITCH_DEBOUNCE_TIME 50
+#define LIMIT_SWITCH_DEBOUNCE_TIME 100
 
 //experimental locations on the ASATS machine
-#define HORIZONTAL_ABOVE_TEST_TRAY_LOCATION 54
+#define HORIZONTAL_ABOVE_TEST_TRAY_LOCATION 53
 #define VERTICAL_ABOVE_TEST_TRAY_LOCATION 38  //43 -> 37 on 5/28/25
 #define HEIGHT_OF_TEST_TUBE 38                //38 -> 44 on 5/28/25
 
@@ -113,6 +113,14 @@ void setup() {
   ledcAttachChannel(AGITATION_MOTOR_STEP, 1000, PWM_RESOLUTION, AGITATION_MOTOR_STEP_CHANNEL);
   ledcAttachChannel(MOTOR_X_STEP, 1000, PWM_RESOLUTION, MOTOR_X_STEP_CHANNEL);
   ledcAttachChannel(MOTOR_Y_STEP, 1000, PWM_RESOLUTION, MOTOR_Y_STEP_CHANNEL);
+
+
+  // for (int i = 0; i < 100000; i++) {
+  //   uint8_t stateX = digitalRead(HORIZONTAL_SWITCH);  //check status of limit switch
+  //   Serial.println(stateX);
+  // }
+
+  // delay(5000);
 }
 
 /*
@@ -436,6 +444,8 @@ uint8_t moveSample(uint8_t initialSurfaceTime, uint8_t speed, uint8_t stopAtSequ
  * @author: Gregory Ziegler
  */
 uint8_t autoHome(void) {
+  Serial.println("Start Homing");
+
   int motorSequence = 0;  //controls sequence of motors homing.
   delay(200);             //greg why delay here
   if (checkStopMotorsMessage()) {
@@ -483,13 +493,22 @@ uint8_t autoHome(void) {
     ledcWriteTone(MOTOR_X_STEP, 800);  // Drive motor
     digitalWrite(MOTOR_X_DIR, LOW);    //home direction is left = LOW
     //if the state of the limit switch is high that means it has been pressed
+    uint8_t stateX = digitalRead(HORIZONTAL_SWITCH);  //check status of limit switch
     while (1) {
       //the motor should be running the whole time that the limit switch is untouched
-      uint8_t stateX = digitalRead(HORIZONTAL_SWITCH);  //check status of limit switch
+      // for (int i =0; i<10000; i++) {
+      //        uint8_t stateX = digitalRead(HORIZONTAL_SWITCH);  //check status of limit switch
+      //        Serial.println(stateX);
+      // }
+      delay(10);
+      stateX = digitalRead(HORIZONTAL_SWITCH);  //check status of limit switch
       // Serial.print("Limit switch X => ");
       // Serial.println(stateX);
-      if (stateX != 1) {
-        //Serial.println("Limit switch is currently Touched");
+
+      if (stateX == 0) {
+        // Serial.println("Limit switch is currently Touched");
+        // Serial.print("Final limit switch value X => ");
+        // Serial.println(stateX);
 
         //turn off motor in this event
         digitalWrite(MOTOR_X_DIR, HIGH);
@@ -515,9 +534,10 @@ uint8_t autoHome(void) {
 
     //if the state of the limit switch is high that means it has been pressed
     while (1) {
+      delay(10);
       stateY = digitalRead(VERTICAL_SWITCH);  //read status of limit switch
-      if (stateY != 1) {
-        //Serial.println("Limit switch is currently Touched");
+      if (stateY == 0) {
+        Serial.println("Vertical Limit switch is currently Touched");
         //turn off motor in this event
         digitalWrite(MOTOR_Y_DIR, HIGH);
         ledcWriteTone(MOTOR_Y_STEP, 0);  //
@@ -534,8 +554,6 @@ uint8_t autoHome(void) {
   if (checkStopMotorsMessage()) {
     return 0;
   }
-
-
 
   //homing complete begin phase 2
 
