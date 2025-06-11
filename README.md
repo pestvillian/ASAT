@@ -4,8 +4,9 @@ We are an Electrical Engineering Capstone group from the University of Californi
 
 Here is an overview of the file structure:
   - Five folders for each group member
-  - "Motor-Controller-Firmware" Firmware files for the motor controller motherboard and touchscreen daughterboard
   - "Motor-Controller-Board" contains PCB files for the Motor Controller PCB
-  - "motor_tests" has test scripts for controlling the motors
+  - "Touchscreen-Hardware" contains PCB files for the two revisions of the touchscreen PCB
+  - "Firmware" contains the firmware for both PCBs
+
 
 Finally, we created a poster to visually explain our project!
