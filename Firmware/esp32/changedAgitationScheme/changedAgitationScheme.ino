@@ -25,7 +25,7 @@ HardwareSerial MySerial(0);  // Use UART0
 #define LIMIT_SWITCH_DEBOUNCE_TIME 100
 
 //experimental locations on the ASATS machine
-#define HORIZONTAL_ABOVE_TEST_TRAY_LOCATION 53
+#define HORIZONTAL_ABOVE_TEST_TRAY_LOCATION 52 //this is slightly inaccurate becasue of limit switch detection having lag
 #define VERTICAL_ABOVE_TEST_TRAY_LOCATION 38  //43 -> 37 on 5/28/25
 #define HEIGHT_OF_TEST_TUBE 38                //38 -> 44 on 5/28/25
 
