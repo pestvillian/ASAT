@@ -26,7 +26,7 @@
 #else
 
 // Warning! Use SPI bus with < 2.5 Mbit speed, better ~650 Kbit to be save.
-#define XPT2046_SPI_PORT hspi1
+#define XPT2046_SPI_PORT hspi4
 extern SPI_HandleTypeDef XPT2046_SPI_PORT;
 
 #endif /* SOFTWARE_SPI */
